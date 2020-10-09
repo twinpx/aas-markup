@@ -2,70 +2,107 @@ header.b-header.ph-block
 
   .b-header-fixed-wrapper
 
-    .b-header__top
-      .container-lg
-      
-        .b-header__logo
-          a( href="/" )
-            img( src="/template/images/logo-aas.svg" width="80" height="56" alt="СРО ААС" )
-            
-          span.d-none.d-sm-block Саморегулируемая организация аудиторов<br>АССОЦИАЦИЯ «СОДРУЖЕСТВО»
-          
-          a.d-none.d-sm-block( href="/" )
-            img( src="/template/images/logo-ifac.svg" width="85" height="30" alt="IFAC" )
-          
-        .b-header__profile
-          //-a.btn.btn-secondary( href="" ) Личный кабинет
-          a.d-none.d-sm-block( href="/profile/" )
-            img( src="" alt="" )
-            span Иванов Пётр Васильевич
-          a.b-header__profile-icon.d-inline-block.d-sm-none( href="/profile/" style="background-image: url( '/template/images/profile.svg' );" )
-          a.b-header__menu-icon.d-inline-block.d-sm-none( href="#" style="background-image: url( '/template/images/menu.svg' );" )
-      
-    .b-header__bottom.d-none.d-sm-block
-      .container-lg
-          
-        .b-header__menu.d-none.d-sm-block
-          a( href="/pages/about/" ) СРО ААС  
-          a( href="/pages/registry/" ) Реестр
-          a( href="/pages/membership/" data-dropdown="membership" ) Членство
-          a( href="/pages/self-regulation/" ) Саморегулирование
-          a( href="/pages/auditors/" ) Аудиторам
+    .container-fluid
+
+      .b-header__top
         
-        .b-header__search
+          .b-header__logo
+            a.b-header__logo-aas( href="/" )
+              img( src="/template/images/logo-aas.svg" width="80" height="56" alt="СРО ААС" )
+              
+            span.b-header__slogan.d-none.d-md-block Саморегулируемая организация аудиторов<br>АССОЦИАЦИЯ «СОДРУЖЕСТВО»
+            
+            a.b-header__logo-ifac.d-none.d-md-block( href="/" )
+              img( src="/template/images/logo-ifac.svg" width="85" height="30" alt="IFAC" )
+            
+          .b-header__profile
+            a.btn.btn-secondary.d-none.d-md-block( href="" ) Личный кабинет
+            //-a.d-none.d-md-block( href="/profile/" )
+                img( src="" alt="" )
+                span Иванов Пётр Васильевич
+            a.b-header__profile-icon.d-inline-block.d-md-none( href="/profile/" style="background-image: url( '/template/images/profile.svg' );" )
+            a.b-header__menu-icon.d-inline-block.d-md-none( href="#" style="background-image: url( '/template/images/menu.svg' );" )
+        
+      .b-header__bottom
+            
+        .b-header__menu
+          .b-header__menu-item( data-dropdown="true" )
+            .b-header__menu-arrow.d-block.d-md-none( style="background-image: url( '/template/images/arrow-right.svg' );" )
+            span
+              a( href="/pages/about/" ) СРО ААС  
+            .b-header__menu-dropdown
+              .row
+                .col-12.col-md-3
+                  a( href="" ) Контроль качества
+                  a( href="" ) Повышение квалификации
+                  a( href="" ) Подтверждение повышения квалификации
+                  a( href="" ) Аттестация аудиторов
+                  
+                hr.d-block.d-md-none.w-100
+                  
+                .col-12.col-md-3
+                  a( href="" ) Дисциплинарное производство
+                  a( href="" ) Международное сотрудничество
+                  a( href="" ) МФБ (IFAC)
+                  a( href="" ) ICAEW
+                  
+                hr.d-block.d-md-none.w-100
+                  
+                .col-12.col-md-3
+                  a( href="" ) Обсуждаем проекты международных стандартов и документов
+                  a( href="" ) Обсуждаем проекты нормативных актов
+                  a( href="" ) Участие в общественных организациях
+                  a( href="" ) Противодействие коррупции и легализации (отмыванию) доходов, полученных преступным путем, и финансированию терроризма
+                  
+                hr.d-block.d-md-none.w-100
+                  
+                .col-12.col-md-3
+                  a( href="" ) Профилактика нарушений обязательных требований
+            
+          .b-header__menu-item
+            span
+              a( href="/pages/registry/" ) Реестр
+          .b-header__menu-item( data-dropdown="true" )
+            .b-header__menu-arrow.d-block.d-md-none( style="background-image: url( '/template/images/arrow-right.svg' );" )
+            span
+              a( href="/pages/membership/" ) Членство 
+            .b-header__menu-dropdown
+              .row
+                .col-12.col-md-3
+                  a( href="" ) Контроль качества
+                  a( href="" ) Повышение квалификации
+                  a( href="" ) Подтверждение повышения квалификации
+                  a( href="" ) Аттестация аудиторов
+                  
+                hr.d-block.d-md-none.w-100
+                  
+                .col-12.col-md-3
+                  a( href="" ) Дисциплинарное производство
+                  a( href="" ) Международное сотрудничество
+                  a( href="" ) МФБ (IFAC)
+                  a( href="" ) ICAEW
+                  
+                hr.d-block.d-md-none.w-100
+                  
+                .col-12.col-md-3
+                  a( href="" ) Обсуждаем проекты международных стандартов и документов
+                  a( href="" ) Обсуждаем проекты нормативных актов
+                  a( href="" ) Участие в общественных организациях
+                  a( href="" ) Противодействие коррупции и легализации (отмыванию) доходов, полученных преступным путем, и финансированию терроризма
+                  
+                hr.d-block.d-md-none.w-100
+                  
+                .col-12.col-md-3
+                  a( href="" ) Профилактика нарушений обязательных требований
+          .b-header__menu-item
+            span
+              a( href="/pages/self-regulation/" ) Саморегулирование
+          .b-header__menu-item
+            span
+              a( href="/pages/auditors/" ) Аудиторам
+        
+        .b-header__search.d-none.d-md-block
           form( action="" method="GET" )
             a.b-header__search-icon( href="" style="background-image: url( '/template/images/search.svg' );" )
             div
               input( type="text" name="search" value="" )
-        
-    .b-header__dropdown
-      .b-header__dropdown-wrapper
-        .container-lg
-          div( data-dropdown="membership" )
-            .row
-              .col-12.col-sm-3
-                a( href="" ) Контроль качества
-                a( href="" ) Повышение квалификации
-                a( href="" ) Подтверждение повышения квалификации
-                a( href="" ) Аттестация аудиторов
-                
-              hr.d-block.d-sm-none.w-100
-                
-              .col-12.col-sm-3
-                a( href="" ) Дисциплинарное производство
-                a( href="" ) Международное сотрудничество
-                a( href="" ) МФБ (IFAC)
-                a( href="" ) ICAEW
-                
-              hr.d-block.d-sm-none.w-100
-                
-              .col-12.col-sm-3
-                a( href="" ) Обсуждаем проекты международных стандартов и документов
-                a( href="" ) Обсуждаем проекты нормативных актов
-                a( href="" ) Участие в общественных организациях
-                a( href="" ) Противодействие коррупции и легализации (отмыванию) доходов, полученных преступным путем, и финансированию терроризма
-                
-              hr.d-block.d-sm-none.w-100
-                
-              .col-12.col-sm-3
-                a( href="" ) Профилактика нарушений обязательных требований

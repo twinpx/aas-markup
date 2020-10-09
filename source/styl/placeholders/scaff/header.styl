@@ -1,2 +1,31 @@
 .b-header
-  display none
+  height 144px
+  overflow hidden
+  
+  .container-fluid
+    margin-right auto
+    margin-left auto
+    width 100%
+    padding-right 15px
+    padding-left 15px
+    box-sizing border-box
+    
+    @media ( min-width 1200px )
+      max-width 1440px
+  
+    &:before
+      content ''
+      display block
+      position absolute
+      top 0
+      left 15px
+      width calc( 100% - 30px )
+      height 144px
+      background-color $placeholder-color
+      transition( background-color .5s ease )
+      z-index 1
+
+  &__top,
+  &__bottom
+    opacity 0
+    transition( all .5s ease )

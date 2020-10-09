@@ -1,11 +1,18 @@
 extends ../../layouts/main
 
+block placeholder-styles
+  link( href="/template/placeholders/blocks-text.css" rel="stylesheet" )
+
+block vars
+  - var page = 'blocks-text'
+  - var authorized = 'true'
+
 block title
   title Blocks | Text | AAS
 
 block content
 
-  .container-lg
+  .container-fluid
     h1 Пресс-релиз Круглого стола-вебинара аудиторов Уральского ТО 31 августа 2020 г.
     
     p 31 августа 2020 года проведен Круглый стол с возможностью подключения в дистанционном формате на тему: «Организация системы внутреннего контроля в организациях».
