@@ -15,12 +15,14 @@ html
     
   body
   
-    include ../components/bitrix-panel/template
+    //-include ../components/bitrix-panel/template
     
     include includes/header
     
+    hr
+    
     block content
-      .container
+      .container-fluid
         h1 aas
     
     include includes/footer
@@ -33,10 +35,8 @@ html
     include ../components/search.title/result
     
     //- include styles and scripts for all page's components
-    block components-array
-    
-      if componentsArray
-        each componentName in componentsArray
-          link( rel="stylesheet", href="/components/#{componentName}/style.css" )
-          script( src="/components/#{componentName}/script.js" )
+    if componentsArray
+      each componentName in componentsArray
+        link( rel="stylesheet", href="/components/" + componentName + "/style.css" )
+        script( src="/components/" + componentName + "/script.js" )
 
