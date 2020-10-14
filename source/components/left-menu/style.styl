@@ -19,11 +19,23 @@
         z-index -1
     
 .b-left-menu
+
+  a.active
+
+    &,
+    &:hover,
+    &:focus,
+    &:active
+      color $secondary-color-2
+      
+  span
+    color #3b3b3b
   
   &__item
     border-bottom 1px solid #f2f2f2
   
-    a
+    a,
+    span
       display block
       font-size $16px
       padding 20px
@@ -31,7 +43,8 @@
   &__sub
     padding-bottom 15px
   
-    a
+    a,
+    span
       font-size $14px
       padding 0 10px 10px 20px
       margin-left 20px
