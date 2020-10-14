@@ -9,6 +9,8 @@
       $header.data( 'topBorder', $header.offset().top );
     });
     
+    document.querySelector( '.b-header-fixed-wrapper' ).style.top = document.getElementById( 'bx-panel' ).offsetHeight + 'px';
+    
   });
 
 }( jQuery ));

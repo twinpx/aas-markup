@@ -43,6 +43,7 @@
     @media( max-width 767px )
       height 86px
       padding 0 20px
+      margin 0 -15px
       
     .header-fixed &
       height calc( 144px - 86px )
@@ -125,9 +126,13 @@
       max-height calc( 100vh - 86px )
       border-bottom none
       overflow scroll
+      margin 0 -15px
     
   &__menu
     transition( all .5s ease )
+    
+    i
+      font-style normal
     
     &-item
       display inline-block
@@ -136,6 +141,9 @@
       font-weight $bold
       cursor pointer
       
+      @media( min-width 768px )
+        height 50px
+      
       &:last-child
         margin-right 0
         
@@ -143,28 +151,57 @@
       
         span
       
-          a
+          a,
+          i
             color $secondary-color-2
             
             @media( max-width 767px )
               color $secondary-color
+        
+      &.open
               
         .b-header__menu-arrow
           transform( rotate(90deg))
+          
+      @media( min-width 768px )
+      
+        span
+          display inline-block
+        
+          a,
+          i
+            display inline-block
+            line-height 50px
           
       @media( max-width 767px )
         position relative
         display block
         margin 0 20px
         font-size $20px
+      
+        &:last-child
+          margin-right 20px
         
         span
           display block
           height 60px
-          padding 18px 0
+          padding 15px 0
           border-bottom 1px solid $line-color
           
+          a,
+          i
+            display inline-block
+          
       .header-fixed &
+      
+        @media( min-width 768px )
+          height 86px
+          
+          span
+        
+            a,
+            i
+              line-height 86px
       
         @media( min-width 768px ) and ( max-width 900px )
           display none
@@ -204,11 +241,15 @@
       display none
       background-color #fff
       
+      @media( min-width 768px )
+        columns 4
+      
       hr
         margin 0
         border none
       
-      a
+      a,
+      i
         display block
         padding 5px 0
         font-weight $normal
@@ -224,13 +265,14 @@
         border-top none
         border-radius 0 0 5px 5px
         font-size $14px
-        padding 45px 35px 15px
+        padding 45px 35px
         z-index 1000
         
         .header-fixed &
           top 86px
       
-        a
+        a,
+        i
           margin-bottom 30px
           padding 0
         
@@ -294,33 +336,3 @@
     background-position center
     background-size cover
     z-index 1000
-    
-  &__dropdown
-    position relative
-    
-    &-wrapper
-      display none
-      position absolute
-      top 0
-      left 0
-      width 100%
-      z-index 1000
-      
-      [ data-dropdown ]
-        display none
-      
-      &--show
-        display block !important
-    
-    &-tab
-      font-size $14px
-      padding 45px 50px
-      background-color #fff
-      border-radius 0 0 5px 5px
-      box-shadow 3px 3px 5px #0000000d
-      border 1px solid $line-color
-      border-top none
-      
-    a
-      margin-bottom 30px
-      display block
