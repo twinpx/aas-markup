@@ -25,7 +25,26 @@ a
     
   &:hover
     opacity .7
-    
+
+p, dl, ol, ul
+  margin-bottom 1.25rem
+
+dl, ol, ul
+  padding-left 3rem
+
+li
+  margin-bottom 1rem
+
+blockquote
+  margin 0 0 1.25rem 3rem
+  border-left 2px solid $primary-color
+  padding-left 20px
+  color #000
+
+.b-lead
+  font-size $24px
+  margin 1.25rem 0
+
 hr
   margin-top 1rem
   margin-bottom 1rem
@@ -58,10 +77,22 @@ h1
   font-family $roboto
   font-size $38px
   font-weight $bold
-  margin-bottom 3rem
-  
-  &:first-child
-    margin-top 0
+  line-height 1.18//44
+  margin 0 0 3rem
+
+h2
+  font-family $roboto
+  font-size $32px
+  font-weight $bold
+  line-height 1.25//40
+  margin 0 0 2rem
+
+h3
+  font-family $roboto
+  font-size $24px
+  font-weight $bold
+  line-height 1.5//36
+  margin 0 0 2rem
   
 .btn
   font-family $roboto
@@ -160,3 +191,13 @@ h1
     height 60px
     font-size $16px
     min-width 250px
+
+.table thead th
+  border-bottom 1px solid $line-color
+  font-family $roboto
+  font-weight $bold
+  font-size $20px
+
+.table td, .table th
+  padding 1.25rem 1.5rem
+  border-top-color $line-color
