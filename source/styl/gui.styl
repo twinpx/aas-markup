@@ -44,6 +44,9 @@ blockquote
 .b-lead
   font-size $24px
   margin 1.25rem 0
+  
+  @media( max-width 575px )
+    font-size 1.2rem
 
 hr
   margin-top 1rem
@@ -59,8 +62,8 @@ hr
     margin-bottom .5rem
   
   &.hr--md
-    margin-top 1rem
-    margin-bottom 1rem
+    margin-top .75rem
+    margin-bottom .75rem
   
   &.hr--lg
     margin-top 1.5rem
@@ -86,6 +89,9 @@ h2
   font-weight $bold
   line-height 1.25//40
   margin 0 0 2rem
+  
+  @media( max-width 575px )
+    font-size 1.2rem
 
 h3
   font-family $roboto
@@ -201,3 +207,6 @@ h3
 .table td, .table th
   padding 1.25rem 1.5rem
   border-top-color $line-color
+  
+.text-muted
+  color #9b9b9b !important
