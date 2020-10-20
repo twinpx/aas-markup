@@ -34,9 +34,11 @@ document.querySelectorAll( '.b-header__menu-item' ).forEach( function( elem, ind
         elem.addEventListener( 'mouseenter', function(e) {
           e.stopPropagation();
           clearTimeout( headerDropdownId[ index ]);
-          $( elem ).find( '.b-header__menu-dropdown' ).slideDown( 200, function() {
-            this.classList.add( 'show' );
-          });
+          headerDropdownId[ index ] = setTimeout( function() {
+            $( elem ).find( '.b-header__menu-dropdown' ).slideDown( 400, function() {
+              this.classList.add( 'show' );
+            });
+          }, 100);
         });
         
         elem.addEventListener( 'mouseleave', function(e) {
@@ -44,8 +46,7 @@ document.querySelectorAll( '.b-header__menu-item' ).forEach( function( elem, ind
           clearTimeout( headerDropdownId[ index ] );
           elem.querySelector( '.b-header__menu-dropdown' ).classList.remove( 'show' );
           headerDropdownId[ index ] = setTimeout( function() {
-            $( elem ).find( '.b-header__menu-dropdown' ).slideUp( 200, function() {
-          });
+            $( elem ).find( '.b-header__menu-dropdown' ).slideUp( 200 );
           }, 300);
         });
         
