@@ -13,16 +13,20 @@ html
     link( href="/template/placeholders/" + page + ".css" rel="stylesheet" )
     
   body
+
+    .b-page-content
   
-    include ../components/bitrix-panel/template
-    
-    include includes/header
-    
-    hr
-    
-    block content
-      .container-fluid
-        h1 aas
+      include ../components/bitrix-panel/template
+      
+      include includes/header
+      
+      hr
+      
+      block content
+        .container-fluid
+          h1 aas
+
+      hr.hr--lg
     
     include includes/footer
     
