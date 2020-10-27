@@ -1,15 +1,53 @@
-#titleSearchHeaderResult.title-search-result(style="display: block; position: absolute; top: 2px; left: -1126px; width: 1170px;")
-  .container-lg
-    .title-search-result__wrapper(style="overflow: hidden; outline: none;" tabindex="2")
-      .title-search-result__block(style="width: 1125px;")
-        .title-search-result__title Рецепты
-        a.title-search-result__item(href="/detail/yablochnyy-pirog-maman-blank/")
-          span.title-search-result__img(style="background-image: url( '/upload/resize_cache/iblock/375/75_75_1/322-11.jpg' );")
-          span.title-search-result__text
-            span.title-search-result__header
-              | Яблочный 
-              b пирог
-              |  маман Бланк
-            span.title-search-result__info
-              | 1 ч.  ,									6 порции,
-              | 2528 кКал
+// start /components/search.title/
+
+//- push style and script file to the end of the page
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'search.title'
+else
+  - var componentsArray = [ 'search.title' ]
+  
+.title-search-result( style="position: absolute; top: 231px; left: 9px; width: 384px;" )
+  .container-fluid
+    .title-search-wrapper
+      #row_1
+        .title-search-item
+          a(href="/pc/podpiska_na_rassylku/index.php")
+            img(src="/local/templates/aas/components/bitrix/search.title/search_header/images/default.png")
+            span
+              b По
+              | дписка на рассылку
+      #row_2
+        .title-search-item
+          a(href="/help_aas/sad/index.php")
+            img(src="/local/templates/aas/components/bitrix/search.title/search_header/images/default.png")
+            span
+              | Совет 
+              b по
+              |  аудиторской деятельности
+      #row_3
+        .title-search-item
+          a(href="/activity/confirmation_training/index.php")
+            img(src="/local/templates/aas/components/bitrix/search.title/search_header/images/default.png")
+            span
+              b По
+              | дтверждение 
+              b по
+              | вышения квалификации
+      #row_4
+        .title-search-item
+          a(href="/activity/povyshenie_kvalifikacii/index.php")
+            img(src="/local/templates/aas/components/bitrix/search.title/search_header/images/default.png")
+            span
+              b … документ подготовила Иванова Юлия Сергеевна…
+      #row_5
+        .title-search-item
+          a(href="/rules/changereestr/index.php")
+            img(src="/local/templates/aas/components/bitrix/search.title/search_header/images/default.png")
+            span
+              b По
+              | рядок внесения изменений в реестр  
+      #row_8
+        .title-search-all
+          a(href="/search/index.php?q=%D0%BF%D0%BE") Все результаты поиска 
+
+// end /components/search.title/
