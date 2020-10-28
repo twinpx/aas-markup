@@ -5,13 +5,31 @@ block vars
   - var authorized = 'true'
 
 block title
-  title Pages list | aas
+  title Главная 3 | aas
 
 block content
 
-  .container-fluid
-    h1 aas
-    
-  .container-fluid
-  
-    include ../../components/component/template
+  .b-bg
+
+    hr
+
+    include ../../modules/quick-links/include
+
+    hr
+
+    .container-fluid
+
+      include ../../components/gallery/template
+
+    hr
+
+    include ../../components/inform-blocks/template
+
+    hr
+
+    include ../../components/statistics/template
+
+    hr
+
+
+      

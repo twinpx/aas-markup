@@ -1,0 +1,82 @@
+@import '../../styl/component-include.styl'
+
+.b-inform-blocks
+
+  &.b-ph-block
+    
+    &.i-ph-animated
+      
+      .b-ph-content
+        position static
+        width auto
+        opacity 1
+        
+      .b-ph
+        position absolute
+        top 0
+        left 0
+        opacity 0
+        z-index -1
+    
+.b-inform-blocks
+  
+  &__item
+    background-color #fff
+    border-radius 10px
+    padding 30px
+    position relative
+    overflow hidden
+    min-height 400px
+    height 100%
+
+  &__title
+    font-size $28px
+    font-family $roboto
+    margin-bottom 2rem
+
+  &__text
+    position relative
+    z-index 3
+
+  &__decor
+    position absolute
+    bottom -100px
+    right -140px
+    border-radius 51%
+    width 350px
+    height 350px
+    transform( translate( 210px, 250px ))
+    opacity 0
+    transition( all .7s ease )
+    display none
+    z-index 1
+
+  &__icon
+    position absolute
+    bottom 40px
+    right 40px
+    width 90px
+    height 90px
+    background-bg()
+    transform( translateX( -30px ))
+    transition( all .4s ease .7s )
+    opacity 0
+    display none
+    z-index 2
+
+  &.i-show
+
+    .b-inform-blocks__decor,
+    .b-inform-blocks__icon
+      display block
+
+  &__item.b-inform-blocks--shown
+
+    .b-inform-blocks__decor
+      transform( translate(0,0))
+      opacity 1
+
+    .b-inform-blocks__icon
+      transform( translateX(0))
+      opacity 1
+
