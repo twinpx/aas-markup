@@ -394,3 +394,38 @@
         &:focus,
         &:active
           color $link-color
+
+  a&__youtube
+    display flex
+    justify-content flex-start
+    align-items center
+    font-size $10px
+    color #9b9b9b
+    position absolute
+    bottom calc( 1.25rem - 11px )
+    left 4px
+    
+    svg
+      width 58px
+      height 41px
+      margin-right 0
+
+      .cls-1
+        fill #c6c6c6
+        transition( fill .3s ease )
+
+      .cls-2
+        fill #fff
+
+    &:hover,
+    &:focus,
+    &:active
+      color #de2726
+
+    &:hover
+      opacity 1
+
+      svg
+
+        .cls-1
+          fill #de2726
