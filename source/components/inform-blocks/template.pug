@@ -1,60 +1,69 @@
 // start /components/inform-blocks/
 
 //- push style and script file to the end of the page
-block components-array
-  if componentsArray
-    - componentsArray[ componentsArray.length ] = 'inform-blocks'
-  else
-    - var componentsArray = [ 'inform-blocks' ]
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'inform-blocks'
+else
+  - var componentsArray = [ 'inform-blocks' ]
   
-.b-inform-blocks
+.b-inform-blocks.ph-block
 
-  .container-fluid
+  .ph
 
-    .row
+    .ph-container
 
-      .col-12.col-md-4
+      div
+      div
+      div
 
-        .b-inform-blocks__item
+  .ph-content
 
-          .b-inform-blocks__title
-            a( href="" ) Съезд СРО ААС
-          .b-inform-blocks__text
-            .row
-              .col-6.col-md-12.col-xl-6
-                p Москва 18 сентября.<br>с 11:00 до 14:00
-          .b-inform-blocks__decor( style="background-color: #f2762e;" )
-          .b-inform-blocks__icon( style="background-image: url( '/template/images/profile.svg' );" )
+    .container-fluid
 
-      hr.d-block.d-md-none.w-100
+      .row
 
-      .col-12.col-md-4
+        .col-12.col-md-4
 
-        .b-inform-blocks__item
+          .b-inform-blocks__item
 
-          .b-inform-blocks__title
-            a( href="" ) Вестник № 17
-          .b-inform-blocks__text
-            .row
-              .col-6.col-md-12.col-xl-6
-                p Ряд чиновников против повышения критериев для обязательного аудита
-                p Минфин утвердил принципы внешнего контроля качества работы аудиторов
-          .b-inform-blocks__decor( style="background-color: #f39442;" )
-          .b-inform-blocks__icon( style="background-image: url( '/template/images/profile.svg' );" )
+            .b-inform-blocks__title
+              a( href="" ) Съезд СРО ААС
+            .b-inform-blocks__text
+              .row
+                .col-6.col-md-12.col-xl-6
+                  p Москва 18 сентября.<br>с 11:00 до 14:00
+            .b-inform-blocks__decor( style="background-color: #f2762e;" )
+            .b-inform-blocks__icon( style="background-image: url( '/template/images/profile.svg' );" )
 
-      hr.d-block.d-md-none.w-100
+        hr.d-block.d-md-none.w-100
 
-      .col-12.col-md-4
+        .col-12.col-md-4
 
-        .b-inform-blocks__item
+          .b-inform-blocks__item
 
-          .b-inform-blocks__title
-            a( href="" ) Порядок вступления
-          
-          .b-inform-blocks__text
-            .row
-              .col-6.col-md-12.col-xl-6 Инструкция по вступлению для вступления в СРО ААС.
-          .b-inform-blocks__decor( style="background-color: #4375d8;" )
-          .b-inform-blocks__icon( style="background-image: url( '/template/images/profile.svg' );" )
+            .b-inform-blocks__title
+              a( href="" ) Вестник № 17
+            .b-inform-blocks__text
+              .row
+                .col-6.col-md-12.col-xl-6
+                  p Ряд чиновников против повышения критериев для обязательного аудита
+                  p Минфин утвердил принципы внешнего контроля качества работы аудиторов
+            .b-inform-blocks__decor( style="background-color: #f39442;" )
+            .b-inform-blocks__icon( style="background-image: url( '/template/images/profile.svg' );" )
+
+        hr.d-block.d-md-none.w-100
+
+        .col-12.col-md-4
+
+          .b-inform-blocks__item
+
+            .b-inform-blocks__title
+              a( href="" ) Порядок вступления
+            
+            .b-inform-blocks__text
+              .row
+                .col-6.col-md-12.col-xl-6 Инструкция по вступлению для вступления в СРО ААС.
+            .b-inform-blocks__decor( style="background-color: #4375d8;" )
+            .b-inform-blocks__icon( style="background-image: url( '/template/images/profile.svg' );" )
 
 // end /components/inform-blocks/

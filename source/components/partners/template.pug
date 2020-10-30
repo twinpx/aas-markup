@@ -1,0 +1,31 @@
+// start /components/partners/
+
+//- push style and script file to the end of the page
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'partners'
+else
+  - var componentsArray = [ 'partners' ]
+  
+.b-partners
+
+  .row
+
+    .col-6.col-md-3
+      .b-partners__item
+        img( src="/template/images/logo-ifac.svg" width="150" height="100" alt="" )
+
+    .col-6.col-md-3
+      .b-partners__item
+        img( src="/template/images/logo-ifac.svg" width="150" height="100" alt="" )
+
+    hr.d-block.d-md-none.w-100
+
+    .col-6.col-md-3
+      .b-partners__item
+        img( src="/template/images/logo-ifac.svg" width="100" height="70" alt="" )
+
+    .col-6.col-md-3
+      .b-partners__item
+        img( src="/template/images/logo-ifac.svg" width="150" height="100" alt="" )
+
+// end /components/partners/

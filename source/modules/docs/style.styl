@@ -1,0 +1,22 @@
+@import '../../styl/component-include.styl'
+
+.b-docs-block
+  display block
+  border 1px solid $line-color
+  padding 40px
+
+  &__item
+    display flex
+    align-items center
+
+  &__icon
+    width 48px
+    height 66px
+    background-bg()
+    margin-right 40px
+
+  &__text
+    width calc( 100% - 48px - 40px )
+
+    span
+      display block

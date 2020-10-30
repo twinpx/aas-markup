@@ -6,7 +6,9 @@
 
     //click
     document.querySelectorAll( '.b-inform-blocks__item' ).forEach( function( elem, index ) {
-      
+      elem.addEventListener( 'click', function() {
+        window.location = elem.querySelector( '.b-inform-blocks__title a' ).getAttribute( 'href' );
+      });
     });
     
     setTimeout( function() {

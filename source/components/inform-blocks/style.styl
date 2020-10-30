@@ -2,19 +2,20 @@
 
 .b-inform-blocks
 
-  &.b-ph-block
+  &.ph-block
     
-    &.i-ph-animated
+    &.ph-block--animated
       
-      .b-ph-content
+      .ph-content
         position static
         width auto
         opacity 1
         
-      .b-ph
+      .ph
         position absolute
         top 0
         left 0
+        width 100%
         opacity 0
         z-index -1
     
@@ -28,12 +29,21 @@
     overflow hidden
     min-height 400px
     height 100%
+    cursor pointer
 
   &__title
     font-size $28px
     font-family $roboto
     margin-bottom 2rem
-    cursor pointer
+
+    a
+      pointer-events none
+
+      &,
+      &:hover,
+      &:focus,
+      &:active
+        color #3b3b3b
 
   &__text
     position relative

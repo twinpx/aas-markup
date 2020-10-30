@@ -1,11 +1,10 @@
 // start /components/statistics/
 
 //- push style and script file to the end of the page
-block components-array
-  if componentsArray
-    - componentsArray[ componentsArray.length ] = 'statistics'
-  else
-    - var componentsArray = [ 'statistics' ]
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'statistics'
+else
+  - var componentsArray = [ 'statistics' ]
   
 .b-statistics
 
