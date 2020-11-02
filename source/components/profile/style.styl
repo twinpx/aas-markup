@@ -1,0 +1,37 @@
+@import '../../styl/component-include.styl'
+
+.b-profile
+
+  &.ph-block
+    
+    &.ph-block--animated
+      
+      .ph-content
+        position static
+        width auto
+        opacity 1
+        
+      .ph
+        position absolute
+        top 0
+        left 0
+        width 100%
+        opacity 0
+        z-index -1
+    
+.b-profile
+  
+  &__photo
+    background-color $line-color
+    border-radius 10px
+    height 200px
+    position relative
+    margin-bottom 110px
+
+    img
+      position absolute
+      top 30px
+      left 50%
+      margin-left -119px
+      border-radius 51%
+      z-index 1

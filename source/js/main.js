@@ -1,6 +1,6 @@
 //placeholders
 setTimeout( function() {
-  $( '.ph-block, h1' ).addClass( 'ph-block--animated' );
+  $( '.ph-block, .b-breadcrumbs, h1' ).addClass( 'ph-block--animated' );
 }, 500 );
 
 //header search

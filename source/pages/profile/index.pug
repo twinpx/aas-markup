@@ -1,11 +1,11 @@
 extends ../../layouts/main
 
 block vars
-  - var page = 'pages-news'
+  - var page = 'pages-profile'
   - var authorized = 'true'
 
 block title
-  title News | AAS
+  title Личный кабинет | AAS
 
 block content
 
@@ -13,22 +13,22 @@ block content
 
   .container-fluid
   
-    include ../../modules/breadcrumbs/include
+    include ../../modules/breadcrumbs/profile
 
   hr
 
   .container-fluid
   
-    h1 Пресс-центр
-  
+    h1 Иванов Петр Валерьевич
+    
     .row.justify-content-md-between
       
       aside.col-3.d-none.d-md-block
         
-        include ../../components/left-menu/news
+        include ../../components/left-menu/profile
           
       article.col-12.col-md-8
         
-        include ../../components/news/template
+        include ../../components/profile/template
   
     

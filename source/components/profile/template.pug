@@ -1,0 +1,123 @@
+// start /components/profile/
+
+//- push style and script file to the end of the page
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'profile'
+else
+  - var componentsArray = [ 'profile' ]
+  
+.b-profile.ph-block
+
+  .ph
+
+    .ph__photo
+      div
+    .ph__text
+      div
+      div
+      div
+
+  .ph-content
+
+    .b-profile__photo
+      img( src="/template/images/profile.svg" width="236" height="236" alt="Иванов Петр Валерьевич" )
+
+    .b-profile__text
+
+      .b-collapse-block.open.slide
+        .b-collapse-block__head
+          a( href="" ) Основные сведения
+          span
+        .b-collapse-block__body
+
+          .row
+            .col-12.col-lg-4
+              .text-muted.small Номер аттестата
+              p К000223
+              .text-muted.small ФИО на иностранном языке
+              p Нет данных
+              .text-muted.small Дата рождения
+              p 19.03.1953
+
+            hr.d-block.d-lg-none.w-100
+
+            .col-12.col-lg-4
+              .text-muted.small Место рождения
+              p Москва
+              .text-muted.small Субъект РФ
+              p Москва
+              .text-muted.small ИНН
+              p Москва
+              .text-muted.small ОГРНИП
+              p Нет
+              .text-muted.small Адрес официального сайта
+              p Нет
+
+            hr.d-block.d-lg-none.w-100
+
+            .col-12.col-lg-4
+              .text-muted.small ОРНЗ
+              p 29906002124
+              .text-muted.small Дата и номер решения о приеме в члены СРО
+              p 12.10.2009 № 4
+              .text-muted.small Дата вступления в силу решения о приеме в члены СРО
+              p 12.10.2009
+              .text-muted.small Дата внесения записи в реестр
+              p 30.12.2009
+
+      .b-collapse-block
+        .b-collapse-block__head
+          a( href="" ) Сведения о применении мер дисциплинарного воздействия
+          span
+        .b-collapse-block__body
+
+          .row
+            .col-12.col-lg-4
+              .text-muted.small Номер аттестата
+              p К000223
+
+            hr.d-block.d-lg-none.w-100
+
+            .col-12.col-lg-4
+              .text-muted.small Место рождения
+              p Москва
+              .text-muted.small Субъект РФ
+              p Москва
+              .text-muted.small ИНН
+
+            hr.d-block.d-lg-none.w-100
+            
+            .col-12.col-lg-4
+              .text-muted.small ОРНЗ
+              p 29906002124
+              .text-muted.small Дата и номер решения о приеме в члены СРО
+              p 12.10.2009 № 4
+
+      .b-collapse-block
+        .b-collapse-block__head
+          a( href="" ) Сведения о регистрации в других государствах
+          span
+        .b-collapse-block__body
+
+          .row
+            .col-12.col-lg-4
+              .text-muted.small Дата рождения
+              p 19.03.1953
+
+            hr.d-block.d-lg-none.w-100
+
+            .col-12.col-lg-4
+              .text-muted.small ОГРНИП
+              p Нет
+              .text-muted.small Адрес официального сайта
+              p Нет
+
+            hr.d-block.d-lg-none.w-100
+            
+            .col-12.col-lg-4
+              .text-muted.small Дата вступления в силу решения о приеме в члены СРО
+              p 12.10.2009
+              .text-muted.small Дата внесения записи в реестр
+              p 30.12.2009
+
+// end /components/profile/

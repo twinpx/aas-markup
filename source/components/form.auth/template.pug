@@ -1,0 +1,79 @@
+// start /components/form.auth/
+
+//- push style and script file to the end of the page
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'form.auth'
+else
+  - var componentsArray = [ 'form.auth' ]
+  
+.b-form-auth.ph-block
+
+  .ph
+
+    .ph__block
+
+      .ph-col
+        div
+        div
+        div
+        div
+        div
+
+      .ph-col
+        div
+        div
+        div
+        div
+        div
+
+
+  .ph-content
+
+    .b-form-auth__block
+
+      .row
+
+        .col-12.col-md-6.b-validate-form
+
+          .b-form-auth__wrapper
+
+            h3 Вход в личный кабинет
+
+            p.invalid Данного ОРНЗ нет в реестре. Введите корректный ОРНЗ.
+            
+            form( action="/pages/form-result/" method="GET" )
+              
+              .b-float-label.invalid
+
+                input#USERNAME( type="text" autocomplete="off" )
+                label( for="USERNAME" ) Логин ОРНЗ
+
+              hr
+
+              .b-float-label
+
+                input#PASSWORD( type="password" )
+                label( for="PASSWORD" autocomplete="off" ) Пароль
+
+              button.btn.btn-secondary.btn-lg( type="submit" ) Принять участие
+
+        hr.hr--xl.d-block.d-md-none.w-100
+
+        .col-12.col-md-6.b-validate-form
+
+          .b-form-auth__wrapper
+
+            h3 У вас нет пароля?
+
+            p Введите свой ОРНЗ и нажмите «получить пароль». Пароль придет на вашу почту, которая указана в реестре.
+
+            form( action="/pages/form-result/" method="GET" )
+              
+              .b-float-label
+
+                input#USERNAME( type="text" autocomplete="off" )
+                label( for="USERNAME" ) Логин ОРНЗ
+
+              button.btn.btn-primary.btn-lg( type="submit" ) Получить пароль
+
+// end /components/form.auth/

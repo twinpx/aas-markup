@@ -1,0 +1,55 @@
+@import '../../styl/component-include.styl'
+
+.b-form-auth,
+.b-form-result
+
+  &.ph-block
+    
+    &.ph-block--animated
+      
+      .ph-content
+        position static
+        width auto
+        opacity 1
+        
+      .ph
+        position absolute
+        top 0
+        left 0
+        width 100%
+        opacity 0
+        z-index -1
+    
+.b-form-auth
+
+  &__block
+    border 1px solid $line-color
+    padding 50px 0 60px
+
+    .col-md-6
+      padding 0 10%
+
+  .invalid
+    color #ff0000
+
+  &__wrapper
+    position relative
+    padding-bottom 110px
+    height 100%
+
+  .btn
+    position absolute
+    bottom 0
+    left 0
+
+.b-form-result
+
+  &__block
+
+    border 1px solid $line-color
+    padding 130px 50px
+
+    p
+      max-width 750px
+      margin 0 auto
+      
