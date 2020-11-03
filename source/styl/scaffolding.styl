@@ -75,10 +75,11 @@
     margin 0 37px 0 100px
     
   &__profile
+    overflow hidden
   
     @media( min-width 768px )
       position absolute
-      top 22px
+      top 31px
       right 35px
       transition( top .5s ease )
       z-index 995
@@ -86,16 +87,26 @@
       .header-fixed &
         top calc( 56px + 24px )
     
-    a
+    a.d-none
+      transition( transform .5s ease )
+
+      .header-fixed &
+        transform( translateX( calc( 100% - 32px )))
       
-      img
-        width 50px
-        height 50px
-        border-radius 50%
+      i
+        display inline-block
+        vertical-align middle
+        background-bg()
+        width 32px
+        height 32px
+        border-radius 51%
         margin-right 20px
         
       span
+        display inline-block
+        vertical-align middle
         font-size $12px
+        white-space nowrap
         
     &-icon
       width 32px
@@ -311,11 +322,11 @@
       
     .header-fixed &
       top 33px
-      left calc( 100% - 20px - 158px - 50px )
+      left calc( 100% - 20px - 50px )
       
     .header-fixed .b-header__bottom--search &
       left 150px
-      width calc( 100% - 100px - 158px - 50px )
+      width calc( 100% - 100px - 50px )
     
     input
       display block

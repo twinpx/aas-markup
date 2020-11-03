@@ -16,7 +16,11 @@
     border 1px solid $line-color
     padding-top 10px
 
-    img
+  &-item
+    padding 10px 20px
+
+    i
+      background-bg()
       width 64px
       height 64px
       border-radius 51%
@@ -27,11 +31,22 @@
       justify-content flex-start
       align-items center
 
-  &-item
-    padding 10px 20px
+      &,
+      &:hover,
+      &:focus,
+      &:active
+        color #3b3b3b
+
+    small
+      display block
+      margin-top 4px
 
   &-all
+    font-size $14px
     margin-top 10px
-    padding 30px 20px
-    border-top 1px solid $line-color
+    border-top none
+    
+    a
+      display block
+      padding 30px 20px
       

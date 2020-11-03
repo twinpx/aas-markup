@@ -28,42 +28,42 @@ document.querySelector( '.b-header__cancel-icon' ).addEventListener( 'click', fu
 var headerDropdownId = [];
 document.querySelectorAll( '.b-header__menu-item' ).forEach( function( elem, index ) {
     
-    if ( window.matchMedia( "(min-width: 768px)" ).matches ) {//desktop
-      if ( elem.querySelector( '.b-header__menu-dropdown' )) {//dropdown
-        
-        elem.addEventListener( 'mouseenter', function(e) {
-          e.stopPropagation();
-          clearTimeout( headerDropdownId[ index ]);
-          headerDropdownId[ index ] = setTimeout( function() {
-            $( elem ).find( '.b-header__menu-dropdown' ).slideDown( 400, function() {
-              this.classList.add( 'show' );
-            });
-          }, 100);
-        });
-        
-        elem.addEventListener( 'mouseleave', function(e) {
-          e.stopPropagation();
-          clearTimeout( headerDropdownId[ index ] );
-          elem.querySelector( '.b-header__menu-dropdown' ).classList.remove( 'show' );
-          headerDropdownId[ index ] = setTimeout( function() {
-            $( elem ).find( '.b-header__menu-dropdown' ).slideUp( 200 );
-          }, 300);
-        });
-        
-      }
-    } else {//mobile
+  if ( window.matchMedia( "(min-width: 768px)" ).matches ) {//desktop
+    if ( elem.querySelector( '.b-header__menu-dropdown' )) {//dropdown
       
-      if ( elem.querySelector( '.b-header__menu-dropdown' )) {
-        
-        elem.addEventListener( 'click', function(e) {
-          e.preventDefault();
-          $( this ).find( '.b-header__menu-dropdown' ).slideToggle(300);
-          elem.classList.toggle( 'open' );
-        });
-        
-      }
+      elem.addEventListener( 'mouseenter', function(e) {
+        e.stopPropagation();
+        clearTimeout( headerDropdownId[ index ]);
+        headerDropdownId[ index ] = setTimeout( function() {
+          $( elem ).find( '.b-header__menu-dropdown' ).slideDown( 400, function() {
+            this.classList.add( 'show' );
+          });
+        }, 100);
+      });
+      
+      elem.addEventListener( 'mouseleave', function(e) {
+        e.stopPropagation();
+        clearTimeout( headerDropdownId[ index ] );
+        elem.querySelector( '.b-header__menu-dropdown' ).classList.remove( 'show' );
+        headerDropdownId[ index ] = setTimeout( function() {
+          $( elem ).find( '.b-header__menu-dropdown' ).slideUp( 200 );
+        }, 300);
+      });
       
     }
+  } else {//mobile
+    
+    if ( elem.querySelector( '.b-header__menu-dropdown' )) {
+      
+      elem.addEventListener( 'click', function(e) {
+        e.preventDefault();
+        $( this ).find( '.b-header__menu-dropdown' ).slideToggle(300);
+        elem.classList.toggle( 'open' );
+      });
+      
+    }
+    
+  }
 });
 
 if ( window.matchMedia( "(max-width: 767px)" ).matches ) {//mobile
