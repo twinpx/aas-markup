@@ -1,3 +1,8 @@
+//not authorized
+if ( document.querySelector( '.b-header__profile .btn' )) {
+  document.querySelector( 'body' ).classList.add( 'not-authorized' );
+}
+
 //placeholders
 setTimeout( function() {
   $( '.ph-block, .b-breadcrumbs, h1' ).addClass( 'ph-block--animated' );
@@ -89,13 +94,20 @@ document.querySelector( '.b-header__menu-icon' ).addEventListener( 'click', func
 });
 
 //header scroll
+var widthTimeoutId;
 if ( window.matchMedia( '(min-width: 767px)' ).matches ) {
   var height = document.querySelector( '.b-header' ).offsetHeight - 86;
   window.addEventListener( 'scroll', function(e) {
     if ( window.scrollY >= height ) {
       document.querySelector( 'body' ).classList.add( 'header-fixed' );
+      clearTimeout( widthTimeoutId );
+      widthTimeoutId = setTimeout( function() {
+        $( '.b-header__profile' ).addClass( 'width' );
+      }, 500);
     } else {
       document.querySelector( 'body' ).classList.remove( 'header-fixed' );
+      clearTimeout( widthTimeoutId );
+      $( '.b-header__profile' ).removeClass( 'width' );
     }
   });
   

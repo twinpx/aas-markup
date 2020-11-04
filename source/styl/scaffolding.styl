@@ -79,18 +79,22 @@
   
     @media( min-width 768px )
       position absolute
-      top 31px
+      top 23px
       right 35px
       transition( top .5s ease )
       z-index 995
       
       .header-fixed &
         top calc( 56px + 24px )
+        
+      .header-fixed:not( .not-authorized ) &.width
+        width 50px
     
     a.d-none
       transition( transform .5s ease )
+      white-space nowrap
 
-      .header-fixed &
+      .header-fixed:not( .not-authorized ) &
         transform( translateX( calc( 100% - 32px )))
       
       i
@@ -107,14 +111,16 @@
         vertical-align middle
         font-size $12px
         white-space nowrap
+        line-height 50px
         
     &-icon
-      width 32px
-      height 32px
+      width 48px
+      height 48px
       background-repeat no-repeat
       background-position center
       background-size 24px
-      margin-right 22px
+      margin-right 14px
+      vertical-align top
   
   &__bottom
     background-color #fff
@@ -299,12 +305,13 @@
       opacity 0
         
     &-icon
-      width 32px
-      height 32px
+      width 48px
+      height 48px
       background-repeat no-repeat
       background-position center
       background-size 24px
-      margin-right -4px
+      margin-right -12px
+      vertical-align top
       
   &__search
     position absolute
@@ -321,12 +328,18 @@
       width 100%
       
     .header-fixed &
-      top 33px
+      top 40px
       left calc( 100% - 20px - 50px )
+      
+      .not-authorized&
+        left calc( 100% - 20px - 158px - 20px )
       
     .header-fixed .b-header__bottom--search &
       left 150px
-      width calc( 100% - 100px - 50px )
+      width calc( 100% - 150px - 50px )
+      
+      .not-authorized&
+        width calc( 100% - 150px - 158px - 20px )
     
     input
       display block
