@@ -67,10 +67,56 @@ ol
   counter-reset li
   padding-left calc( 3rem - 20px )
 
-  li:before
+  > li:before
     counter-increment li
     content counters(li,".") ". "
     margin-right 3px
+    
+ol.multy-level-3,
+ul.multy-level-3
+
+  > li
+    font-family $roboto
+    font-size $24px
+    font-weight $bold
+    line-height 1.5//36
+    
+    > ol,
+    > ul
+      
+      > li
+        font-family $roboto
+        font-size $18px
+        font-weight $bold
+        line-height 21px
+        
+        > ol,
+        > ul
+          
+          > li
+            font-family $open-sans
+            font-size 16px
+            font-weight $normal
+            line-height 1.5
+        
+      
+ol.multy-level-2,
+ul.multy-level-2
+      
+  > li
+    font-family $roboto
+    font-size $18px
+    font-weight $bold
+    line-height 21px
+    
+    > ol,
+    > ul
+      
+      > li
+        font-family $open-sans
+        font-size 16px
+        font-weight $normal
+        line-height 1.5
 
 blockquote
   margin 0 0 1.25rem 3rem

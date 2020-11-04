@@ -11,11 +11,24 @@
       document.querySelector( 'aside' ).appendChild( sidenote );
       var id = sidenote.getAttribute( 'data-id' );
 
-      //find link in the text
-      var top = document.querySelector( 'article a[ data-id="' + id + '" ]' ).offsetTop;
+      //find top of the link in the text
+      //var top = document.querySelector( 'article a[ data-id="' + id + '" ]' ).offsetTop;
+      var top;
+      var fio = sidenote.querySelector( '.b-sidenote__title' ).textContent.replace(/\s+/g, ' ').trim();
+      document.querySelectorAll( 'article a[ href="#profile" ]' ).forEach( function( textLink ) {
+        var text = textLink.textContent.replace(/\s+/g, ' ').trim();
+        if ( text === fio ) {
+          top = textLink.offsetTop;
+        }
+      });
 
       //positioning the sidenote
-      sidenote.style.top = (top - 21) + 'px';
+      if ( top ) {
+        sidenote.style.top = (top - 21) + 'px';
+      } else {
+        sidenote.style.display = 'none';
+        return;
+      }
 
       //hover
       sidenote.addEventListener( 'mouseenter', function() {
