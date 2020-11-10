@@ -19,19 +19,10 @@ block content
 
   .container-fluid
   
-    h1 Реестр членов
-      hr.hr--sm.d-block.d-sm-none
-      | 
+    h1
+      em Реестр членов — аудиторов и индивидуальных аудиторов
       span.badge.badge-primary 03 ноября 2020
     
-    .row.justify-content-md-between
-      
-      aside.col-3.d-none.d-md-block
-        
-        include ../../components/left-menu/registry
-          
-      article.col-12.col-md-8
-        
-        include ../../components/registry/template
+    include ../../components/registry/template
   
     

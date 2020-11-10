@@ -66,7 +66,7 @@
         z-index 994
       
         .header-fixed &
-          top calc( 56px + 19px )
+          top calc( 58px + 15px )
     
   &__slogan
     font-family $roboto
@@ -85,7 +85,7 @@
       z-index 995
       
       .header-fixed &
-        top calc( 56px + 24px )
+        top calc( 58px + 18px )
         
       .header-fixed:not( .not-authorized ) &.width
         width 50px
@@ -159,7 +159,16 @@
       cursor pointer
       
       @media( min-width 768px )
-        height 50px
+        height 24px
+        margin-top 13px
+        margin-bottom 13px
+        
+        &:hover
+          height 50px
+          padding-top 13px
+          padding-bottom 13px
+          margin-top 0
+          margin-bottom 0
       
       &:last-child
         margin-right 0
@@ -188,7 +197,7 @@
           a,
           i
             display inline-block
-            line-height 50px
+            line-height 24px
           
       @media( max-width 767px )
         position relative
@@ -212,13 +221,21 @@
       .header-fixed &
       
         @media( min-width 768px )
-          height 86px
+          margin-top 31px
+          margin-bottom 31px
           
-          span
+          &:hover
+            height 86px
+            padding-top 31px
+            padding-bottom 31px
+            margin-top 0
+            margin-bottom 0
+          
+          /*span
         
             a,
             i
-              line-height 86px
+              line-height 24px*/
       
         @media( min-width 768px ) and ( max-width 900px )
           display none
@@ -239,7 +256,7 @@
           
     .header-fixed &
       margin-left 100px
-      width calc( 100% - 100px - 158px - 50px - 20px - 20px )
+      width calc( 100% - 100px - 50px - 20px - 20px )
           
     &-arrow
       position absolute
@@ -328,7 +345,7 @@
       width 100%
       
     .header-fixed &
-      top 40px
+      top 33px
       left calc( 100% - 20px - 50px )
       
       .not-authorized&

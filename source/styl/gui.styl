@@ -28,8 +28,8 @@ body
     max-width 1480px
 
   @media ( min-width 768px )
-    padding-right 35px
-    padding-left 35px
+    padding-right 35px !important
+    padding-left 35px !important
   
 a
   transition( all .5s ease )
@@ -183,6 +183,23 @@ h1
       width auto
       opacity 0
       pointer-events none
+      
+  em
+    font-style normal
+    margin-right 30px
+    
+    @media( max-width 767px )
+      display block
+
+  .badge
+    display none
+    letter-space normal
+
+    @media( max-width 575px )
+      margin-left 0
+
+  &.ph-block--animated .badge
+    display inline-block
 
 h2
   font-family $roboto
@@ -309,6 +326,14 @@ h4
     height 60px
     font-size $16px
     min-width 250px
+    
+  &-sm
+    line-height 30px
+    height 30px
+    min-width 0
+    padding 0 17px
+    border-radius 3px
+    font-weight $normal
 
 .table thead th
   border-bottom 1px solid $line-color
@@ -333,13 +358,3 @@ h4
 
   &-primary
     background-color $primary-color
-
-  h1 &
-    margin-left 30px
-    display none
-
-    @media( max-width 575px )
-      margin-left 0
-
-  h1.ph-block--animated &
-    display inline-block

@@ -1,0 +1,108 @@
+@import '../../styl/component-include.styl'
+
+.b-events-tabs
+  display block
+
+  &__tabs
+    position relative
+    border-bottom 1px solid $line-color
+    padding-bottom 14px
+    font-size $14px
+      
+    
+    a.swiper-slide
+      display inline-block
+      margin-right 30px
+      white-space nowrap
+      width auto !important
+
+      &,
+      &:hover,
+      &:focus,
+      &:active
+        color #6f6f6f
+
+      &.active
+        color #3b3b3b
+        pointer-events none
+
+    .swiper-container-initialized
+
+      a
+
+        &:hover
+          opacity 1
+
+  &__decor
+    position absolute
+    bottom -1px
+    left 0
+    border-top 1px solid #999
+    transition( all .5s ease )
+
+    .swiper-container-initialized + &
+      display none
+      
+  div.swiper-slide
+    background-color #fafafa
+    height auto
+        
+  &__item
+    height 100%
+    background-color #fff
+    border-radius 0 0 10px 10px
+    position relative
+      
+  &__top
+    background-color $primary-color
+    border-radius 10px 10px 0 0
+    padding 20px 20px 40px
+    color #fff
+    overflow hidden
+    background-bg()
+    position relative
+    
+  &__date
+    font-size $24px
+    margin-bottom 10px
+    
+  &__year
+    font-size $11px
+    
+  &__tag
+    font-size $12px
+    line-height 30px
+    height 30px
+    border-radius 3px
+    padding 0 20px
+    background-color rgba( 67,117,216,.9 )
+    position absolute
+    bottom 20px
+    right 20px
+      
+    a&
+    
+      &,
+      &:hover,
+      &:focus,
+      &:active
+        color #fff
+        
+      &:hover
+        opacity .85
+    
+  &__bottom
+    padding 20px 20px 100px 20px
+    
+    .btn
+      position absolute
+      bottom 20px
+      left 20px
+      
+  a&__title
+
+    &,
+    &:hover,
+    &:focus,
+    &:active
+      color #3b3b3b
