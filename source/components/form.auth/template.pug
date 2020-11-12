@@ -30,50 +30,53 @@ else
   .ph-content
 
     .b-form-auth__block
+    
+      p.text-center.invalid Данного ОРНЗ нет в реестре. Введите корректный ОРНЗ.
+      
+      hr
 
       .row
 
         .col-12.col-md-6.b-validate-form
 
-          .b-form-auth__wrapper
-
-            h3 Вход в личный кабинет
-
-            p.invalid Данного ОРНЗ нет в реестре. Введите корректный ОРНЗ.
+          h3 Вход в личный кабинет
+          
+          form( action="/pages/form-result/" method="GET" )
             
-            form( action="/pages/form-result/" method="GET" )
+            .b-float-label.invalid
+
+              input#USERNAME( type="text" autocomplete="off" )
+              label( for="USERNAME" ) Логин ОРНЗ
+
+            hr
+
+            .b-float-label
+
+              input#PASSWORD( type="password" )
+              label( for="PASSWORD" autocomplete="off" ) Пароль
               
-              .b-float-label.invalid
+            hr
 
-                input#USERNAME( type="text" autocomplete="off" )
-                label( for="USERNAME" ) Логин ОРНЗ
-
-              hr
-
-              .b-float-label
-
-                input#PASSWORD( type="password" )
-                label( for="PASSWORD" autocomplete="off" ) Пароль
-
-              button.btn.btn-secondary.btn-lg( type="submit" ) Войти
+            button.btn.btn-secondary.btn-lg( type="submit" ) Войти
 
         hr.hr--xl.d-block.d-md-none.w-100
 
         .col-12.col-md-6.b-validate-form
 
-          .b-form-auth__wrapper
+          h3 У вас нет пароля?
 
-            h3 У вас нет пароля?
-
+          form( action="/pages/form-result/" method="GET" )
+          
             p Введите свой ОРНЗ и нажмите «получить пароль». Пароль придет на вашу почту, которая указана в реестре.
+            hr
+            
+            .b-float-label
 
-            form( action="/pages/form-result/" method="GET" )
+              input#USERNAME( type="text" autocomplete="off" )
+              label( for="USERNAME" ) Логин ОРНЗ
               
-              .b-float-label
+            hr
 
-                input#USERNAME( type="text" autocomplete="off" )
-                label( for="USERNAME" ) Логин ОРНЗ
-
-              button.btn.btn-primary.btn-lg( type="submit" ) Получить пароль
+            button.btn.btn-primary.btn-lg( type="submit" ) Получить пароль
 
 // end /components/form.auth/
