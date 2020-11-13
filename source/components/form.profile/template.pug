@@ -9,6 +9,11 @@ else
 .b-form-profile.ph-block
 
   .ph
+  
+    .ph__block
+      .ph__photo
+        .ph__fileupload
+        .ph__text
 
   .ph-content
   
@@ -23,7 +28,7 @@ else
             .b-form-profile__photo-delete
             .b-form-profile__photo-note Нажмите и загрузите
             input#PERSONAL_PHOTO( type="file" name="PHOTO" )
-            input#DELETE_PHOTO( type="hidden" name="DELETE_PHOTO" value="N" )
+            input#PERSONAL_PHOTO_del( type="checkbox" name="PERSONAL_PHOTO_del" value="Y" )
             
           .b-form-profile__photo-text
           

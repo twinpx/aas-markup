@@ -10,7 +10,7 @@
       
       document.querySelector( 'input#PERSONAL_PHOTO' ).value="";
       document.querySelector( '.b-form-profile__fileupload' ).classList.remove( 'uploaded' );
-      document.querySelector( 'input#DELETE_PHOTO' ).value="Y";
+      document.querySelector( 'input#PERSONAL_PHOTO_del' ).checked = true;
     });
         
     document.querySelector( 'input#PERSONAL_PHOTO' ).addEventListener( 'change', function(e) {
