@@ -1,5 +1,9 @@
 extends ./layouts/main
 
+block vars
+  - var page = 'pages-main'
+  - var authorized = 'true'
+
 block title
   title Pages list | aas
 
@@ -21,6 +25,8 @@ block content
         a( href="/blocks/search/" ) Поиск помощник
       li
         a( href="/blocks/not-auth/" ) Пользователь не авторизован
+      li
+        a( href="/blocks/docs/" ) Документы
     
     h2 Страницы
     

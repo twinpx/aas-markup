@@ -15,7 +15,7 @@
         
     document.querySelector( 'input#PERSONAL_PHOTO' ).addEventListener( 'change', function(e) {
       var input = this;
-      if ( input.files && input.files[0] && input.files[0].size < 3e6 && /gif|jpg|jpeg|png|tiff|webp/gi.test( input.files[0].name.substr( input.files[0].name.lastIndexOf('.') + 1 ).toLowerCase())) {
+      if ( input.files && input.files[0] && input.files[0].size < 3e6 && /gif|jpg|jpeg|png|tiff|webp|heic/gi.test( input.files[0].name.substr( input.files[0].name.lastIndexOf('.') + 1 ).toLowerCase())) {
         var reader = new FileReader();
 
         reader.onload = function (e) {
