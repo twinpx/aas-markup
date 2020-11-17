@@ -1,0 +1,43 @@
+@import '../../styl/component-include.styl'
+
+.b-member-card
+  border 1px solid $placeholder-color
+  padding 25px
+  display flex
+  align-items flex-start
+  justify-content flex-start
+  
+  @media( max-width 767px )
+    flex-wrap wrap
+  
+  &__photo
+    width 130px
+    height 130px
+    background-bg()
+    border-radius 51%
+    margin-right 20px
+    
+    @media( max-width 767px )
+      margin-bottom 20px
+    
+  &__text
+    width calc( 100% - 130px - 20px )
+    
+    @media( max-width 767px )
+      width 100%
+    
+  &__name
+    font-size $18px
+    font-weight bold
+    margin-bottom 5px
+    display inline-block
+    
+  &__status
+    font-size $14px
+    margin-bottom 5px
+    
+  &__description
+    font-size $14px
+    
+    
+    

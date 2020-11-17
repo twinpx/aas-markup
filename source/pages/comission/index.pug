@@ -1,0 +1,58 @@
+extends ../../layouts/main
+
+block vars
+  - var page = 'pages-comission'
+  - var authorized = 'true'
+
+block title
+  title Комиссии | AAS
+
+block content
+
+  hr
+
+  .container-fluid
+  
+    include ../../modules/breadcrumbs/include
+
+  hr
+
+  .container-fluid
+  
+    h1 Комиссия по контролю качества
+  
+    .row.justify-content-md-between
+      
+      aside.col-3.d-none.d-md-block
+        
+        include ../../components/left-menu/news
+          
+      article.col-12.col-md-8
+        
+        include ../../components/comission/template
+        
+        hr.hr--lg
+    
+        h2 События связанные с комиссией по контролю качества
+        
+        include ../../components/events.tabs/two-cols
+        
+        hr.hr--lg
+        
+        h2 Комиссии, комитеты и отделы
+        
+        include ../../modules/committee/include
+        
+        hr.hr--lg
+        
+        h2 Документы комиссии
+        
+        include ../../modules/docs/include
+        
+        hr.hr--lg
+        
+        include ../../modules/articles/include
+    
+    
+  
+    

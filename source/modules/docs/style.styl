@@ -12,17 +12,22 @@
   &__body
     display flex
     align-items center
-
-  &__icon
-    width 48px
-    height 66px
-    background-bg()
-    margin-right 40px
-    margin-bottom 47px
     
     @media( max-width 767px )
-      width 24px
-      height 33px
+      align-items flex-start
+
+  &__icon
+    width 65px
+    height 86px
+    background-repeat no-repeat
+    background-position center
+    background-size contain
+    margin-right 40px
+    margin-bottom 5px
+    
+    @media( max-width 767px )
+      width 40px
+      height 50px
       margin-right 15px
 
   &__text
@@ -30,7 +35,7 @@
     
     a
       display inline-block
-      margin-bottom 17px
+      margin-bottom 5px
 
   &__data
     display block
@@ -67,22 +72,25 @@
       margin-top 7px
       
   &__collapsed
-    margin-top 40px
-    margin-left 88px
+    margin-top 15px
+    margin-left 105px
     display none
         
     @media( max-width 767px )
-      margin-left 39px
+      margin-left 55px
     
     .b-docs-block
     
       &__item
         display flex
         align-items center
-        margin-bottom 33px
+        margin-bottom 25px
         opacity 0
         transform( translateX( 50px ))
         transition( all .5s ease .7s )
+        
+        @media( max-width 767px )
+          align-items flex-start
         
         &:nth-child(1)
           transition-delay .3s
@@ -99,21 +107,22 @@
       &__icon
         width 24px
         height 33px
-        margin-right 20px
-        margin-bottom 27px
+        margin-right 10px
+        margin-bottom 5px
 
       &__text
         width calc( 100% - 24px - 20px )
         font-size $11px
         
         a
-          margin-bottom 12px
+          margin-bottom 3px
 
       &__data
         display block
         
         span
           font-size $10px
+          line-height 24px
           
     &.active
       
