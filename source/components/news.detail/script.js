@@ -32,11 +32,11 @@
 
       //hover
       sidenote.addEventListener( 'mouseenter', function() {
-        $( sidenote ).find( '.b-sidenote__description' ).slideDown();
+        $( sidenote ).find( '.b-sidenote__description' ).stop().slideDown();
         sidenote.style.zIndex = 2;
       });
       sidenote.addEventListener( 'mouseleave', function() {
-        $( sidenote ).find( '.b-sidenote__description' ).slideUp();
+        $( sidenote ).find( '.b-sidenote__description' ).stop().slideUp();
         sidenote.style.zIndex = 1;
       });
     });

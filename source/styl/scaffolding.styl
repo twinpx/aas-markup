@@ -146,12 +146,11 @@
       margin 0 -15px
     
   &__menu
-    transition: opacity .5s ease, margin-left .5s ease;
     width calc( 100% - 20px )
     
     &.nowrap
       white-space nowrap
-      overflow-hidden
+      overflow hidden
     
     i
       font-style normal
@@ -274,7 +273,7 @@
         font-weight $normal
         line-height 24px
         
-      @media( min-width 767px )
+      @media( min-width 768px )
         position absolute
         top 50px
         left 0
@@ -388,7 +387,26 @@
     .b-header__bottom--search &
       opacity 1
 
-
+  &__profile-menu
+    display none
+    position absolute
+    top 86px
+    left 0
+    width 100%
+    background-color #fff
+    z-index 10
+    
+    a,
+    span
+      display block
+      margin 0 20px
+      font-size $20px
+      font-family $roboto
+      font-weight $bold
+      cursor pointer
+      height 60px
+      padding 15px 0
+      border-bottom 1px solid $line-color     
 
 .b-footer
   font-family $roboto
