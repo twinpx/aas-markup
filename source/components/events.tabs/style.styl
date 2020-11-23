@@ -113,12 +113,25 @@
         opacity .85
     
   &__bottom
-    padding 20px 20px 100px 20px
-    
+    padding 20px 20px 110px 20px
+      
+  &__btn
+    position absolute
+    bottom 20px
+    left 20px
+    display flex
+    justify-content space-between
+    flex-wrap wrap-reverse
+    align-items baseline
+    width calc( 100% - 40px )
+
     .btn
-      position absolute
-      bottom 20px
-      left 20px
+      width 135px
+      margin 15px 20px 0 0
+
+  &__link
+    white-space nowrap
+    font-size $12px
       
   a&__title
 

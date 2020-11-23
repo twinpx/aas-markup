@@ -4,42 +4,86 @@
   
   $( function() {
 
+    //prevent click
+    document.querySelectorAll( 'article a[ href="#profile" ]' ).forEach( function( textLink ) {
+      textLink.addEventListener( 'click', function(e) {
+        e.preventDefault();
+      });
+    });
+
+    var sidenotesArray = [];
+
     //sidenote
     document.querySelectorAll( 'article .b-sidenote' ).forEach( function( sidenote ) {
-      
+
       //append to aside
       document.querySelector( 'aside' ).appendChild( sidenote );
-      var id = sidenote.getAttribute( 'data-id' );
 
       //find top of the link in the text
-      //var top = document.querySelector( 'article a[ data-id="' + id + '" ]' ).offsetTop;
       var top;
       var fio = sidenote.querySelector( '.b-sidenote__title' ).textContent.replace(/\s+/g, ' ').trim();
       document.querySelectorAll( 'article a[ href="#profile" ]' ).forEach( function( textLink ) {
         var text = textLink.textContent.replace(/\s+/g, ' ').trim();
         if ( text === fio ) {
           top = textLink.offsetTop;
+          //hover
+          textLink.addEventListener( 'mouseenter', function(e) {
+            openSidenote( sidenote );
+          });
+          textLink.addEventListener( 'mouseleave', function(e) {
+            closeSidenote( sidenote );
+          });
         }
       });
 
-      //positioning the sidenote
+      //push array
       if ( top ) {
-        sidenote.style.top = (top - 21) + 'px';
+        sidenotesArray.push({ top: top, height: sidenote.offsetHeight, sidenote: sidenote });
       } else {
         sidenote.style.display = 'none';
         return;
       }
 
+    });
+
+    //sort sidenotes array
+    sidenotesArray.sort( function( a, b ) {
+      return a.top - b.top;
+    });
+
+    //change top
+    sidenotesArray.forEach( function( obj, index ) {
+      if ( index < sidenotesArray.length - 1 && sidenotesArray[ index + 1 ].top < obj.top + obj.height + 30 ) {
+        sidenotesArray[ index + 1 ].top = obj.top + obj.height + 30;
+      }
+    });
+
+    //positioning the sidenote
+    sidenotesArray.forEach( function( obj ) {
+      obj.sidenote.style.top = ( obj.top - 21 ) + 'px';
+
       //hover
-      sidenote.addEventListener( 'mouseenter', function() {
-        $( sidenote ).find( '.b-sidenote__description' ).stop().slideDown();
-        sidenote.style.zIndex = 2;
+      obj.sidenote.addEventListener( 'mouseenter', function() {
+        openSidenote( obj.sidenote );
       });
-      sidenote.addEventListener( 'mouseleave', function() {
-        $( sidenote ).find( '.b-sidenote__description' ).stop().slideUp();
-        sidenote.style.zIndex = 1;
+      obj.sidenote.addEventListener( 'mouseleave', function() {
+        closeSidenote( obj.sidenote );
       });
     });
+
+    var zIndexTimeoutId;
+    function openSidenote( sidenote ) {
+      $( sidenote ).addClass( 'open' ).find( '.b-sidenote__description' ).stop().slideDown();
+      sidenote.style.zIndex = 3;
+    }
+
+    function closeSidenote( sidenote ) {
+      $( sidenote ).removeClass( 'open' ).find( '.b-sidenote__description' ).stop().slideUp();
+      sidenote.style.zIndex = 2;
+      setTimeout( function() {
+        sidenote.style.zIndex = 1;
+      }, 500 );
+    }
 
   });
 
