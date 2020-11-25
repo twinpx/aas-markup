@@ -34,16 +34,14 @@ else
 
     hr.hr--xl
 
-    table.table
+    table.table( data-result="/components/registry/result.html" )
       thead
         tr
-          th ФИО
-          th Номер аттестата
-          th ОРНЗ
-          th ОГРНИП
-          th Субъект РФ
-          th Дата прекращения членства
-          th Основание прекращения членства
+          th( data-field="name" ) ФИО
+          th( data-field="attestat" ) Номер аттестата
+          th( data-field="ornz" ) ОРНЗ
+          th( data-field="ogrnip" ) ОГРНИП
+          th( data-field="rf" ) Субъект РФ
       tbody
         tr( data-url="/pages/profile/" )
           td Савельева Людмила Викторовна
@@ -51,24 +49,18 @@ else
           td 20606017533
           td 20606017533
           td Республика Коми
-          td 30.12.2009 № 7
-          td 30.12.2009 № 7
         tr( data-url="/pages/profile/" )
           td Широкова Ольга Владимировна
           td К014405
           td 20406000014
           td
           td г. Москва
-          td 12.10.2009 № 4
-          td 12.10.2009 № 4
         tr( data-url="/pages/profile/" )
           td Ушаков Алексей Вячеславович
           td К011759
           td 20406000036
           td
           td Тульская область
-          td 12.10.2009 № 4
-          td 12.10.2009 № 4
 
         tr( data-url="/pages/profile/" )
           td Пасичниченко Елена Владимировна
@@ -76,8 +68,6 @@ else
           td 20806000042
           td
           td Красноярский край
-          td 12.10.2009 № 4
-          td 12.10.2009 № 4
 
         tr( data-url="/pages/profile/" )
           td Ушаков Андрей Вячеславович
@@ -85,8 +75,6 @@ else
           td 20306000057
           td 320715400044608
           td Тульская область
-          td 12.10.2009 № 4
-          td 12.10.2009 № 4
 
         tr( data-url="/pages/profile/" )
           td Махнёва Вера Александровна
@@ -94,8 +82,6 @@ else
           td 20306010960
           td
           td Республика Башкортостан
-          td 16.11.2009 № 5
-          td 16.11.2009 № 5
 
     hr.hr--xl
 

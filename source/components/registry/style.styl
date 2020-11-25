@@ -78,6 +78,11 @@
       vertical-align middle
       border-top none
       border-bottom 1px solid $line-color
+      cursor pointer
+
+      &.asc,
+      &.desc
+        background-color #f2e4d866
 
       @media( max-width 1399px )
 
@@ -98,6 +103,46 @@
 
         &:nth-child(2)
           display none
+
+    th
+      padding-right 35px
+      padding-left 35px
+
+      &.asc,
+      &.desc
+        color $secondary-color-2
+        position relative
+
+        &:before
+          content ''
+          width 17px
+          height 17px
+          border-radius 51%
+          position absolute
+          top 50%
+          right 15px
+          margin-top -8px
+          background-color $secondary-color
+          z-index 1
+
+        &:after
+          content ''
+          width 5px
+          height 5px
+          border-right 1px solid #fff
+          border-bottom 1px solid #fff
+          transform( rotate( 45deg ))
+          position absolute
+          top 50%
+          right 21px
+          margin-top -3px
+          z-index 2
+
+      &.desc
+
+        &:after
+          transform( rotate( -135deg ))
+          margin-top -1px
 
     td
 
