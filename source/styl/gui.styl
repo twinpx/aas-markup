@@ -11,6 +11,24 @@ body
   flex-direction column
   height 100%
 
+  @media( max-width 767px )
+
+    .b-body-shutter
+      content ''
+      position fixed
+      top 0
+      left 0
+      width 100%
+      height 100%
+      background-color #074c86
+      opacity 0
+      transition( opacity .5s ease )
+      z-index -1
+
+    &.shutter .b-body-shutter
+      opacity .4
+      z-index 10
+
 .b-page-content
   flex 1 0 auto
 
@@ -257,6 +275,12 @@ h6, .h6
   font-family $roboto
   font-size $12px
   font-weight $bold
+
+h1,.h1,
+h2,.h2
+
+  &:first-child
+    margin-top 0
   
 .btn
   font-family $roboto

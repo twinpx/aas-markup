@@ -78,11 +78,10 @@
     }
 
     function closeSidenote( sidenote ) {
-      $( sidenote ).removeClass( 'open' ).find( '.b-sidenote__description' ).stop().slideUp();
       sidenote.style.zIndex = 2;
-      setTimeout( function() {
+      $( sidenote ).removeClass( 'open' ).find( '.b-sidenote__description' ).stop().slideUp( 500, function() {
         sidenote.style.zIndex = 1;
-      }, 500 );
+      });
     }
 
   });
