@@ -4,6 +4,22 @@
   
   $( function() {
 
+    //on load hightlight the sorted column
+    var urlQuery = parseQuery( window.location.search );
+    if ( urlQuery.field && urlQuery.sort ) {
+      var $thElements = $( '.b-registry th' );
+      var $th = $( '[data-field=' + urlQuery.field + ']' );
+
+      $th.data({ sort: urlQuery.sort });
+
+      var index = $thElements.index( $th );
+      $thElements.removeClass( 'asc' ).removeClass( 'desc' );
+      $th.addClass( urlQuery.sort );
+      $( '.b-registry tbody' ).find( 'tr' ).each( function() {
+        $( this ).find( 'td:eq(' + index + ')' ).removeClass( 'asc' ).removeClass( 'desc' ).addClass( urlQuery.sort );
+      });
+    }
+
     //tr click
     $( '.b-registry' ).delegate( 'tbody tr', 'click', function() {
       window.location = $( this ).data( 'url' );
@@ -40,26 +56,36 @@
       $.ajax({
         url: url,
         type: 'GET',
-        dataType: 'html',
+        dataType: 'json',
         data: { field: field, sort: sort },
-        success: function( html ) {
+        success: function( json ) {
 
-          //get result
-          $tbody.html( html );
+          if ( typeof json === 'object' && json.TBODY && json.PAGINATION ) {
 
-          //hightlight column
-          var index = $table.find( 'th' ).index( $th );
-          $thElements.removeClass( 'asc' ).removeClass( 'desc' );
-          $th.addClass( sort );
-          $tbody.find( 'tr' ).each( function() {
-            $( this ).find( 'td:eq(' + index + ')' ).removeClass( 'asc' ).removeClass( 'desc' ).addClass( sort );
-          });
+            //set tbody
+            $tbody.html( json.TBODY );
 
-          //set URL
-          var urlQuery = parseQuery( window.location.search );
-          urlQuery.field = field;
-          urlQuery.sort = sort;
-          window.history.replaceState( {} , '', getQuery( urlQuery ) );
+            //set pagination
+            var $pagination = $( '.b-registry .b-pagination-block' );
+            $pagination.after( json.PAGINATION );
+            $pagination.remove();
+
+            //hightlight column
+            var index = $table.find( 'th' ).index( $th );
+            $thElements.removeClass( 'asc' ).removeClass( 'desc' );
+            $th.addClass( sort );
+            $tbody.find( 'tr' ).each( function() {
+              $( this ).find( 'td:eq(' + index + ')' ).removeClass( 'asc' ).removeClass( 'desc' ).addClass( sort );
+            });
+
+            //set URL
+            var urlQuery = parseQuery( window.location.search );
+            urlQuery.field = field;
+            urlQuery.sort = sort;
+            delete urlQuery.PAGEN_1;
+            window.history.replaceState( {} , '', getQuery( urlQuery ));
+
+          }
         },
         error: function( a, b, c ) {
           if( window.console ) {

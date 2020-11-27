@@ -19,5 +19,54 @@
         opacity 0
         z-index -1
     
-.b-comission
-  text-align left
+.b-comission-tabs
+  display block
+
+  &__tabs
+    position relative
+    border-bottom 1px solid $line-color
+    padding-bottom 14px
+    font-size $14px
+    font-family $roboto
+    
+    a.swiper-slide
+      display inline-block
+      margin-right 30px
+      white-space nowrap
+      width auto !important
+
+      &,
+      &:hover,
+      &:focus,
+      &:active
+        color #6f6f6f
+
+      &.active
+        color #3b3b3b
+        pointer-events none
+
+    .swiper-container-initialized
+
+      a
+
+        &:hover
+          opacity 1
+
+  &__decor
+    position absolute
+    bottom -1px
+    left 0
+    border-top 1px solid #999
+    transition( all .5s ease )
+
+    .swiper-container-initialized + &
+      display none
+      
+  div.swiper-slide
+    background-color #fff
+    height auto
+    font-family $roboto
+    visibility hidden
+
+    &.swiper-slide-active
+      visibility visible

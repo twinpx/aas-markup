@@ -1,5 +1,10 @@
 document.querySelectorAll( '.b-collapse-block__head' ).forEach( function( elem ) {
 
+  //hide on load
+  if ( elem.closest( '.b-collapse-block' ).getAttribute( 'class' ).search( 'open' ) === -1 && elem.closest( '.b-collapse-block' ).getAttribute( 'class' ).search( 'show-on-load' ) !== -1 ) {
+    $( elem ).closest( '.b-collapse-block' ).find( '.b-collapse-block__body' ).slideUp( 1000 );
+  }
+
   elem.querySelector( 'a' ).addEventListener( 'click', function(e) {
     e.preventDefault();
     return false;

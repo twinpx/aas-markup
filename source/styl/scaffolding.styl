@@ -144,6 +144,7 @@
       border-bottom none
       overflow scroll
       margin 0 -15px
+      transition( none )
 
     [ id^="bx_incl_area" ]
 
@@ -177,18 +178,6 @@
       font-weight $bold
       cursor pointer
       
-      @media( min-width 768px )
-        height 24px
-        margin-top 13px
-        margin-bottom 13px
-        
-        &:hover
-          height 50px
-          padding-top 13px
-          padding-bottom 13px
-          margin-top 0
-          margin-bottom 0
-      
       &:last-child
         margin-right 0
         
@@ -207,8 +196,18 @@
               
         .b-header__menu-arrow
           transform( rotate(90deg))
-          
+      
       @media( min-width 768px )
+        height 24px
+        margin-top 13px
+        margin-bottom 13px
+        
+        &:hover
+          height 50px
+          padding-top 13px
+          padding-bottom 13px
+          margin-top 0
+          margin-bottom 0
       
         span
           display inline-block
@@ -223,6 +222,36 @@
         display block
         margin 0 20px
         font-size $20px
+        opacity 0
+        transform( translateX( 50px ))
+        transition( all .5s ease .7s )
+
+        &:nth-child(1)
+          transition-delay .1s
+        
+        &:nth-child(2)
+          transition-delay .15s
+        
+        &:nth-child(3)
+          transition-delay .2s
+        
+        &:nth-child(4)
+          transition-delay .25s
+        
+        &:nth-child(5)
+          transition-delay .3s
+        
+        &:nth-child(6)
+          transition-delay .35s
+        
+        &:nth-child(7)
+          transition-delay .4s
+      
+        &:nth-child(8)
+          transition-delay .45s
+        
+        &:nth-child(9)
+          transition-delay .5s
       
         &:last-child
           margin-right 20px
@@ -236,6 +265,10 @@
           a,
           i
             display inline-block
+    
+        .open-sandwich &
+          opacity 1
+          transform( translateX(0))
           
       .header-fixed &
       
@@ -421,7 +454,44 @@
       cursor pointer
       height 60px
       padding 15px 0
-      border-bottom 1px solid $line-color     
+      border-bottom 1px solid $line-color
+      opacity 0
+      transform( translateX( 50px ))
+      transition( all .5s ease .7s )
+
+      &:nth-child(1)
+        transition-delay .1s
+      
+      &:nth-child(2)
+        transition-delay .15s
+      
+      &:nth-child(3)
+        transition-delay .2s
+      
+      &:nth-child(4)
+        transition-delay .25s
+      
+      &:nth-child(5)
+        transition-delay .3s
+      
+      &:nth-child(6)
+        transition-delay .35s
+      
+      &:nth-child(7)
+        transition-delay .4s
+      
+      &:nth-child(8)
+        transition-delay .45s
+      
+      &:nth-child(9)
+        transition-delay .5s
+
+    &.open-sandwich
+
+      a,
+      span
+        opacity 1
+        transform( translateX(0))
 
 .b-footer
   font-family $roboto
