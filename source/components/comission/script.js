@@ -6,37 +6,6 @@
     
     document.querySelectorAll( '.b-comission-tabs' ).forEach( function( elem ) {
 
-      //all slide
-      var slideAll = elem.querySelectorAll( '.b-comission-tabs__block .swiper-slide' )[0];
-
-      elem.querySelectorAll( '.b-comission-tabs__block .swiper-slide' ).forEach( function( slide, index ) {
-        if ( index === 0 ) {
-          return;
-        }
-        $( slideAll ).append( slide.innerHTML );
-        $( slideAll ).append( '<hr>' );
-      });
-
-      slideAll.querySelectorAll( '.b-collapse-block__head' ).forEach( function( elem ) {
-
-        //hide on load
-        if ( elem.closest( '.b-collapse-block' ).getAttribute( 'class' ).search( 'open' ) === -1 && elem.closest( '.b-collapse-block' ).getAttribute( 'class' ).search( 'show-on-load' ) !== -1 ) {
-          $( elem ).closest( '.b-collapse-block' ).find( '.b-collapse-block__body' ).slideUp( 1000 );
-        }
-      
-        elem.querySelector( 'a' ).addEventListener( 'click', function(e) {
-          e.preventDefault();
-          return false;
-        });
-      
-        elem.addEventListener( 'click', function(e) {
-          e.preventDefault();
-          e.stopPropagation();
-      
-          $( elem ).closest( '.b-collapse-block' ).toggleClass( 'slide' ).find( '.b-collapse-block__body' ).slideToggle();
-        });
-      });
-
       var menuLinks = elem.querySelectorAll( '.b-comission-tabs__tabs a' );
 
       //swiper menu
@@ -63,46 +32,38 @@
         decorLine.style.width =  menuLinks[0].offsetWidth + 'px';
       }, 500);
 
-      var comissionSwiper = new Swiper( elem.querySelector( '.b-comission-tabs__block .swiper-container' ), {
-        loop: true,
-        effect: 'fade',
-        autoHeight: true
-      });
-
-      comissionSwiper.on( 'slideChange', function () {
-
-        if ( comissionSwiper.realIndex === 0 ) {
-          elem.classList.add( 'all' );
-        } else {
-          elem.classList.remove( 'all' );
-        }
-
-        var tabLink = menuLinks[ comissionSwiper.realIndex ];
-
-        //highlight
-        menuLinks.forEach( function( tabLinkElem ) {
-          tabLinkElem.classList.remove( 'active' );
-          tabLink.classList.add( 'active' );
-        });
-
-        //decor line
-        decorLine.style.left = tabLink.offsetLeft + 'px';
-        decorLine.style.width = tabLink.offsetWidth + 'px';
-      });
-
       menuLinks.forEach( function( tabLink, index ) {
         tabLink.addEventListener( 'click', function(e) {
           e.preventDefault();
 
-          //slide
-          comissionSwiper.slideToLoop( index );
+          //highlight
+          menuLinks.forEach( function( tabLinkElem ) {
+            tabLinkElem.classList.remove( 'active' );
+            tabLink.classList.add( 'active' );
+          });
+
+          //decor line
+          decorLine.style.left = tabLink.offsetLeft + 'px';
+          decorLine.style.width = tabLink.offsetWidth + 'px';
+
+          //show all
           if ( index === 0 ) {
             elem.classList.add( 'all' );
           } else {
             elem.classList.remove( 'all' );
+
+            //slide
+            elem.querySelectorAll( '.b-comission-tabs__item' ).forEach( function( el ) {
+              el.classList.remove( 'active' );
+            });
+            elem.querySelectorAll( '.b-comission-tabs__item' )[ index ].classList.add( 'active' );
+            
           }
         });
       });
+
+      var clickEvent = new Event( 'click' );
+      menuLinks[0].dispatchEvent( clickEvent );
       
     });
 
