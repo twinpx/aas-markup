@@ -9,12 +9,12 @@
       var menuLinks = elem.querySelectorAll( '.b-comission-tabs__tabs a' );
 
       //swiper menu
-      if ( window.matchMedia( "(max-width: 600px)" ).matches ) {
+      if ( window.matchMedia( "(max-width: 650px)" ).matches ) {
 
-        var slidesPerView = 2.5;
+        var slidesPerView = 4;
     
-        if ( window.matchMedia( "(min-width: 500px)" ).matches ) {
-          slidesPerView = 3;
+        if ( window.matchMedia( "(min-width: 550px)" ).matches ) {
+          slidesPerView = 5;
         }
 
         //init swiper
@@ -23,14 +23,24 @@
           spaceBetween: 30,
           freeMode: true
         });
+
+        setTimeout( function() {
+          document.querySelector( '.b-comission-tabs__tabs' ).classList.add( 'animate' );
+        }, 1000);
       }
 
       //decor line
       var decorLine = elem.querySelector( '.b-comission-tabs__decor' );
+      var swiperWrapper = elem.querySelector( '.b-comission-tabs__tabs .swiper-wrapper' );
+      var trans = swiperWrapper.style.transform;
+      var pos = trans.indexOf( '(' );
+      
       setTimeout( function() {
-        decorLine.style.left =  menuLinks[0].offsetLeft + 'px';
+        decorLine.style.left =  menuLinks[0].offsetLeft + parseInt( trans.substr( pos + 1 ) || 0, 10) + 'px';
         decorLine.style.width =  menuLinks[0].offsetWidth + 'px';
       }, 500);
+      
+      elem.classList.add( 'all' );
 
       menuLinks.forEach( function( tabLink, index ) {
         tabLink.addEventListener( 'click', function(e) {
@@ -43,7 +53,9 @@
           });
 
           //decor line
-          decorLine.style.left = tabLink.offsetLeft + 'px';
+          trans = swiperWrapper.style.transform;
+          pos = trans.indexOf( '(' );
+          decorLine.style.left = tabLink.offsetLeft + parseInt( trans.substr( pos + 1 ) || 0, 10) + 'px';
           decorLine.style.width = tabLink.offsetWidth + 'px';
 
           //show all
@@ -61,9 +73,6 @@
           }
         });
       });
-
-      var clickEvent = new Event( 'click' );
-      menuLinks[0].dispatchEvent( clickEvent );
       
     });
 

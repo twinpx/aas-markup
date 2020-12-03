@@ -2,6 +2,7 @@
 
 .b-news-tabs
   display block
+  overflow hidden
 
   &__tabs
     position relative
@@ -9,7 +10,15 @@
     padding-bottom 14px
     font-size $14px
     font-family $roboto
+
+    @media( max-width 650px )
+      transform( translateX( 100px ))
+      opacity 0
+      transition( all .5s ease )
       
+      &.animate
+        opacity 1
+        transform( translate(0))
     
     a.swiper-slide
       display inline-block
@@ -40,9 +49,6 @@
     left 0
     border-top 1px solid #999
     transition( all .5s ease )
-
-    .swiper-container-initialized + &
-      display none
       
   div.swiper-slide
     background-color #fff

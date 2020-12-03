@@ -423,16 +423,20 @@ h2,.h2
     &:active
       color #9b9b9b
 
-.table thead th
-  border-bottom 1px solid $line-color
-  font-family $roboto
-  font-weight 600
-  font-size 0.8rem
-	line-height 1rem
+.table,
+.table-responsive
 
-.table td, .table th
-  padding 1.25rem 1.5rem
-  border-top-color $line-color
+  thead th
+    border-bottom 1px solid $line-color
+    font-family $roboto
+    font-weight 600
+    font-size 0.8rem
+    line-height 1rem
+
+  td,
+  th
+    padding 1.25rem 1.5rem
+    border-top-color $line-color
   
 .text-muted
   color #9b9b9b !important

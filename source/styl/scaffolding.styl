@@ -563,3 +563,42 @@
 
         .cls-1
           fill #de2726
+
+
+.header-test,
+.b-header__menu-dropdown
+  width calc( 25% - 30px * 3 / 4 )
+
+  body > .container-fluid > &
+    position absolute
+    top 0
+    left 0
+
+  &.wide
+    width 100%
+
+  &__wrap
+    display flex
+    justify-content space-between
+    align-items flex-start
+
+  &__item
+    margin-bottom 20px
+  
+    a
+      display block
+      font-size $16px
+      font-weight $bold
+      margin-bottom 18px
+
+  &__sub
+
+    a
+      display block
+      font-size $14px
+      font-weight $normal
+      margin-bottom 8px
+
+  &__column
+    width calc( 25% - 30px * 3 / 4 )
+    background-color pink
