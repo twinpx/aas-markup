@@ -309,7 +309,7 @@
       background-color #fff
       
       @media( min-width 768px )
-        columns 4
+        //columns 4
       
       hr
         margin 0
@@ -332,24 +332,56 @@
         border-top none
         border-radius 0 0 5px 5px
         font-size $14px
-        padding 45px 35px
+        padding 45px 35px 25px
+        pointer-events none
+        opacity 0
+        display block
+        width calc( ( 100% - 35px * 2 ) / 4 - 30px * 3 / 4 + 35px * 2 )
         z-index 994
+
+        &.wide
+          width 100%
+
+        &__wrap
+          display flex
+          justify-content space-between
+          align-items flex-start
+
+        &__item
+          margin-bottom 20px
+        
+          a
+            display block
+            font-size $16px
+            font-weight $bold
+            margin-bottom 18px
+
+        &__sub
+
+          a
+            display block
+            font-size $14px
+            font-weight $normal
+            margin-bottom 8px
+
+        &__column
+          width calc( 25% - 30px * 3 / 4 )
+
+        &.ready
+          pointer-events auto
+          opacity 1
+          display none
+
+          a:hover
+            opacity .7
         
         .header-fixed &
           top 86px
       
         a,
         i
-          margin-bottom 30px
           padding 0
-          opacity 0
           transition( all .3s ease )
-          
-        &.show
-        
-          a,
-          i
-            opacity 1
           
     .b-header__bottom--search &
       opacity 0
@@ -564,41 +596,3 @@
         .cls-1
           fill #de2726
 
-
-.header-test,
-.b-header__menu-dropdown
-  width calc( 25% - 30px * 3 / 4 )
-
-  body > .container-fluid > &
-    position absolute
-    top 0
-    left 0
-
-  &.wide
-    width 100%
-
-  &__wrap
-    display flex
-    justify-content space-between
-    align-items flex-start
-
-  &__item
-    margin-bottom 20px
-  
-    a
-      display block
-      font-size $16px
-      font-weight $bold
-      margin-bottom 18px
-
-  &__sub
-
-    a
-      display block
-      font-size $14px
-      font-weight $normal
-      margin-bottom 8px
-
-  &__column
-    width calc( 25% - 30px * 3 / 4 )
-    background-color pink

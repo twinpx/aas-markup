@@ -1,56 +1,59 @@
-//header test
-setTimeout( function() {
-  //make a clone
-  $( '.b-header__menu-dropdown' ).each( function( i, el ) {
-    var $div = $( '<div class="container-fluid" style="position: relative;"></div>' );
-    $div.append( $( el ).clone()).prependTo( 'body' );
-  });
+//dropdown columns
+if ( window.matchMedia( '(min-width: 768px)' ).matches ) {//desktop
 
-  var headerTest = document.querySelector( '.b-header__menu-dropdown' );
-  var headerTestHeight = headerTest.offsetHeight;
-  var columnsNum = 4;
-  var headerTestColumnHeight = headerTestHeight / columnsNum;
-  var headerTestItems = headerTest.querySelectorAll( '.b-header__menu-dropdown__item' );
+  setTimeout( function() {
 
-  //count column height
-  var headerTestHeightTemp = headerTestHeight;
-  headerTestItems.forEach( function( item ) {
-    var itemHeight = item.offsetHeight;
-    if ( itemHeight > headerTestColumnHeight && columnsNum > 0 ) {
-      headerTestHeightTemp -= itemHeight;
-      headerTestColumnHeight = headerTestHeightTemp / --columnsNum;
-    }
-  });
+    document.querySelectorAll( '.b-header__menu-dropdown' ).forEach( function( dropdown ) {
+      
+      var headerTest = dropdown;
+      var headerTestHeight = headerTest.offsetHeight;
+      var columnsNum = 4;
+      var headerTestColumnHeight = headerTestHeight / columnsNum;
+      var headerTestItems = headerTest.querySelectorAll( '.b-header__menu-dropdown__item' );
 
-  //put items into columns
-  columnsNum = 4;
-  var startIndex = -1;
-  var column;
-  var headerTestWrapper = document.createElement( 'div' );
-  headerTestWrapper.classList.add( 'b-header__menu-dropdown__wrap' );
-  headerTest.classList.add( 'wide' );
-  headerTest.appendChild( headerTestWrapper );
-
-  for ( var i = 0; i < columnsNum; i++ ) {
-
-    column = document.createElement( 'div' );
-    column.classList.add( 'b-header__menu-dropdown__column' );
-    headerTestWrapper.appendChild( column );
-    
-    for ( var j = ++startIndex; j < headerTestItems.length; j++ ) {
-      column.appendChild( headerTestItems[j]);
-      startIndex = j;
-      if ( column.offsetHeight > headerTestColumnHeight && i !== 3 ) {
-        if ( column.querySelectorAll( '.b-header__menu-dropdown__item' ).length > 1 ) {
-          startIndex = --j;
-        } else {
-          startIndex = j;
+      //count column height
+      var headerTestHeightTemp = headerTestHeight;
+      headerTestItems.forEach( function( item ) {
+        var itemHeight = item.offsetHeight;
+        if ( itemHeight > headerTestColumnHeight && columnsNum > 0 ) {
+          headerTestHeightTemp -= itemHeight;
+          headerTestColumnHeight = headerTestHeightTemp / --columnsNum;
         }
-        break;
+      });
+
+      //put items into columns
+      columnsNum = 4;
+      var startIndex = -1;
+      var column;
+      var headerTestWrapper = document.createElement( 'div' );
+      headerTestWrapper.classList.add( 'b-header__menu-dropdown__wrap' );
+      headerTest.classList.add( 'wide' );
+      headerTest.appendChild( headerTestWrapper );
+
+      for ( var i = 0; i < columnsNum; i++ ) {
+
+        column = document.createElement( 'div' );
+        column.classList.add( 'b-header__menu-dropdown__column' );
+        headerTestWrapper.appendChild( column );
+        
+        for ( var j = ++startIndex; j < headerTestItems.length; j++ ) {
+          column.appendChild( headerTestItems[j]);
+          startIndex = j;
+          if ( column.offsetHeight > headerTestColumnHeight && i !== 3 ) {
+            if ( column.querySelectorAll( '.b-header__menu-dropdown__item' ).length > 1 ) {
+              startIndex = --j;
+            } else {
+              startIndex = j;
+            }
+            break;
+          }
+        }
       }
-    }
-  }
-}, 1000);
+      headerTest.classList.add( 'ready' );
+    });
+
+  }, 1000);
+}
 
 //not authorized
 if ( document.querySelector( '.b-header__profile .btn' )) {
@@ -136,16 +139,13 @@ document.querySelectorAll( '.b-header__menu-item' ).forEach( function( elem, ind
         e.stopPropagation();
         clearTimeout( headerDropdownId[ index ]);
         headerDropdownId[ index ] = setTimeout( function() {
-          $( elem ).find( '.b-header__menu-dropdown' ).slideDown( 400, function() {
-            this.classList.add( 'show' );
-          });
+          $( elem ).find( '.b-header__menu-dropdown' ).slideDown( 400 );
         }, 100);
       });
       
       elem.addEventListener( 'mouseleave', function(e) {
         e.stopPropagation();
         clearTimeout( headerDropdownId[ index ] );
-        elem.querySelector( '.b-header__menu-dropdown' ).classList.remove( 'show' );
         headerDropdownId[ index ] = setTimeout( function() {
           $( elem ).find( '.b-header__menu-dropdown' ).slideUp( 200 );
         }, 300);
