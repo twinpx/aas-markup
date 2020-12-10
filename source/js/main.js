@@ -124,7 +124,7 @@ document.querySelector( '.b-header__search input' ).addEventListener( 'blur', fu
 document.querySelector( '.b-header__cancel-icon' ).addEventListener( 'click', function(e) {
   e.preventDefault();
   document.querySelector( '.b-header__bottom' ).classList.remove( 'b-header__bottom--search' );
-  document.querySelector( '.b-header__search input' ).value = '';
+  //document.querySelector( '.b-header__search input' ).value = '';
   return false;
 });
 
