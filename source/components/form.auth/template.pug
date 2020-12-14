@@ -40,6 +40,12 @@ else
         .col-12.col-md-6.b-validate-form
 
           h3 Вход в личный кабинет
+
+          .b-form-error
+            .b-form-error__icon( style="background-image: url( '/template/images/warning.svg' );" )
+            .b-form-error__text
+              p Личный кабинет доступен только физическим лицам. Информация о компании доступна в личном кабинете «Единоличного органа управления» СРО (генерального директора).
+              a( href="" ) Подробнее
           
           form( action="/pages/form-result/" method="GET" )
             
