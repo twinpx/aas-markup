@@ -1,0 +1,30 @@
+@import '../../styl/component-include.styl'
+
+.b-report
+
+  &.ph-block
+    
+    &.ph-block--animated
+      
+      .ph-content
+        position static
+        width auto
+        opacity 1
+        
+      .ph
+        position absolute
+        top 0
+        left 0
+        width 100%
+        opacity 0
+        z-index -1
+    
+.b-report
+      
+  .b-collapse-block__head,
+  .text-muted.small,
+  .text-muted.small + p
+    font-family $roboto
+    
+  .b-collapse-block__body
+    padding-bottom 20px

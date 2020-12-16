@@ -392,6 +392,33 @@ h2,.h2
 
         &:focus
           box-shadow none
+  
+  &-success
+    
+    &,
+    &:hover,
+    &.focus,
+    &:focus,
+    &.disabled,
+    &:disabled
+      color #fff
+      background-color $success-color
+      border-color $success-color
+      
+    &.focus,
+    &:focus
+      box-shadow none
+
+    &:not(:disabled):not(.disabled)
+
+      &.active,
+      &:active
+        color #fff
+        background-color $success-color
+        border-color $success-color
+
+        &:focus
+          box-shadow none
     
   &-lg
     line-height 60px

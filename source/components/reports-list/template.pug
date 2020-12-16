@@ -1,0 +1,35 @@
+// start /components/reports-list/
+
+//- push style and script file to the end of the page
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'reports-list'
+else
+  - var componentsArray = [ 'reports-list' ]
+  
+.b-reports-list.ph-block
+
+  .ph
+
+    .ph__text
+      div
+      div
+      div
+      div
+      div
+      div
+
+  .ph-content
+
+    .b-reports-list__item
+      a.b-reports-list__title( href="/pages/report-form/" ) Отчет 2020
+      .b-reports-list__data
+        span Крайний срок: 22 марта 2021 (56 дней)
+        a.btn.btn-secondary.btn-sm( href="/pages/report-form/" ) Необходимо сдать
+
+    .b-reports-list__item
+      a.b-reports-list__title( href="/pages/report/" ) Отчет 2019 и очень длинное название отчёта за 2019 год
+      .b-reports-list__data
+        span Крайний срок: 18 марта 2020
+        a.btn.btn-success.btn-sm( href="/pages/report/" ) Cдан
+
+// end /components/reports-list/

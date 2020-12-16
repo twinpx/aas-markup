@@ -1,0 +1,72 @@
+@import '../../styl/component-include.styl'
+
+.b-reports-list
+
+  &.ph-block
+    
+    &.ph-block--animated
+      
+      .ph-content
+        position static
+        width auto
+        opacity 1
+        
+      .ph
+        position absolute
+        top 0
+        left 0
+        width 100%
+        opacity 0
+        z-index -1
+    
+.b-reports-list
+
+  &__item
+    border-bottom 1px solid $line-color
+    display flex
+    justify-content space-between
+    align-items center
+    padding 20px 0
+
+    @media( max-width 575px )
+      display block
+
+  &__title
+    font-size $24px
+    font-family $roboto
+    font-weight $bold
+    margin-right 20px
+
+  &__data
+    font-size $16px
+    font-family $roboto
+    display flex
+    justify-content flex-end
+    align-items center
+
+    span
+      margin-right 38px
+      white-space nowrap
+
+    .btn
+      min-width 158px
+
+    @media( max-width 1100px )
+      
+      &,
+      span
+        display block
+        text-align right
+        margin-right 0
+
+      span
+        margin-bottom 10px
+
+    @media( max-width 575px )
+
+      &,
+      span
+        text-align left
+
+      span
+        margin-top 10px
