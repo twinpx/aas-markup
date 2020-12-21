@@ -14,21 +14,15 @@
     height: 3rem;
     width: 100%;
     font-size: $16px;
-    margin: 0 0 8px 0;
+    margin: 0;
     padding: 0 15px;
     box-shadow: none;
     box-sizing: border-box;
-    -webkit-transition: border .3s, -webkit-box-shadow .3s;
-    transition: border .3s, -webkit-box-shadow .3s;
-    transition: box-shadow .3s, border .3s;
-    transition: box-shadow .3s, border .3s, -webkit-box-shadow .3s;
     
-    &.validate+label
-      width: 100%
-    
-    &:focus:not([readonly])
-      border-bottom: 0;
-      box-shadow: none;
+    &:focus:not([readonly]),
+    &.active
+      border-bottom 0
+      box-shadow none
     
       &+label
         transform( translateY(-22px))
@@ -59,15 +53,3 @@
       transform( translateY(-22px))
       -webkit-transform-origin: 0 0;
       transform-origin: 0 0
-
-  &.invalid
-
-    input:not([type=checkbox]),
-    input:not([type=radio]),
-    textarea
-      background-color: #ffe5e5
-
-    input[type=text]:focus:not([readonly])+label,
-    input[type=tel]:focus:not([readonly])+label,
-    label
-      color: #d62626;

@@ -1,0 +1,53 @@
+@import '../../styl/component-include.styl'
+
+.b-report-form
+
+  &.ph-block
+    
+    &.ph-block--animated
+      
+      .ph-content
+        position static
+        width auto
+        opacity 1
+        
+      .ph
+        position absolute
+        top 0
+        left 0
+        width 100%
+        opacity 0
+        z-index -1
+    
+.b-report-form
+      
+  .b-collapse-block__head,
+  .text-muted.small,
+  .text-muted.small + p
+    font-family $roboto
+    
+  .b-collapse-block__body
+    padding-bottom 20px
+
+  &__buttons
+    display flex
+    justify-content space-between
+    align-items center
+
+    div:first-child
+      margin-right 50px
+      white-space nowrap
+
+    div:last-child
+      line-height 1rem
+
+    .btn
+        margin-right 10px
+
+    @media( max-width 991px )
+      display block
+
+      div:first-child
+        margin-right 0
+        margin-bottom .5rem
+      

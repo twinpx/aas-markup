@@ -1,0 +1,233 @@
+// start /components/report-form/
+
+//- push style and script file to the end of the page
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'report-form'
+else
+  - var componentsArray = [ 'report-form' ]
+  
+.b-report-form.ph-block
+
+  .ph
+
+    .ph__text
+      div
+      div
+      div
+      div
+      div
+      div
+
+  .ph-content
+
+    .b-report-form__text
+
+      form( action="" method="GET" data-ajax-url="/components/report-form/response.json" )
+
+        .b-collapse-block.open.slide
+          .b-collapse-block__head
+            a( href="" ) Основные сведения
+            span
+          .b-collapse-block__body
+
+            .b-report-form__buttons
+              div
+                a.btn.btn-primary.btn-sm( href="" ) Заполнить из реестра
+                a.btn.btn-light.btn-sm( href="" ) Очистить поля
+              div
+                small.text-muted Вы можете использовать данные, уже указанные в реестре, и автоматически заполнить поля форм.
+                  
+            hr
+
+            .row.align-items-center
+
+              .col-lg-6.col-12
+
+                .b-float-label
+
+                  input#COMPANYNAME( type="text" name="COMPANYNAME" )
+                  label( for="COMPANYNAME" autocomplete="off" ) Наименование организации
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small
+                span.text-muted Данные из реестра: 
+                a.b-complete-link( href="" ) ООО &laquo;Компания + Я&raquo;
+                  
+            hr
+            
+            .row.align-items-center
+
+              .col-lg-6.col-12
+
+                .b-float-label
+
+                  input#POSTADDRESS( type="text" name="POSTADDRESS" )
+                  label( for="POSTADDRESS" autocomplete="off" ) Почтовый адрес
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small
+                span.text-muted Данные из реестра: 
+                a.b-complete-link( href="" ) 125252
+              
+            hr
+            
+            .row.align-items-center
+
+              .col-lg-6.col-12
+
+                .b-float-label
+
+                  input#ADDRESS( type="text" name="ADDRESS" )
+                  label( for="ADDRESS" autocomplete="off" ) Фактический адрес
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small
+                span.text-muted Данные из реестра: 
+                a.b-complete-link( href="" ) Улица Строителей
+              
+            hr
+            
+            .row.align-items-center
+
+              .col-lg-6.col-12
+
+                .b-float-label
+
+                  input#FIO( type="text" name="FIO" )
+                  label( for="FIO" autocomplete="off" ) ФИО подписывающего отчет
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small
+                span.text-muted Данные из реестра: 
+                a.b-complete-link( href="" ) Петров Иван Валерьевич
+              
+            hr
+            
+            .row.align-items-center
+
+              .col-lg-6.col-12
+
+                .b-float-label
+
+                  input#EMAIL( type="text" name="EMAIL" )
+                  label( for="EMAIL" autocomplete="off" ) Email
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small
+                span.text-muted Данные из реестра: 
+                a.b-complete-link( href="" ) maxim@twinpx.ru
+              
+            hr
+            
+            .row.align-items-center
+
+              .col-lg-6.col-12
+
+                .b-float-label
+
+                  input#OKPO( type="text" name="OKPO" )
+                  label( for="OKPO" autocomplete="off" ) ОКПО
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small
+                span.text-muted Данные из реестра: 
+                a.b-complete-link( href="" ) 78978979879879798979789
+              
+            hr
+            
+            .row.align-items-center
+
+              .col-lg-6.col-12
+
+                .b-float-label
+
+                  input#OGRN( type="text" name="OGRN" )
+                  label( for="OGRN" autocomplete="off" ) ОГРН
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small
+                span.text-muted Данные из реестра: 
+                a.b-complete-link( href="" ) 1231231231321312313123
+              
+            hr
+            
+            .row
+
+              .col-md-6.col-12
+
+                .b-float-label
+
+                  input#SIGNINGDATE( type="text" name="SIGNINGDATE" )
+                  label( for="SIGNINGDATE" autocomplete="off" ) Дата подписания
+
+              hr.d-block.d-md-none.w-100
+
+              .col-md-6.col-12
+            
+                .b-float-label
+
+                  input#COMPLETIONDATE( type="text" name="COMPLETIONDATE" )
+                  label( for="COMPLETIONDATE" autocomplete="off" ) Дата сдачи отчета в Минфин России
+              
+            hr
+
+        .b-collapse-block
+          .b-collapse-block__head
+            a( href="" ) Контакты
+            span
+          .b-collapse-block__body
+
+        .b-collapse-block
+          .b-collapse-block__head
+            a( href="" ) Численность персонала
+            span
+          .b-collapse-block__body
+
+        .b-collapse-block
+          .b-collapse-block__head
+            a( href="" ) Объём услуг
+            span
+          .b-collapse-block__body
+
+        .b-collapse-block
+          .b-collapse-block__head
+            a( href="" ) Характеристика организаций
+            span
+          .b-collapse-block__body
+
+        .b-collapse-block
+          .b-collapse-block__head
+            a( href="" ) Аудиторские заключения
+            span
+          .b-collapse-block__body
+
+        .b-collapse-block
+          .b-collapse-block__head
+            a( href="" ) Участие в сетях
+            span
+          .b-collapse-block__body
+
+        .b-collapse-block
+          .b-collapse-block__head
+            a( href="" ) Руководство
+            span
+          .b-collapse-block__body
+
+        .b-collapse-block
+          .b-collapse-block__head
+            a( href="" ) Сотрудники
+            span
+          .b-collapse-block__body
+
+        hr.hr--lg
+
+        button.btn.btn-secondary.btn-lg( type="submit" ) Сдать отчет
+
+// end /components/report-form/
