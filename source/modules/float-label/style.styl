@@ -53,3 +53,15 @@
       transform( translateY(-22px))
       -webkit-transform-origin: 0 0;
       transform-origin: 0 0
+
+  &.invalid
+  
+    input:not([type=checkbox]),
+    input:not([type=radio]),
+    textarea
+      background-color #ffe5e5
+
+    input[type=text]:focus:not([readonly])+label,
+    input[type=tel]:focus:not([readonly])+label,
+    label
+      color #f00

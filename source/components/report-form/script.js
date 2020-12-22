@@ -10,35 +10,54 @@
         e.preventDefault();
         completeInput( completeLink );
         fieldAutocompleteRequest( completeLink.closest( '.row' ).querySelector( '.b-float-label input' ));
+        resetClearButton( completeLink.closest( '.b-collapse-block__body' ).querySelectorAll( '.b-report-form__buttons .btn ' )[1]);
       });
     });
 
+    //buttons
     document.querySelectorAll( '.b-report-form__buttons' ).forEach( function( buttonsBlock ) {
-      buttonsBlock.querySelectorAll( '.btn' )[0].addEventListener( 'click', function(e) {
+      var bodyElem = buttonsBlock.closest( '.b-collapse-block__body' );
+      var buttons =  buttonsBlock.querySelectorAll( '.btn' );
+      var clearButton = buttons[1];
+
+      //complete button
+      buttons[0].addEventListener( 'click', function(e) {
         e.preventDefault();
-        buttonsBlock.closest( '.b-collapse-block__body' ).querySelectorAll( '.b-complete-link' ).forEach( function( completeLink ) {
+        bodyElem.querySelectorAll( '.b-complete-link' ).forEach( function( completeLink ) {
           completeInput( completeLink );
         });
         formAutocompleteRequest( buttonsBlock.closest( 'form' ));
+        resetClearButton( clearButton );
       });
-    });
 
-    function completeInput( completeLink ) {
-      completeLink.closest( '.row' ).querySelector( '.b-float-label input' ).value = completeLink.textContent;
-      completeLink.closest( '.row' ).querySelector( '.b-float-label label' ).classList.add( 'active' );
-    }
-
-    //clear form
-    document.querySelectorAll( '.b-report-form__buttons' ).forEach( function( buttonsBlock ) {
-      buttonsBlock.querySelectorAll( '.btn' )[1].addEventListener( 'click', function(e) {
+      //clear button
+      clearButton.addEventListener( 'click', function(e) {
         e.preventDefault();
-        buttonsBlock.closest( '.b-collapse-block__body' ).querySelectorAll( '.b-float-label input' ).forEach( function( input ) {
-          input.value = '';
-        });
+
+        if ( clearButton.className.search( 'return' ) === -1 ) {//clear button
+
+          bodyElem.querySelectorAll( '.b-float-label input' ).forEach( function( input ) {
+            window.localStorage.setItem( input.name, input.value );
+            input.value = '';
+            input.closest( '.b-float-label' ).querySelector( 'label' ).classList.remove( 'active' );
+          });
+          setClearButton( clearButton );
         
-        buttonsBlock.closest( '.b-collapse-block__body' ).querySelectorAll( '.b-float-label label' ).forEach( function( label ) {
-          label.classList.remove( 'active' );
-        });
+        } else {//return button
+
+          bodyElem.querySelectorAll( '.b-float-label input' ).forEach( function( input ) {
+            var value = window.localStorage.getItem( input.name );
+            if ( !value ) {
+              return;
+            }
+            input.value = value;
+            input.closest( '.b-float-label' ).querySelector( 'label' ).classList.add( 'active' );
+          });
+          resetClearButton( clearButton );
+
+        }
+
+        formAutocompleteRequest( buttonsBlock.closest( 'form' ));
       });
     });
 
@@ -46,7 +65,8 @@
     document.querySelectorAll( '.b-report-form input' ).forEach( function( input ) {
       input.addEventListener( 'blur', function(e) {
         //send ajax
-        fieldAutocompleteRequest( input );        
+        fieldAutocompleteRequest( input );
+        resetClearButton( input.closest( '.b-collapse-block__body' ).querySelectorAll( '.b-report-form__buttons .btn ' )[1]);
       });
     });
 
@@ -54,6 +74,19 @@
       var form = document.querySelector( '.b-report-form form' );
       formAutocompleteRequest( form );
     }, 120000 );
+
+    function setClearButton( clearButton ) {
+      clearButton.classList.add( 'return' );
+    }
+
+    function resetClearButton( clearButton ) {
+      clearButton.classList.remove( 'return' );
+    }
+
+    function completeInput( completeLink ) {
+      completeLink.closest( '.row' ).querySelector( '.b-float-label input' ).value = completeLink.textContent;
+      completeLink.closest( '.row' ).querySelector( '.b-float-label label' ).classList.add( 'active' );
+    }
 
     function fieldAutocompleteRequest( input, cnt ) {
       var inputName = input.getAttribute( 'name' );
@@ -69,6 +102,8 @@
           if ( data && typeof data === 'object' && data.SUCCESS ) {
             if ( data.SUCCESS !== 'Y' && counter < 3 ) {
               fieldAutocompleteRequest( input, ++counter );
+            } else if ( data.SUCCESS === 'Y' && typeof data.DATE === 'string' ) {
+              showAutocompleteTime( data.DATE );
             }
           }
         },
@@ -94,6 +129,8 @@
           if ( data && typeof data === 'object' && data.SUCCESS ) {
             if ( data.SUCCESS !== 'Y' && counter < 3 ) {
               formAutocompleteRequest( form, ++counter );
+            } else if ( data.SUCCESS === 'Y' && typeof data.DATE === 'string' ) {
+              showAutocompleteTime( data.DATE );
             }
           }
         },
@@ -105,6 +142,10 @@
           }
         }
       });
+    }
+
+    function showAutocompleteTime( date ) {
+      document.querySelector( '.b-report-form__autosave-text span' ).textContent = date;
     }
 
 

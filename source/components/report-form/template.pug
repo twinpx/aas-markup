@@ -24,6 +24,10 @@ else
 
       form( action="" method="GET" data-ajax-url="/components/report-form/response.json" )
 
+        .b-report-form__autosave-text.small.text-muted Последнее сохранение
+          | 
+          span 13 апреля 2020 14:53
+
         .b-collapse-block.open.slide
           .b-collapse-block__head
             a( href="" ) Основные сведения
@@ -33,7 +37,9 @@ else
             .b-report-form__buttons
               div
                 a.btn.btn-primary.btn-sm( href="" ) Заполнить из реестра
-                a.btn.btn-light.btn-sm( href="" ) Очистить поля
+                a.btn.btn-light.btn-sm( href="" )
+                  span Очистить поля
+                  span Вернуть поля
               div
                 small.text-muted Вы можете использовать данные, уже указанные в реестре, и автоматически заполнить поля форм.
                   
@@ -43,9 +49,9 @@ else
 
               .col-lg-6.col-12
 
-                .b-float-label
+                .b-float-label.active
 
-                  input#COMPANYNAME( type="text" name="COMPANYNAME" )
+                  input#COMPANYNAME( type="text" name="COMPANYNAME" value=" ООО «Компания + Я»" )
                   label( for="COMPANYNAME" autocomplete="off" ) Наименование организации
 
               hr.hr--xs.d-block.d-lg-none.w-100

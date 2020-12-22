@@ -20,6 +20,18 @@
         z-index -1
     
 .b-report-form
+
+  &__text
+    position relative
+
+  &__autosave-text
+    position absolute
+    top -42px
+    right 0
+
+    @media( max-width 767px )
+      position static
+      text-align right
       
   .b-collapse-block__head,
   .text-muted.small,
@@ -42,7 +54,24 @@
       line-height 1rem
 
     .btn
-        margin-right 10px
+      margin-right 10px
+
+      &:last-child
+      
+        span
+
+          &:last-child
+            display none
+
+        &.return
+
+          span
+
+            &:first-child
+              display none
+
+            &:last-child
+              display inline
 
     @media( max-width 991px )
       display block
