@@ -30,7 +30,9 @@ else
 
         .b-collapse-block.open.slide
           .b-collapse-block__head
-            a( href="" ) Основные сведения
+            a( href="" )
+              i Основные сведения
+              i.text-danger Не заполнены обязательные поля
             span
           .b-collapse-block__body
 
@@ -51,8 +53,8 @@ else
 
                 .b-float-label.active
 
-                  input#COMPANYNAME( type="text" name="COMPANYNAME" value=" ООО «Компания + Я»" )
-                  label( for="COMPANYNAME" autocomplete="off" ) Наименование организации
+                  input#COMPANYNAME( type="text" name="COMPANYNAME" value="ООО «Компания + Я»" required )
+                  label( for="COMPANYNAME" autocomplete="off" ) Наименование организации *
 
               hr.hr--xs.d-block.d-lg-none.w-100
 
@@ -68,8 +70,8 @@ else
 
                 .b-float-label
 
-                  input#POSTADDRESS( type="text" name="POSTADDRESS" )
-                  label( for="POSTADDRESS" autocomplete="off" ) Почтовый адрес
+                  input#POSTADDRESS( type="text" name="POSTADDRESS" required)
+                  label( for="POSTADDRESS" autocomplete="off" ) Почтовый адрес *
 
               hr.hr--xs.d-block.d-lg-none.w-100
 
@@ -85,8 +87,8 @@ else
 
                 .b-float-label
 
-                  input#ADDRESS( type="text" name="ADDRESS" )
-                  label( for="ADDRESS" autocomplete="off" ) Фактический адрес
+                  input#ADDRESS( type="text" name="ADDRESS" required)
+                  label( for="ADDRESS" autocomplete="off" ) Фактический адрес *
 
               hr.hr--xs.d-block.d-lg-none.w-100
 
@@ -102,8 +104,8 @@ else
 
                 .b-float-label
 
-                  input#FIO( type="text" name="FIO" )
-                  label( for="FIO" autocomplete="off" ) ФИО подписывающего отчет
+                  input#FIO( type="text" name="FIO" required)
+                  label( for="FIO" autocomplete="off" ) ФИО подписывающего отчет *
 
               hr.hr--xs.d-block.d-lg-none.w-100
 
@@ -119,8 +121,8 @@ else
 
                 .b-float-label
 
-                  input#EMAIL( type="text" name="EMAIL" )
-                  label( for="EMAIL" autocomplete="off" ) Email
+                  input#EMAIL( type="email" name="EMAIL" required)
+                  label( for="EMAIL" autocomplete="off" ) Email *
 
               hr.hr--xs.d-block.d-lg-none.w-100
 
@@ -170,8 +172,8 @@ else
 
                 .b-float-label
 
-                  input#SIGNINGDATE( type="text" name="SIGNINGDATE" )
-                  label( for="SIGNINGDATE" autocomplete="off" ) Дата подписания
+                  input#SIGNINGDATE( type="text" name="SIGNINGDATE" required)
+                  label( for="SIGNINGDATE" autocomplete="off" ) Дата подписания *
 
               hr.d-block.d-md-none.w-100
 
@@ -179,61 +181,81 @@ else
             
                 .b-float-label
 
-                  input#COMPLETIONDATE( type="text" name="COMPLETIONDATE" )
-                  label( for="COMPLETIONDATE" autocomplete="off" ) Дата сдачи отчета в Минфин России
+                  input#COMPLETIONDATE( type="text" name="COMPLETIONDATE" required)
+                  label( for="COMPLETIONDATE" autocomplete="off" ) Дата сдачи отчета в Минфин России *
               
             hr
 
         .b-collapse-block
           .b-collapse-block__head
-            a( href="" ) Контакты
+            a( href="" )
+              i Контакты
+              i.text-danger Не заполнены обязательные поля
             span
           .b-collapse-block__body
 
         .b-collapse-block
           .b-collapse-block__head
-            a( href="" ) Численность персонала
+            a( href="" )
+              i Численность персонала
+              i.text-danger Не заполнены обязательные поля
             span
           .b-collapse-block__body
 
         .b-collapse-block
           .b-collapse-block__head
-            a( href="" ) Объём услуг
+            a( href="" )
+              i Объём услуг
+              i.text-danger Не заполнены обязательные поля
             span
           .b-collapse-block__body
 
         .b-collapse-block
           .b-collapse-block__head
-            a( href="" ) Характеристика организаций
+            a( href="" )
+              i Характеристика организаций
+              i.text-danger Не заполнены обязательные поля
             span
           .b-collapse-block__body
 
         .b-collapse-block
           .b-collapse-block__head
-            a( href="" ) Аудиторские заключения
+            a( href="" )
+              i Аудиторские заключения
+              i.text-danger Не заполнены обязательные поля
             span
           .b-collapse-block__body
 
         .b-collapse-block
           .b-collapse-block__head
-            a( href="" ) Участие в сетях
+            a( href="" )
+              i Участие в сетях
+              i.text-danger Не заполнены обязательные поля
             span
           .b-collapse-block__body
 
         .b-collapse-block
           .b-collapse-block__head
-            a( href="" ) Руководство
+            a( href="" )
+              i Руководство
+              i.text-danger Не заполнены обязательные поля
             span
           .b-collapse-block__body
 
         .b-collapse-block
           .b-collapse-block__head
-            a( href="" ) Сотрудники
+            a( href="" )
+              i Сотрудники
+              i.text-danger Не заполнены обязательные поля
             span
           .b-collapse-block__body
 
         hr.hr--lg
 
-        button.btn.btn-secondary.btn-lg( type="submit" ) Сдать отчет
+        .b-report-form__submit
+          button.btn.btn-secondary.btn-lg( type="submit" disabled ) Сдать отчет
+          small.text-muted Вы не закончили заполнение обязательных полей.
+            | 
+            a( href="#" ) Продолжить
 
 // end /components/report-form/

@@ -37,7 +37,46 @@
   .text-muted.small,
   .text-muted.small + p
     font-family $roboto
+
+  .b-collapse-block
+  
+    &.invalid
+      border-bottom-color $danger-color
+
+  .b-collapse-block__head
+
+    a
+      justify-content flex-start
+      align-items center
     
+      i
+        font-style normal
+
+        &:first-child
+          margin-right 50px
+
+        &:last-child
+          font-size $14px
+          font-weight normal
+          display none
+
+      @media( max-width 991px )
+        display block
+        
+        i
+
+          &:first-child
+            margin-right 0
+
+          &:last-child
+            margin-top 10px
+
+  .b-collapse-block.invalid .b-collapse-block__head a i:last-child
+    display inline
+
+    @media( max-width 991px )
+      display block
+      
   .b-collapse-block__body
     padding-bottom 20px
 
@@ -79,4 +118,25 @@
       div:first-child
         margin-right 0
         margin-bottom .5rem
+
+  &__submit
+    display flex
+    align-items center
+
+    .btn
+      margin-right 20px
+
+    small
+      display block
+
+    @media( max-width 575px )
+      display block
+
+      small
+        margin-top 10px
+
+    &.valid
+      
+      small
+        display none
       

@@ -419,6 +419,25 @@ h2,.h2
 
         &:focus
           box-shadow none
+  
+  &[ disabled ],
+  &.disabled
+    pointer-events none
+    opacity .4
+    
+    &,
+    &:hover,
+    &.focus,
+    &:focus,
+    &.disabled,
+    &:disabled
+      color #fff
+      background-color #9b9b9b
+      border-color #9b9b9b
+      
+    &.focus,
+    &:focus
+      box-shadow none
     
   &-lg
     line-height 60px
@@ -467,6 +486,9 @@ h2,.h2
   
 .text-muted
   color #9b9b9b !important
+  
+.text-danger
+  color $danger-color !important
 
 label
   font-family $roboto
