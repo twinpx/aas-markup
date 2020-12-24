@@ -4,12 +4,61 @@
   
   $( function() {
 
+    //staff table click
+    document.querySelectorAll( '.b-staff-table td' ).forEach( function( td ) {
+      td.addEventListener( 'click', function(e) {
+        e.preventDefault();
+        window.open( td.closest( 'tr' ).getAttribute( 'data-url' ), '_blank' );
+      });
+    });
+
+    //staff table remove
+    document.querySelectorAll( '.b-staff-table .btn-delete' ).forEach( function( btn ) {
+      var tr = btn.closest( 'tr' );
+      var tbody = tr.closest( 'tbody' );
+      var table = tr.closest( 'table' );
+
+      btn.addEventListener( 'click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        //send ajax
+        staffMembersAutocompleteRequest( btn );
+  
+        //remove td in tr
+        tr.style.height = tr.clientHeight + 'px';
+        tr.classList.add( 'removing' );
+
+        setTimeout( function() {
+          tr.querySelectorAll( 'td' ).forEach( function( td ) {
+            td.remove();
+          });
+          tr.style.height = '0px';
+          setTimeout( function() {
+            tr.remove();
+
+            //remove thead if needed
+            if ( !tbody.querySelectorAll( 'tr' ).length ) {
+              table.classList.add( 'hide' );
+            }
+          }, 300);
+        }, 300);
+      });
+    });
+
+    //calendar icon
+    document.querySelectorAll( '.calendar-icon' ).forEach( function( iconImg ) {
+      var src = iconImg.closest( '.b-float-label' ).getAttribute( 'data-src' );
+      iconImg.src = src;
+      iconImg.classList.add( 'show' );
+    });
+
     //complete inputs
     document.querySelectorAll( '.b-complete-link' ).forEach( function( completeLink ) {
       completeLink.addEventListener( 'click', function(e) {
         e.preventDefault();
         completeInput( completeLink );
-        fieldAutocompleteRequest( completeLink.closest( '.row' ).querySelector( '.b-float-label input' ));
+        fieldAutocompleteRequest( completeLink.closest( '.row' ).querySelector( '.b-float-label input, .b-float-label textarea' ));
         resetClearButton( completeLink.closest( '.b-collapse-block__body' ).querySelectorAll( '.b-report-form__buttons .btn ' )[1]);
       });
     });
@@ -36,7 +85,7 @@
 
         if ( clearButton.className.search( 'return' ) === -1 ) {//clear button
 
-          bodyElem.querySelectorAll( '.b-float-label input' ).forEach( function( input ) {
+          bodyElem.querySelectorAll( '.b-float-label input, .b-float-label textarea' ).forEach( function( input ) {
             window.localStorage.setItem( input.name, input.value );
             input.value = '';
             input.closest( '.b-float-label' ).querySelector( 'label' ).classList.remove( 'active' );
@@ -45,7 +94,7 @@
         
         } else {//return button
 
-          bodyElem.querySelectorAll( '.b-float-label input' ).forEach( function( input ) {
+          bodyElem.querySelectorAll( '.b-float-label input, .b-float-label textarea' ).forEach( function( input ) {
             var value = window.localStorage.getItem( input.name );
             if ( !value ) {
               return;
@@ -62,7 +111,7 @@
     });
 
     //save form
-    document.querySelectorAll( '.b-report-form input' ).forEach( function( input ) {
+    document.querySelectorAll( '.b-report-form input, .b-report-form textarea' ).forEach( function( input ) {
       input.addEventListener( 'blur', function(e) {
         //send ajax
         fieldAutocompleteRequest( input );
@@ -71,7 +120,7 @@
     });
 
     //autosave
-    setTimeout( function() {
+    setInterval( function() {
       var form = document.querySelector( '.b-report-form form' );
       formAutocompleteRequest( form );
     }, 120000 );
@@ -175,28 +224,66 @@
     }
 
     function completeInput( completeLink ) {
-      var input = completeLink.closest( '.row' ).querySelector( '.b-float-label input' );
+      var input = completeLink.closest( '.row' ).querySelector( '.b-float-label input, .b-float-label textarea' );
       input.value = completeLink.textContent;
       completeLink.closest( '.row' ).querySelector( '.b-float-label label' ).classList.add( 'active' );      
       inputValidation( input );
+    }
+
+    function staffMembersAutocompleteRequest( btn, cnt ) {
+      var memberId = btn.closest( 'tr' ).getAttribute( 'data-url' );
+      var counter = cnt || 0;
+      var id;
+
+      if ( document.getElementById( 'element_id' )) {
+        id = document.getElementById( 'element_id' ).value;
+      }
+
+      $.ajax({
+        url: btn.closest( 'form' ).getAttribute( 'data-ajax-url' ),
+        type: btn.closest( 'form' ).getAttribute( 'method' ),//GET
+        dataType: "json",
+        data: { member: memberId, element_id: id },
+        success: function( data ) {
+          if ( data && typeof data === 'object' && data.SUCCESS ) {
+            if ( data.SUCCESS !== 'Y' && counter < 3 ) {
+              fieldAutocompleteRequest( btn, ++counter );
+            } else if ( data.SUCCESS === 'Y' && typeof data.DATE === 'string' ) {
+              //showAutocompleteTime( data.DATE );
+            }
+          }
+        },
+        error: function( a, b, c ) {
+          if ( window.console ) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+          }
+        }
+      });
     }
 
     function fieldAutocompleteRequest( input, cnt ) {
       var inputName = input.getAttribute( 'name' );
       var inputValue = input.value;
       var counter = cnt || 0;
+      var id;
+
+      if ( document.getElementById( 'element_id' )) {
+        id = document.getElementById( 'element_id' ).value;
+      }
 
       $.ajax({
         url: input.closest( 'form' ).getAttribute( 'data-ajax-url' ),
         type: input.closest( 'form' ).getAttribute( 'method' ),//GET
         dataType: "json",
-        data: { name: inputName, value: inputValue },
+        data: { name: inputName, value: inputValue, element_id: id },
         success: function( data ) {
           if ( data && typeof data === 'object' && data.SUCCESS ) {
             if ( data.SUCCESS !== 'Y' && counter < 3 ) {
               fieldAutocompleteRequest( input, ++counter );
             } else if ( data.SUCCESS === 'Y' && typeof data.DATE === 'string' ) {
-              showAutocompleteTime( data.DATE );
+              //showAutocompleteTime( data.DATE );
             }
           }
         },

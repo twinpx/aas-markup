@@ -139,4 +139,128 @@
       
       small
         display none
+
+  .bx-calendar
+    font-family $roboto
+
+  img.calendar-icon
+    vertical-align top
+    cursor pointer
+    width 16px
+    height 16px
+    margin 0
+    box-sizing content-box
+    border 1px solid transparent
+    position absolute
+    top 16px
+    right 16px
+    opacity 0
+    z-index 1
+
+    &.show
+      opacity 1
+
+.b-complete-link
+  white-space nowrap
+
+  .icon
+    display inline-block
+    width 16px
+    height 16px
+    background-bg()
+    margin-left 10px
+    vertical-align text-bottom
+    opacity 0
+    transition( opacity .2s ease )
+
+    @media( max-width 991px )
+      display none
+
+  &:hover
+
+    .icon
+      opacity 1
+
+.b-staff-table
+
+  table.table
+    font-family $roboto
+
+    &.hide
+      display none
+
+    th,
+    td
+      font-size $14px
+      text-align center
+      vertical-align middle
+      border-top none
+      border-bottom 1px solid $line-color
+      cursor pointer
+
+      &.asc,
+      &.desc
+        background-color #f2e4d866
+
+      &:last-child
+        padding-right 0
+        text-align right
+
+    th
+      padding-right 35px
+      padding-left 35px
+
+      &.asc,
+      &.desc
+        color $secondary-color-2
+        position relative
+
+        &:before
+          content ''
+          width 17px
+          height 17px
+          border-radius 51%
+          position absolute
+          top 50%
+          right 15px
+          margin-top -8px
+          background-color $secondary-color
+          z-index 1
+
+        &:after
+          content ''
+          width 5px
+          height 5px
+          border-right 1px solid #fff
+          border-bottom 1px solid #fff
+          transform( rotate( 45deg ))
+          position absolute
+          top 50%
+          right 21px
+          margin-top -3px
+          z-index 2
+
+      &.desc
+
+        &:after
+          transform( rotate( -135deg ))
+          margin-top -1px
+
+    td
+
+      &:first-child
+        text-align left
+
+    tbody
+
+      tr
+        cursor pointer
+        transition( all .3s ease )
+      
+        &:hover
+          background-color #fcfcfc
+
+        &.removing
+          opacity 0
+          transform( translateX( -100px ))
       

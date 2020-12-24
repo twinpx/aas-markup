@@ -24,11 +24,13 @@ else
 
       form( action="" method="GET" data-ajax-url="/components/report-form/response.json" )
 
+        input#element_id( type="hidden" value="123" )
+
         .b-report-form__autosave-text.small.text-muted Последнее сохранение
           | 
           span 13 апреля 2020 14:53
 
-        .b-collapse-block.open.slide
+        .b-collapse-block.open
           .b-collapse-block__head
             a( href="" )
               i Основные сведения
@@ -38,7 +40,9 @@ else
 
             .b-report-form__buttons
               div
-                a.btn.btn-primary.btn-sm( href="" ) Заполнить из реестра
+                a.btn.btn-primary.btn-sm( href="" )
+                  span.icon( style="background-image: url( '/template/images/copywhite.svg' );" )
+                  | Заполнить из реестра
                 a.btn.btn-light.btn-sm( href="" )
                   span Очистить поля
                   span Вернуть поля
@@ -61,6 +65,7 @@ else
               .col-lg-6.col-12.small
                 span.text-muted Данные из реестра: 
                 a.b-complete-link( href="" ) ООО &laquo;Компания + Я&raquo;
+                  span.icon( style="background-image: url( '/template/images/copy.svg' );" )
                   
             hr
             
@@ -70,7 +75,7 @@ else
 
                 .b-float-label
 
-                  input#POSTADDRESS( type="text" name="POSTADDRESS" required)
+                  textarea#POSTADDRESS( row="10" cols="10" name="POSTADDRESS" required)
                   label( for="POSTADDRESS" autocomplete="off" ) Почтовый адрес *
 
               hr.hr--xs.d-block.d-lg-none.w-100
@@ -78,6 +83,7 @@ else
               .col-lg-6.col-12.small
                 span.text-muted Данные из реестра: 
                 a.b-complete-link( href="" ) 125252
+                  span.icon( style="background-image: url( '/template/images/copy.svg' );" )
               
             hr
             
@@ -87,7 +93,7 @@ else
 
                 .b-float-label
 
-                  input#ADDRESS( type="text" name="ADDRESS" required)
+                  textarea#ADDRESS( row="10" cols="10" name="ADDRESS" required)
                   label( for="ADDRESS" autocomplete="off" ) Фактический адрес *
 
               hr.hr--xs.d-block.d-lg-none.w-100
@@ -95,6 +101,7 @@ else
               .col-lg-6.col-12.small
                 span.text-muted Данные из реестра: 
                 a.b-complete-link( href="" ) Улица Строителей
+                  span.icon( style="background-image: url( '/template/images/copy.svg' );" )
               
             hr
             
@@ -112,6 +119,7 @@ else
               .col-lg-6.col-12.small
                 span.text-muted Данные из реестра: 
                 a.b-complete-link( href="" ) Петров Иван Валерьевич
+                  span.icon( style="background-image: url( '/template/images/copy.svg' );" )
               
             hr
             
@@ -129,6 +137,7 @@ else
               .col-lg-6.col-12.small
                 span.text-muted Данные из реестра: 
                 a.b-complete-link( href="" ) maxim@twinpx.ru
+                  span.icon( style="background-image: url( '/template/images/copy.svg' );" )
               
             hr
             
@@ -146,6 +155,7 @@ else
               .col-lg-6.col-12.small
                 span.text-muted Данные из реестра: 
                 a.b-complete-link( href="" ) 78978979879879798979789
+                  span.icon( style="background-image: url( '/template/images/copy.svg' );" )
               
             hr
             
@@ -163,6 +173,7 @@ else
               .col-lg-6.col-12.small
                 span.text-muted Данные из реестра: 
                 a.b-complete-link( href="" ) 1231231231321312313123
+                  span.icon( style="background-image: url( '/template/images/copy.svg' );" )
               
             hr
             
@@ -170,21 +181,58 @@ else
 
               .col-md-6.col-12
 
-                .b-float-label
+                .b-float-label( data-src="/template/images/calendar.svg" )
 
                   input#SIGNINGDATE( type="text" name="SIGNINGDATE" required)
+                  img.calendar-icon( src="" alt="Выбрать дату в календаре" onclick="" border="0" )
                   label( for="SIGNINGDATE" autocomplete="off" ) Дата подписания *
 
               hr.d-block.d-md-none.w-100
 
               .col-md-6.col-12
             
-                .b-float-label
+                .b-float-label( data-src="/template/images/calendar.svg" )
 
                   input#COMPLETIONDATE( type="text" name="COMPLETIONDATE" required)
+                  img.calendar-icon( src="" alt="Выбрать дату в календаре" onclick="" border="0" )
                   label( for="COMPLETIONDATE" autocomplete="off" ) Дата сдачи отчета в Минфин России *
               
             hr
+
+        .b-collapse-block.open
+          .b-collapse-block__head
+            a( href="" )
+              i Сотрудники
+              i.text-danger Не заполнены обязательные поля
+            span
+          .b-collapse-block__body
+
+            .b-staff-table
+
+              table.table( data-result="/components/registry-report/result.json" )
+                thead
+                  tr
+                    th.asc( data-field="name" ) ФИО
+                    th( data-field="ornz" ) ОРНЗ
+                    th
+                tbody
+                  tr( data-url="/pages/profile/" )
+                    td.asc Савельева Людмила Викторовна
+                    td 20606017533
+                    td
+                      a.btn-delete( style="background-image: url( '/template/images/btn-delete.svg' );" )
+                  tr( data-url="/pages/profile/" )
+                    td.asc Широкова Ольга Владимировна
+                    td 20406000036
+                    td
+                      a.btn-delete( style="background-image: url( '/template/images/btn-delete.svg' );" )
+                  tr( data-url="/pages/profile/" )
+                    td.asc Ушаков Алексей Вячеславович
+                    td 20406000036
+                    td
+                      a.btn-delete( style="background-image: url( '/template/images/btn-delete.svg' );" )
+
+              button.btn.btn-success Добавить сотрудника
 
         .b-collapse-block
           .b-collapse-block__head
