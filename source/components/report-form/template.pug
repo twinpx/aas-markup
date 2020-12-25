@@ -57,8 +57,8 @@ else
 
                 .b-float-label.active
 
-                  input#COMPANYNAME( type="text" name="COMPANYNAME" value="ООО «Компания + Я»" required )
-                  label( for="COMPANYNAME" autocomplete="off" ) Наименование организации *
+                  input#COMPANYNAME( type="text" name="COMPANYNAME" value="ООО «Компания + Я»" required autocomplete="off" )
+                  label( for="COMPANYNAME" ) Наименование организации *
 
               hr.hr--xs.d-block.d-lg-none.w-100
 
@@ -75,8 +75,8 @@ else
 
                 .b-float-label
 
-                  textarea#POSTADDRESS( row="10" cols="10" name="POSTADDRESS" required)
-                  label( for="POSTADDRESS" autocomplete="off" ) Почтовый адрес *
+                  textarea#POSTADDRESS( row="10" cols="10" name="POSTADDRESS" required autocomplete="off")
+                  label( for="POSTADDRESS" ) Почтовый адрес *
 
               hr.hr--xs.d-block.d-lg-none.w-100
 
@@ -93,8 +93,8 @@ else
 
                 .b-float-label
 
-                  textarea#ADDRESS( row="10" cols="10" name="ADDRESS" required)
-                  label( for="ADDRESS" autocomplete="off" ) Фактический адрес *
+                  textarea#ADDRESS( row="10" cols="10" name="ADDRESS" required autocomplete="off")
+                  label( for="ADDRESS" ) Фактический адрес *
 
               hr.hr--xs.d-block.d-lg-none.w-100
 
@@ -111,8 +111,8 @@ else
 
                 .b-float-label
 
-                  input#FIO( type="text" name="FIO" required)
-                  label( for="FIO" autocomplete="off" ) ФИО подписывающего отчет *
+                  input#FIO( type="text" name="FIO" required autocomplete="off")
+                  label( for="FIO" ) ФИО подписывающего отчет *
 
               hr.hr--xs.d-block.d-lg-none.w-100
 
@@ -129,8 +129,8 @@ else
 
                 .b-float-label
 
-                  input#EMAIL( type="email" name="EMAIL" required)
-                  label( for="EMAIL" autocomplete="off" ) Email *
+                  input#EMAIL( type="email" name="EMAIL" required autocomplete="off")
+                  label( for="EMAIL" ) Email *
 
               hr.hr--xs.d-block.d-lg-none.w-100
 
@@ -147,8 +147,8 @@ else
 
                 .b-float-label
 
-                  input#OKPO( type="text" name="OKPO" )
-                  label( for="OKPO" autocomplete="off" ) ОКПО
+                  input#OKPO( type="text" name="OKPO" autocomplete="off" )
+                  label( for="OKPO" ) ОКПО
 
               hr.hr--xs.d-block.d-lg-none.w-100
 
@@ -165,8 +165,8 @@ else
 
                 .b-float-label
 
-                  input#OGRN( type="text" name="OGRN" )
-                  label( for="OGRN" autocomplete="off" ) ОГРН
+                  input#OGRN( type="text" name="OGRN" autocomplete="off" )
+                  label( for="OGRN" ) ОГРН
 
               hr.hr--xs.d-block.d-lg-none.w-100
 
@@ -184,8 +184,8 @@ else
                 .b-float-label( data-src="/template/images/calendar.svg" )
 
                   input#SIGNINGDATE( type="text" name="SIGNINGDATE" required)
-                  img.calendar-icon( src="" alt="Выбрать дату в календаре" onclick="" border="0" )
-                  label( for="SIGNINGDATE" autocomplete="off" ) Дата подписания *
+                  img.calendar-icon( src="" alt="Выбрать дату в календаре" onclick="" border="0" autocomplete="off" )
+                  label( for="SIGNINGDATE" ) Дата подписания *
 
               hr.d-block.d-md-none.w-100
 
@@ -193,9 +193,9 @@ else
             
                 .b-float-label( data-src="/template/images/calendar.svg" )
 
-                  input#COMPLETIONDATE( type="text" name="COMPLETIONDATE" required)
+                  input#COMPLETIONDATE( type="text" name="COMPLETIONDATE" required autocomplete="off")
                   img.calendar-icon( src="" alt="Выбрать дату в календаре" onclick="" border="0" )
-                  label( for="COMPLETIONDATE" autocomplete="off" ) Дата сдачи отчета в Минфин России *
+                  label( for="COMPLETIONDATE" ) Дата сдачи отчета в Минфин России *
               
             hr
 
@@ -214,25 +214,93 @@ else
                   tr
                     th.asc( data-field="name" ) ФИО
                     th( data-field="ornz" ) ОРНЗ
+                    th( data-field="type" ) Тип договора
                     th
                 tbody
                   tr( data-url="/pages/profile/" )
+                    input( type="hidden" name="staff-member-id" value="1" )
                     td.asc Савельева Людмила Викторовна
                     td 20606017533
+                    td Основной
                     td
                       a.btn-delete( style="background-image: url( '/template/images/btn-delete.svg' );" )
                   tr( data-url="/pages/profile/" )
+                    input( type="hidden" name="staff-member-id" value="2" )
                     td.asc Широкова Ольга Владимировна
                     td 20406000036
+                    td По совместительству
                     td
                       a.btn-delete( style="background-image: url( '/template/images/btn-delete.svg' );" )
                   tr( data-url="/pages/profile/" )
+                    input( type="hidden" name="staff-member-id" value="3" )
                     td.asc Ушаков Алексей Вячеславович
                     td 20406000036
                     td
+                    td
                       a.btn-delete( style="background-image: url( '/template/images/btn-delete.svg' );" )
 
-              button.btn.btn-success Добавить сотрудника
+            .b-staff-table.added
+              h3 Добавленные
+
+              table.table( data-result="/components/registry-report/result.json" )
+                thead
+                  tr
+                    th.asc( data-field="name" ) ФИО
+                    th( data-field="ornz" ) ОРНЗ
+                    th( data-field="type" ) Тип договора
+                    th
+                tbody
+                  tr( data-url="/pages/profile/" )
+                    input( type="hidden" name="staff-member-id" value="1" )
+                    td.asc Савельева Людмила Викторовна
+                    td 20606017533
+                    td Основной
+                    td
+                      a.btn-delete( style="background-image: url( '/template/images/btn-delete.svg' );" )
+                  tr( data-url="/pages/profile/" )
+                    input( type="hidden" name="staff-member-id" value="2" )
+                    td.asc Широкова Ольга Владимировна
+                    td 20406000036
+                    td По совместительству
+                    td
+                      a.btn-delete( style="background-image: url( '/template/images/btn-delete.svg' );" )
+                  tr( data-url="/pages/profile/" )
+                    input( type="hidden" name="staff-member-id" value="3" )
+                    td.asc Ушаков Алексей Вячеславович
+                    td 20406000036
+                    td
+                    td
+                      a.btn-delete( style="background-image: url( '/template/images/btn-delete.svg' );" )
+
+            button.btn.btn-success( type="button" data-toggle="modal" data-target="#addStaffMemberModal" ) Добавить сотрудника
+
+            #addStaffMemberModal.modal.fade(tabindex="-1" aria-labelledby="addStaffMemberModalLabel" aria-hidden="true")
+              .modal-dialog
+                .modal-content
+                  button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
+                  .modal-body( data-hint-url="/components/report-form/hint-response.json" data-info-url="/components/report-form/info-response.json" data-method="GET" )
+                    h3.text-center Добавить аудитора
+
+                    hr.hr--xl
+
+                    .b-float-label
+                      input#modalORNZ( type="text" autocomplete="off" )
+                      label( for="modalORNZ" ) ОРНЗ
+                        em не найден
+                      .b-input-hint
+
+                    hr
+
+                    .b-float-label
+                      input#modalFIO( type="text" autocomplete="off" )
+                      label( for="modalFIO" ) ФИО
+                        em не найден
+                      .b-input-hint
+
+                    hr.hr--xl
+
+                    .text-center
+                      button.btn.btn-secondary( data-dismiss="modal" ) Добавить
 
         .b-collapse-block
           .b-collapse-block__head

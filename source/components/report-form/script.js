@@ -4,46 +4,148 @@
   
   $( function() {
 
-    //staff table click
-    document.querySelectorAll( '.b-staff-table td' ).forEach( function( td ) {
-      td.addEventListener( 'click', function(e) {
+    //staff table events
+    document.querySelectorAll( '.b-staff-table' ).forEach( function( tableBlock ) {
+
+      //td click
+      tableBlock.addEventListener( 'click', function(e) {
         e.preventDefault();
-        window.open( td.closest( 'tr' ).getAttribute( 'data-url' ), '_blank' );
+        if ( e.target.matches( 'td' )) {
+          window.open( e.target.closest( 'tr' ).getAttribute( 'data-url' ), '_blank' );
+        }
+      });
+
+      //delete tr
+      tableBlock.addEventListener( 'click', function(e) {
+
+        e.preventDefault();
+
+        if ( e.target.matches( '.btn-delete' )) {
+          e.stopPropagation();
+
+          var btn = e.target;
+          var tr = btn.closest( 'tr' );
+          var tbody = tr.closest( 'tbody' );
+          var table = tr.closest( 'table' );
+  
+          //send ajax
+          staffMembersAutocompleteRequest( btn );
+    
+          //remove td in tr
+          tr.style.height = tr.clientHeight + 'px';
+          tr.classList.add( 'removing' );
+  
+          setTimeout( function() {
+            tr.querySelectorAll( 'td' ).forEach( function( td ) {
+              td.remove();
+            });
+            tr.style.height = '0px';
+            setTimeout( function() {
+              tr.remove();
+  
+              //remove thead if needed
+              if ( !tbody.querySelectorAll( 'tr' ).length ) {
+                table.closest( '.b-staff-table' ).classList.add( 'hide' );
+              }
+            }, 300);
+          }, 300);
+        }
       });
     });
 
-    //staff table remove
-    document.querySelectorAll( '.b-staff-table .btn-delete' ).forEach( function( btn ) {
-      var tr = btn.closest( 'tr' );
-      var tbody = tr.closest( 'tbody' );
-      var table = tr.closest( 'table' );
+    //staff modal
+    var staffModal = document.getElementById( 'addStaffMemberModal' );
+    staffModal.querySelectorAll( 'input' ).forEach( function( input, index ) {
+      input.addEventListener( 'keyup', function(e) {
 
-      btn.addEventListener( 'click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
+        if (( index === 0 && input.value.length < 9 ) || ( index === 1 && input.value.length < 5 )) {
+          return;
+        }
 
-        //send ajax
-        staffMembersAutocompleteRequest( btn );
-  
-        //remove td in tr
-        tr.style.height = tr.clientHeight + 'px';
-        tr.classList.add( 'removing' );
-
-        setTimeout( function() {
-          tr.querySelectorAll( 'td' ).forEach( function( td ) {
-            td.remove();
-          });
-          tr.style.height = '0px';
-          setTimeout( function() {
-            tr.remove();
-
-            //remove thead if needed
-            if ( !tbody.querySelectorAll( 'tr' ).length ) {
-              table.classList.add( 'hide' );
+        //get html for the hint
+        $.ajax({
+          url: input.closest( '.modal-body' ).getAttribute( 'data-hint-url' ),
+          type: input.closest( '.modal-body' ).getAttribute( 'data-method' ),//GET
+          dataType: "json",
+          data: { str: input.value },
+          success: function( data ) {
+            if ( data && typeof data === 'object' ) {
+              if ( data.SUCCESS === 'Y' ) {
+                input.closest( '.b-float-label' ).classList.remove( 'invalid' );
+                input.closest( '.b-float-label' ).querySelector( '.b-input-hint' ).innerHTML = data.HTML;
+              } else {
+                input.closest( '.b-float-label' ).classList.add( 'invalid' );
+                input.closest( '.b-float-label' ).querySelector( '.b-input-hint' ).innerHTML = '';
+              }
             }
-          }, 300);
-        }, 300);
+          },
+          error: ajaxError
+        });
       });
+    });
+
+    //staff modal complete form
+    var memberObject = {};
+    staffModal.querySelectorAll( '.b-input-hint' ).forEach( function( hint ) {
+      hint.addEventListener( 'click', function(e) {
+        if ( e.target.matches( 'a' )) {
+          e.preventDefault();
+        }
+
+        //get member's info
+        $.ajax({
+          url: hint.closest( '.modal-body' ).getAttribute( 'data-info-url' ),
+          type: hint.closest( '.modal-body' ).getAttribute( 'data-method' ),//GET
+          dataType: "json",
+          data: { id: hint.querySelector( '.b-input-hint__item' ).getAttribute( 'data-id' )},
+          success: function( data ) {
+            if ( data && typeof data === 'object' ) {
+              if ( data.SUCCESS === 'Y' ) {
+
+                //fill the memeberObject
+                memberObject.ornz = data.ORNZ;
+                memberObject.fio = data.FIO;
+                memberObject.html = data.HTML;
+                memberObject.url = data.URL;
+
+                //fill the inputs
+                staffModal.querySelectorAll( '.b-float-label' ).forEach( function( elem, index ) {
+                  elem.querySelector( 'label' ).classList.add( 'active' );
+                  if ( index === 0 ) {
+                    elem.querySelector( 'input[type=text]' ).value = data.ORNZ;
+                  } else {
+                    elem.querySelector( 'input[type=text]' ).value = data.FIO;
+                  }
+                });
+
+                //clear hint
+                hint.innerHTML = '';
+              } else {}
+            }
+          },
+          error: ajaxError
+        });
+      });
+    });
+
+    //staff modal add the member
+    staffModal.querySelector( '.btn' ).addEventListener( 'click', function(e) {
+      e.preventDefault();
+
+      //clean inputs
+      staffModal.querySelectorAll( 'input[type=text]' ).forEach( function( input ) {
+        input.value = '';
+        input.closest( '.b-float-label' ).querySelector( 'label' ).classList.remove( 'active' );
+      });
+
+      //show the table
+      document.querySelector( '.b-staff-table.added' ).classList.remove( 'hide' );
+
+      //add tr
+      var tr = document.createElement( 'tr' );
+      tr.setAttribute( 'data-url', memberObject.url );
+      tr.innerHTML = memberObject.html;
+      document.querySelector( '.b-staff-table.added tbody' ).appendChild( tr );
     });
 
     //calendar icon
@@ -111,7 +213,7 @@
     });
 
     //save form
-    document.querySelectorAll( '.b-report-form input, .b-report-form textarea' ).forEach( function( input ) {
+    document.querySelectorAll( '.b-report-form input[ name ], .b-report-form textarea[ name ]' ).forEach( function( input ) {
       input.addEventListener( 'blur', function(e) {
         //send ajax
         fieldAutocompleteRequest( input );
@@ -253,13 +355,7 @@
             }
           }
         },
-        error: function( a, b, c ) {
-          if ( window.console ) {
-            console.log(a);
-            console.log(b);
-            console.log(c);
-          }
-        }
+        error: ajaxError
       });
     }
 
@@ -334,6 +430,14 @@
 
     function removeInvalid( input ) {
       input.closest( '.b-float-label' ).classList.remove( 'invalid' );
+    }
+
+    function ajaxError( a, b, c ) {
+      if ( window.console ) {
+        console.log(a);
+        console.log(b);
+        console.log(c);
+      }
     }
 
   });
