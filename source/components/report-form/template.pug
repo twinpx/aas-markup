@@ -202,6 +202,88 @@ else
         .b-collapse-block.open.slide
           .b-collapse-block__head
             a( href="" )
+              i Руководство
+              i.text-danger Не заполнены обязательные поля
+            span
+          .b-collapse-block__body
+
+            .b-staff-table
+
+              table.table( data-result="/components/registry-report/result.json" )
+                thead
+                  tr
+                    th.asc( data-field="name" ) ФИО
+                    th( data-field="ornz" ) ОРНЗ
+                    th( data-field="type" ) Тип договора
+                    th
+                tbody
+                  tr( data-url="/pages/profile/" )
+                    input( type="hidden" name="staff-member-id" value="1" )
+                    td.asc Савельева Людмила Викторовна
+                    td 20606017533
+                    td Основной
+                    td
+                      a.btn-delete( style="background-image: url( '/template/images/btn-delete.svg' );" )
+                  tr( data-url="/pages/profile/" )
+                    input( type="hidden" name="staff-member-id" value="2" )
+                    td.asc Широкова Ольга Владимировна
+                    td 20406000036
+                    td По совместительству
+                    td
+                      a.btn-delete( style="background-image: url( '/template/images/btn-delete.svg' );" )
+                  tr( data-url="/pages/profile/" )
+                    input( type="hidden" name="staff-member-id" value="3" )
+                    td.asc Ушаков Алексей Вячеславович
+                    td 20406000036
+                    td
+                    td
+                      a.btn-delete( style="background-image: url( '/template/images/btn-delete.svg' );" )
+
+            .b-staff-table.added.hide
+              h3 Добавленные
+
+              table.table( data-result="/components/registry-report/result.json" )
+                thead
+                  tr
+                    th.asc( data-field="name" ) ФИО
+                    th( data-field="ornz" ) ОРНЗ
+                    th( data-field="type" ) Тип договора
+                    th
+                tbody
+
+            button.btn.btn-success( type="button" data-toggle="modal" data-target="#addLeaderModal" ) Добавить руководство
+
+            #addLeaderModal.b-member-modal.modal.fade(tabindex="-1" aria-labelledby="addLeaderModalLabel" aria-hidden="true")
+              .modal-dialog
+                .modal-content
+                  button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
+                  .modal-body( data-hint-url="/components/report-form/hint-response.json" data-info-url="/components/report-form/info-response.json" data-method="GET" )
+                    h3.text-center Добавить руководителя
+
+                    hr.hr--xl
+
+                    .b-float-label
+                      input#leaderORNZ( type="text" autocomplete="off" )
+                      label( for="leaderORNZ" ) ОРНЗ
+                        em не найден
+                      .b-input-hint
+
+                    hr
+
+                    .b-float-label
+                      input#leaderFIO( type="text" autocomplete="off" )
+                      label( for="leaderFIO" ) ФИО
+                        em не найден
+                      .b-input-hint
+
+                    hr.hr--xl
+
+                    .text-center
+                      button.btn.btn-secondary( data-dismiss="modal" ) Добавить
+
+        .b-collapse-block.open.slide
+          .b-collapse-block__head
+            a( href="" )
               i Сотрудники
               i.text-danger Не заполнены обязательные поля
             span
@@ -274,7 +356,7 @@ else
 
             button.btn.btn-success( type="button" data-toggle="modal" data-target="#addStaffMemberModal" ) Добавить сотрудника
 
-            #addStaffMemberModal.modal.fade(tabindex="-1" aria-labelledby="addStaffMemberModalLabel" aria-hidden="true")
+            #addStaffMemberModal.b-member-modal.modal.fade(tabindex="-1" aria-labelledby="addStaffMemberModalLabel" aria-hidden="true")
               .modal-dialog
                 .modal-content
                   button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
