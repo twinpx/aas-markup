@@ -156,13 +156,20 @@
           });
 
         //show the table
-        document.querySelector('.b-staff-table.added').classList.remove('hide');
+        var table = document
+          .querySelector(
+            '[data-target = "#' + staffModal.getAttribute('id') + '"]'
+          )
+          .closest('.b-collapse-block__body')
+          .querySelector('.b-staff-table.added');
+        table.classList.remove('hide');
 
         //add tr
         var tr = document.createElement('tr');
         tr.setAttribute('data-url', memberObject.url);
         tr.innerHTML = memberObject.html;
-        document.querySelector('.b-staff-table.added tbody').appendChild(tr);
+
+        table.querySelector('tbody').appendChild(tr);
       });
     });
 
