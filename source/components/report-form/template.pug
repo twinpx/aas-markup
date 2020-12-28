@@ -30,7 +30,7 @@ else
           | 
           span 13 апреля 2020 14:53
 
-        .b-collapse-block.open
+        .b-collapse-block.open.slide
           .b-collapse-block__head
             a( href="" )
               i Основные сведения
@@ -49,7 +49,7 @@ else
               div
                 small.text-muted Вы можете использовать данные, уже указанные в реестре, и автоматически заполнить поля форм.
                   
-            hr
+            hr.hr--lg
 
             .row.align-items-center
 
@@ -199,7 +199,7 @@ else
               
             hr
 
-        .b-collapse-block.open
+        .b-collapse-block.open.slide
           .b-collapse-block__head
             a( href="" )
               i Сотрудники
@@ -302,13 +302,106 @@ else
                     .text-center
                       button.btn.btn-secondary( data-dismiss="modal" ) Добавить
 
-        .b-collapse-block
+        .b-collapse-block.open.slide
           .b-collapse-block__head
             a( href="" )
-              i Контакты
+              i Объём оказанных услуг
               i.text-danger Не заполнены обязательные поля
             span
           .b-collapse-block__body
+
+            .row.align-items-center
+
+              .col-lg-6.col-12
+
+                .b-float-label
+
+                  input#SERVICE1( type="text" name="SERVICE1" value="" autocomplete="off" )
+                  label( for="SERVICE1" ) Объем услуг за отчетный период
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small
+                span.text-muted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
+              
+            hr
+
+            .row.align-items-center
+
+              .col-lg-6.col-12.b-tab-block
+
+                .b-tab( style="background-image: url( /template/images/tab.svg );")
+
+                .b-float-label
+
+                  input#SERVICE2( type="text" name="SERVICE2" value="" autocomplete="off" )
+                  label( for="SERVICE2" ) В том числе: обязательный аудит
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small.b-tab-block
+                .b-tab.d-block.d-lg-none
+                span.text-muted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
+              
+            hr
+
+            .row.align-items-center
+
+              .col-lg-6.col-12.b-tab-block
+
+                .b-tab.tab-2( style="background-image: url( /template/images/tab.svg );")
+
+                .b-float-label
+
+                  input#SERVICE3( type="text" name="SERVICE3" value="" autocomplete="off" )
+                  label( for="SERVICE3" ) Инициативный аудит
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small.b-tab-block
+                .b-tab.tab-2.d-block.d-lg-none
+                span.text-muted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
+              
+            hr
+
+            .row.align-items-center
+
+              .col-lg-6.col-12.b-tab-block
+
+                .b-tab.tab-2( style="background-image: url( /template/images/tab.svg );")
+
+                .b-float-label
+
+                  input#SERVICE4( type="text" name="SERVICE4" value="" autocomplete="off" )
+                  label( for="SERVICE4" ) Прочие связанные с аудиторской деятельностью услуги
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small.b-tab-block
+                .b-tab.tab-2.d-block.d-lg-none
+                span.text-muted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
+              
+            hr
+
+            .row.align-items-center
+
+              .col-lg-6.col-12.b-tab-block
+
+                .b-tab( style="background-image: url( /template/images/tab.svg );")
+
+                .b-float-label
+
+                  input#SERVICE5( type="text" name="SERVICE5" value="" autocomplete="off" )
+                  label( for="SERVICE5" ) Объем услуг по аудиту отчетности общественно-значимых организаций
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small.b-tab-block
+                .b-tab.d-block.d-lg-none
+                span.text-muted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
+              
+            hr
+
 
         .b-collapse-block
           .b-collapse-block__head
