@@ -4,17 +4,6 @@
   $(function () {
     //staff table events
     document.querySelectorAll('.b-staff-table').forEach(function (tableBlock) {
-      //td click
-      tableBlock.addEventListener('click', function (e) {
-        e.preventDefault();
-        if (e.target.matches('td')) {
-          window.open(
-            e.target.closest('tr').getAttribute('data-url'),
-            '_blank'
-          );
-        }
-      });
-
       //delete tr
       tableBlock.addEventListener('click', function (e) {
         e.preventDefault();

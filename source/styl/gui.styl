@@ -431,7 +431,7 @@ h2,.h2
         &:focus
           box-shadow none
   
-  &[ disabled ],
+  &[disabled],
   &.disabled
     pointer-events none
     opacity .4
@@ -500,6 +500,28 @@ h2,.h2
   th
     padding 1.25rem 1.5rem
     border-top-color $line-color
+
+  &.table--sm
+
+    th,
+    td
+      font-family $roboto
+      font-size $14px
+
+  &.table--center
+
+    th,
+    td
+      text-align center
+      vertical-align middle
+
+  tr[data-url]
+
+    td
+      cursor pointer
+      
+    &:hover
+      background-color #fcfcfc
   
 .text-muted
   color #9b9b9b !important

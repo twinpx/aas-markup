@@ -209,7 +209,7 @@ else
 
             .b-staff-table
 
-              table.table( data-result="/components/registry-report/result.json" )
+              table.table.table--sm.table--center( data-result="/components/registry-report/result.json" )
                 thead
                   tr
                     th.asc( data-field="name" ) ФИО
@@ -242,7 +242,7 @@ else
             .b-staff-table.added.hide
               h3 Добавленные
 
-              table.table( data-result="/components/registry-report/result.json" )
+              table.table.table--sm.table--center( data-result="/components/registry-report/result.json" )
                 thead
                   tr
                     th.asc( data-field="name" ) ФИО
@@ -291,7 +291,7 @@ else
 
             .b-staff-table
 
-              table.table( data-result="/components/registry-report/result.json" )
+              table.table.table--sm.table--center( data-result="/components/registry-report/result.json" )
                 thead
                   tr
                     th.asc( data-field="name" ) ФИО
@@ -324,7 +324,7 @@ else
             .b-staff-table.added
               h3 Добавленные
 
-              table.table( data-result="/components/registry-report/result.json" )
+              table.table.table--sm.table--center( data-result="/components/registry-report/result.json" )
                 thead
                   tr
                     th.asc( data-field="name" ) ФИО
@@ -398,7 +398,7 @@ else
 
                 .b-float-label
 
-                  input#SERVICE1( type="text" name="SERVICE1" value="" autocomplete="off" )
+                  input#SERVICE1.input--num( type="text" name="SERVICE1" value="" autocomplete="off" )
                   label( for="SERVICE1" ) Объем услуг за отчетный период
 
               hr.hr--xs.d-block.d-lg-none.w-100
@@ -416,7 +416,7 @@ else
 
                 .b-float-label
 
-                  input#SERVICE2( type="text" name="SERVICE2" value="" autocomplete="off" )
+                  input#SERVICE2.input--num( type="text" name="SERVICE2" value="" autocomplete="off" )
                   label( for="SERVICE2" ) В том числе: обязательный аудит
 
               hr.hr--xs.d-block.d-lg-none.w-100
@@ -435,7 +435,7 @@ else
 
                 .b-float-label
 
-                  input#SERVICE3( type="text" name="SERVICE3" value="" autocomplete="off" )
+                  input#SERVICE3.input--num( type="text" name="SERVICE3" value="" autocomplete="off" )
                   label( for="SERVICE3" ) Инициативный аудит
 
               hr.hr--xs.d-block.d-lg-none.w-100
@@ -454,7 +454,7 @@ else
 
                 .b-float-label
 
-                  input#SERVICE4( type="text" name="SERVICE4" value="" autocomplete="off" )
+                  input#SERVICE4.input--num( type="text" name="SERVICE4" value="" autocomplete="off" )
                   label( for="SERVICE4" ) Прочие связанные с аудиторской деятельностью услуги
 
               hr.hr--xs.d-block.d-lg-none.w-100
@@ -473,7 +473,7 @@ else
 
                 .b-float-label
 
-                  input#SERVICE5( type="text" name="SERVICE5" value="" autocomplete="off" )
+                  input#SERVICE5.input--num( type="text" name="SERVICE5" value="" autocomplete="off" )
                   label( for="SERVICE5" ) Объем услуг по аудиту отчетности общественно-значимых организаций
 
               hr.hr--xs.d-block.d-lg-none.w-100

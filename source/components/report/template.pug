@@ -61,11 +61,35 @@ else
               .text-muted.small Дата сдачи отчёта в Минфин России
               p 12.10.2009 № 4
 
-      .b-collapse-block
+      .b-collapse-block.open.slide
         .b-collapse-block__head
-          a( href="" ) Контакты
+          a( href="" ) Сотрудники
           span
         .b-collapse-block__body
+
+          .b-staff-table
+
+              table.table.table--sm.table--center
+                thead
+                  tr
+                    th.asc( data-field="name" ) ФИО
+                    th( data-field="ornz" ) ОРНЗ
+                    th( data-field="type" ) Тип договора
+                tbody
+                  tr( data-url="/pages/profile/" )
+                    td.asc Савельева Людмила Викторовна
+                    td 20606017533
+                    td Основной
+                  tr( data-url="/pages/profile/" )
+                    input( type="hidden" name="staff-member-id" value="2" )
+                    td.asc Широкова Ольга Владимировна
+                    td 20406000036
+                    td По совместительству
+                  tr( data-url="/pages/profile/" )
+                    input( type="hidden" name="staff-member-id" value="3" )
+                    td.asc Ушаков Алексей Вячеславович
+                    td 20406000036
+                    td
 
       .b-collapse-block
         .b-collapse-block__head
