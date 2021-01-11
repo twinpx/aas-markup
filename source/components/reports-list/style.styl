@@ -26,13 +26,23 @@
     display flex
     justify-content space-between
     align-items center
-    padding 20px 0
+    padding 1.25rem 1.5rem
+
+    &:hover
+      background-color #fcfcfc
+
+    &:first-child
+      background-color #fafafa
+      border-bottom none
+      border-radius 10px
+
+      .b-reports-list__title
+        font-size $24px
 
     @media( max-width 575px )
       display block
 
   &__title
-    font-size $24px
     font-family $roboto
     font-weight $bold
     margin-right 20px
