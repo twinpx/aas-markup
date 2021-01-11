@@ -34,12 +34,19 @@
   
   &__item
     border-bottom 1px solid #f2f2f2
+    position relative
   
     a,
     span
       display block
       font-size $16px
       padding 20px
+
+    em.b-note-badge
+      position absolute
+      top 22px
+      right 20px
+      z-index 1
   
   &__sub
     padding-bottom 15px

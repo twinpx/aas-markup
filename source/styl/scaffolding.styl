@@ -89,6 +89,9 @@
         
       .header-fixed:not( .not-authorized ) &.width
         width 50px
+
+        .b-note-badge
+          left 16px
     
     a.d-none
       transition( transform .5s ease )
@@ -105,6 +108,13 @@
         height 32px
         border-radius 51%
         margin-right 20px
+        font-style normal
+
+        em.b-note-badge
+          position absolute
+          top 8px
+          left 18px
+          z-index 2
         
       span
         display inline-block
