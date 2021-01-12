@@ -277,9 +277,15 @@
     document
       .querySelectorAll('.b-report-form [ required ]')
       .forEach(function (input) {
-        input.addEventListener('blur', function (e) {
-          inputValidation(input);
-        });
+        if (input.getAttribute('type') === 'checkbox') {
+          input.addEventListener('change', function (e) {
+            inputValidation(input);
+          });
+        } else {
+          input.addEventListener('blur', function (e) {
+            inputValidation(input);
+          });
+        }
       });
 
     //scroll to the first invalid field
@@ -314,7 +320,8 @@
 
     function inputValidation(input) {
       var validFlag = false;
-      var inputValue = input.value.trim();
+      var inputValue =
+        input.getAttribute('type') === 'checkbox' ? '' : input.value.trim();
 
       //is valid
       if (inputValue !== '') {
@@ -336,17 +343,19 @@
       }
 
       //hightlight block
-      if (validFlag === true) {
-        var invalidLingth = input
-          .closest('.b-collapse-block__body')
-          .querySelectorAll('.b-float-label.invalid').length;
-        if (invalidLingth > 0) {
-          input.closest('.b-collapse-block').classList.add('invalid');
+      if (input.closest('.b-collapse-block__body')) {
+        if (validFlag === true) {
+          var invalidLength = input
+            .closest('.b-collapse-block__body')
+            .querySelectorAll('.b-float-label.invalid').length;
+          if (invalidLength > 0) {
+            input.closest('.b-collapse-block').classList.add('invalid');
+          } else {
+            input.closest('.b-collapse-block').classList.remove('invalid');
+          }
         } else {
-          input.closest('.b-collapse-block').classList.remove('invalid');
+          input.closest('.b-collapse-block').classList.add('invalid');
         }
-      } else {
-        input.closest('.b-collapse-block').classList.add('invalid');
       }
 
       //highlight form
@@ -385,7 +394,8 @@
           if (
             input.value.trim() === '' ||
             (input.getAttribute('type') === 'email' &&
-              !input.value.match(regExp.email))
+              !input.value.match(regExp.email)) ||
+            (input.getAttribute('type') === 'checkbox' && !input.checked)
           ) {
             flag = false;
           }
@@ -509,11 +519,19 @@
     }
 
     function setInvalid(input) {
-      input.closest('.b-float-label').classList.add('invalid');
+      if (input.getAttribute('type') === 'checkbox') {
+        input.closest('.b-checkbox').classList.add('invalid');
+      } else {
+        input.closest('.b-float-label').classList.add('invalid');
+      }
     }
 
     function removeInvalid(input) {
-      input.closest('.b-float-label').classList.remove('invalid');
+      if (input.getAttribute('type') === 'checkbox') {
+        input.closest('.b-checkbox').classList.remove('invalid');
+      } else {
+        input.closest('.b-float-label').classList.remove('invalid');
+      }
     }
 
     function ajaxError(a, b, c) {
