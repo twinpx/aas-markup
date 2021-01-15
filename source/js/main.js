@@ -12,10 +12,12 @@ String.prototype.deformat = function () {
 //input--num
 document.querySelectorAll('.input--num').forEach(function (input) {
   input.addEventListener('keyup', function (e) {
-    input.value = Number(String(input.value).deformat()).format();
+    var value = Number(String(input.value).deformat()).format();
+    input.value = value === '0' ? '' : value;
   });
   input.addEventListener('blur', function (e) {
-    input.value = Number(String(input.value).deformat()).format();
+    var value = Number(String(input.value).deformat()).format();
+    input.value = value === '0' ? '' : value;
   });
 });
 
@@ -28,7 +30,9 @@ document.querySelectorAll('.table').forEach(function (table) {
     ) {
       e.preventDefault();
       e.stopPropagation();
-      window.open(e.target.closest('tr').getAttribute('data-url'), '_blank');
+      var target =
+        e.target.closest('tr').getAttribute('data-target') || '_blank';
+      window.open(e.target.closest('tr').getAttribute('data-url'), target);
     }
   });
 });

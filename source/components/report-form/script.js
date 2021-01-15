@@ -2,6 +2,86 @@
   'use strict';
 
   $(function () {
+    //add input
+    document.querySelectorAll('.b-add-input-block').forEach(function (block) {
+      var button = block.querySelector('button');
+      var nameArray = block
+        .querySelector('.b-float-label input')
+        .getAttribute('id')
+        .split('_');
+
+      button.addEventListener('click', function (e) {
+        e.preventDefault();
+
+        var num = block.querySelectorAll('.b-float-label').length;
+        var controlName = nameArray[0] + '[' + nameArray[1] + '][' + num + ']';
+        var controlId = nameArray[0] + '_' + nameArray[1] + '_' + num;
+        var div = document.createElement('div');
+
+        div.className = 'b-add-input-block__item new';
+        div.innerHTML =
+          '<div class="b-float-label"><input id="' +
+          controlId +
+          '" type="text" name="' +
+          controlName +
+          '" value="" autocomplete="off"><label for="' +
+          controlId +
+          '">Название организации</label><a href="" class="btn-delete"></a></div><hr>';
+        button.before(div);
+
+        div.querySelector('input').addEventListener('blur', function (e) {
+          var input = e.target;
+          fieldAutocompleteRequest(input);
+          //float label
+          var label = input.parentNode.querySelector('label');
+          if (input.value !== '') {
+            label.classList.add('active');
+          } else {
+            label.classList.remove('active');
+          }
+        });
+
+        setTimeout(function () {
+          div.classList.add('show');
+          setTimeout(function () {
+            div.classList.add('visible');
+            setTimeout(function () {
+              div.classList.remove('new');
+            }, 1000);
+          }, 300);
+        }, 50);
+      });
+
+      //delete input
+      block.addEventListener('click', function (e) {
+        if (e.target.matches('.btn-delete')) {
+          e.preventDefault();
+
+          var item = e.target.closest('.b-add-input-block__item');
+
+          item.classList.remove('visible');
+          setTimeout(function () {
+            item.classList.remove('show');
+            setTimeout(function () {
+              item.remove();
+              //rename controls
+              block
+                .querySelectorAll('.b-add-input-block__item')
+                .forEach(function (item, index) {
+                  var num = index + 1;
+                  var controlName =
+                    nameArray[0] + '[' + nameArray[1] + '][' + num + ']';
+                  var controlId = nameArray[0] + '_' + nameArray[1] + '_' + num;
+                  item.querySelector('input').setAttribute('id', controlId);
+                  item.querySelector('input').setAttribute('name', controlName);
+                  item.querySelector('label').setAttribute('for', controlId);
+                });
+            }, 300);
+          }, 300);
+        }
+      });
+    });
+
     //staff table events
     document.querySelectorAll('.b-staff-table').forEach(function (tableBlock) {
       //delete tr
@@ -273,6 +353,14 @@
       formAutocompleteRequest(form);
     }, 120000);
 
+    //check the form on page load
+    if (isFormValid()) {
+      document.querySelector('.b-report-form__submit').classList.add('valid');
+      document
+        .querySelector('.b-report-form__submit .btn')
+        .removeAttribute('disabled');
+    }
+
     //validation
     document
       .querySelectorAll('.b-report-form [ required ]')
@@ -293,11 +381,11 @@
       .querySelector('.b-report-form__submit a')
       .addEventListener('click', function (e) {
         e.preventDefault();
-        var fieldIndex;
+        var fieldIndex = null;
         document
           .querySelectorAll('.b-report-form [required]')
           .forEach(function (input, index) {
-            if (fieldIndex) {
+            if (fieldIndex !== null) {
               return;
             }
             if (input.value.trim() === '') {
@@ -309,7 +397,7 @@
         var field = document.querySelectorAll('.b-report-form [required]')[
           fieldIndex
         ];
-        if (fieldIndex && field) {
+        if (fieldIndex !== null && field) {
           field.focus();
         }
       });
@@ -320,16 +408,16 @@
 
     function inputValidation(input) {
       var validFlag = false;
-      var inputValue =
-        input.getAttribute('type') === 'checkbox' ? '' : input.value.trim();
+      var inputValue = input.value.trim();
 
       //is valid
       if (inputValue !== '') {
         validFlag = true;
 
         if (
-          input.getAttribute('type') === 'email' &&
-          !inputValue.match(regExp.email)
+          (input.getAttribute('type') === 'email' &&
+            !inputValue.match(regExp.email)) ||
+          (input.getAttribute('type') === 'checkbox' && !input.checked)
         ) {
           validFlag = false;
         }
@@ -405,10 +493,12 @@
     }
 
     function setClearButton(clearButton) {
+      if (!clearButton) return;
       clearButton.classList.add('return');
     }
 
     function resetClearButton(clearButton) {
+      if (!clearButton) return;
       clearButton.classList.remove('return');
     }
 
