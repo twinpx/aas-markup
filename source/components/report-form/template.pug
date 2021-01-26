@@ -129,6 +129,24 @@ else
 
                 .b-float-label
 
+                  input#WORK_PHONE( type="tel" name="WORK_PHONE" required autocomplete="off")
+                  label( for="WORK_PHONE" ) Телефон рабочий *
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small
+                span.text-muted Данные из реестра: 
+                a.b-complete-link( href="" ) +7 (903) 126 26 26
+                  span.icon( style="background-image: url( '/template/images/copy.svg' );" )
+              
+            hr
+            
+            .row.align-items-center
+
+              .col-lg-6.col-12
+
+                .b-float-label
+
                   input#EMAIL( type="email" name="EMAIL" required autocomplete="off")
                   label( for="EMAIL" ) Email *
 
@@ -392,6 +410,10 @@ else
             span
           .b-collapse-block__body
 
+            h4 Отчетный год
+
+            hr
+
             .row.align-items-center
 
               .col-lg-6.col-12
@@ -404,7 +426,7 @@ else
               hr.hr--xs.d-block.d-lg-none.w-100
 
               .col-lg-6.col-12.small
-                span.text-muted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
+                span.text-semimuted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
               
             hr
 
@@ -423,7 +445,7 @@ else
 
               .col-lg-6.col-12.small.b-tab-block
                 .b-tab.d-block.d-lg-none
-                span.text-muted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
+                span.text-semimuted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
               
             hr
 
@@ -442,7 +464,7 @@ else
 
               .col-lg-6.col-12.small.b-tab-block
                 .b-tab.tab-2.d-block.d-lg-none
-                span.text-muted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
+                span.text-semimuted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
               
             hr
 
@@ -461,7 +483,7 @@ else
 
               .col-lg-6.col-12.small.b-tab-block
                 .b-tab.tab-3.d-block.d-lg-none
-                span.text-muted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
+                span.text-semimuted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
               
             hr
 
@@ -480,7 +502,7 @@ else
 
               .col-lg-6.col-12.small.b-tab-block
                 .b-tab.tab-2.d-block.d-lg-none
-                span.text-muted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
+                span.text-semimuted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
               
             hr
 
@@ -499,9 +521,46 @@ else
 
               .col-lg-6.col-12.small.b-tab-block
                 .b-tab.d-block.d-lg-none
-                span.text-muted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
+                span.text-semimuted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
               
             hr
+
+            h4 Прошедший год
+
+            hr
+
+            .row.align-items-center
+
+              .col-lg-6.col-12
+
+                .b-float-label
+
+                  input#SERVICE1.input--num( type="text" name="SERVICE1" value="" autocomplete="off" )
+                  label( for="SERVICE1" ) Объем услуг за отчетный период
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small
+                span.text-semimuted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
+              
+            hr
+
+            .row.align-items-center
+
+              .col-lg-6.col-12.b-tab-block
+
+                .b-tab( style="background-image: url( /template/images/tab.svg );")
+
+                .b-float-label
+
+                  input#SERVICE2.input--num( type="text" name="SERVICE2" value="" autocomplete="off" )
+                  label( for="SERVICE2" ) В том числе: обязательный аудит
+
+              hr.hr--xs.d-block.d-lg-none.w-100
+
+              .col-lg-6.col-12.small.b-tab-block
+                .b-tab.d-block.d-lg-none
+                span.text-semimuted Lorem ipsum dolor sit amet consectetur adipisicing elit. Molestiae ratione, dolorum sed suscipit et sequi, aspernatur alias quo voluptas mollitia rerum excepturi obcaecati reprehenderit corporis veritatis corrupti facilis hic
 
 
         .b-collapse-block.open.slide
@@ -516,14 +575,106 @@ else
                 
                 .b-add-input-block
                   .b-float-label
-                    input#PROPERTY_176_0( type="text" name="PROPERTY[176][0]" value="" autocomplete="off" )
-                    label( for="PROPERTY_176_0" ) Название организации
+                    input#PROPERTY_176_0( type="text" name="PROPERTY[176][0]" value="FCGA" autocomplete="off" )
+                    label.active( for="PROPERTY_176_0" ) Название организации
                 
                   hr
+
+                  .b-add-input-block__item.show.visible
+
+                    .b-float-label
+                      input#PROPERTY_176_1(type="text" name="PROPERTY[176][1]" value="OIT" autocomplete="off")
+                      label.active(for="PROPERTY_176_1") Название организации
+                      a.btn-delete(href="")
+
+                    hr
 
                   button.btn.btn-success.btn-md Добавить
               
             hr
+
+        .b-collapse-block
+          .b-collapse-block__head
+            a( href="" )
+              i Места работы
+              i.text-danger Не заполнены обязательные поля
+            span
+          .b-collapse-block__body
+
+            .b-add-fieldset-block( data-url="/components/report-form/get-fieldset-item.json" data-method="GET")
+
+              .b-add-fieldset-block__item.show.visible
+
+                h4 Места работы 1
+
+                hr
+
+                .b-add-fieldset-block__wrapper( data-hl="17")
+
+                  .row.b-ornz-autocomplete( data-hint-url="/components/report-form/hint-response.json" data-info-url="/components/report-form/info-response.json" data-method="GET" )
+                    .col-xl-6.col-12
+                      .b-float-label
+                        input#PROPERTY_177_0( type="text" name="PROPERTY[177][0]" value="" autocomplete="off" data-ornzautocomplete="companyname" required )
+                        label( for="PROPERTY_177_0" ) Название организации *
+                        .b-input-hint
+
+                    hr.d-block.d-xl-none.w-100
+
+                    .col-xl-3.col-12
+                      .b-float-label
+                        input#PROPERTY_178_0( type="text" name="PROPERTY[178][0]" value="" autocomplete="off" data-ornzautocomplete="ornz" )
+                        label( for="PROPERTY_178_0" ) ОРНЗ
+                        .b-input-hint
+
+                  hr
+
+                  .row
+                    .col-xl-6.col-12
+                      .b-float-label
+                        input#PROPERTY_179_0( type="text" name="PROPERTY[179][0]" value="" autocomplete="off" required )
+                        label( for="PROPERTY_179_0" ) Должность *
+
+                    hr.d-block.d-xl-none.w-100
+
+                    .col-xl-3.col-12
+                      .b-float-label( data-src="/template/images/calendar.svg" )
+                        input#PROPERTY_181_0( type="text" name="PROPERTY[181][0]" value="" autocomplete="off" required )
+                        img.calendar-icon( src="" alt="Выбрать дату в календаре" onclick="" border="0" autocomplete="off" )
+                        label( for="PROPERTY_181_0" ) Дата увольнения *
+
+                  hr
+
+                  .row
+                    .col-xl-6.col-12
+                      .b-float-label
+                        label.active Характер труд.догвора *
+                        select( name="PROPERTY[180][0]" required )
+                          option( value="0" ) Основной
+                          option( value="1" ) По совместительству
+
+                  hr
+
+                  .row
+                    .col-xl-6.col-12
+                      .b-float-label
+                        input#PROPERTY_182_0( type="text" name="PROPERTY[182][0]" value="" autocomplete="off" required )
+                        label( for="PROPERTY_182_0" ) Участие в аудиторских проверках (количество) *
+
+                  hr
+
+                  .row
+                    .col-xl-6.col-12
+                      .b-float-label
+                        input#PROPERTY_184_0( type="text" name="PROPERTY[184][0]" value="" autocomplete="off" required )
+                        label( for="PROPERTY_184_0" ) Оказание прочих аудиторских услуг (указать виды услуг) *
+
+                  hr.hr--xl.hr--line
+
+                  a.btn-delete(href="")
+                  
+                  hr.d-block.d-xl-none
+
+              button.btn.btn-success.btn-md Добавить
 
         hr.hr--lg
 

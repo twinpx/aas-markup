@@ -1,3 +1,9 @@
+//select
+$('select').ikSelect({
+  equalWidths: true,
+  ddCustomClass: 'ik-custom-class',
+});
+
 //price format
 Number.prototype.format = function () {
   return this.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
@@ -5,19 +11,20 @@ Number.prototype.format = function () {
 // Number(4546546).format(); //'4 546 546'
 
 String.prototype.deformat = function () {
-  return Number(this.toString().replace(/\D/g, '').split(' ').join(''));
+  var result = this.toString().replace(/\D/g, '').split(' ').join('');
+  return result === '' ? result : Number(result);
 };
 // String('2 150 000').deformat(); //2150000
 
 //input--num
 document.querySelectorAll('.input--num').forEach(function (input) {
   input.addEventListener('keyup', function (e) {
-    var value = Number(String(input.value).deformat()).format();
-    input.value = value === '0' ? '' : value;
+    var value = String(input.value).deformat();
+    input.value = value === '' ? value : Number(value).format();
   });
   input.addEventListener('blur', function (e) {
-    var value = Number(String(input.value).deformat()).format();
-    input.value = value === '0' ? '' : value;
+    var value = String(input.value).deformat();
+    input.value = value === '' ? value : Number(value).format();
   });
 });
 

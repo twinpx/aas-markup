@@ -2,6 +2,277 @@
   'use strict';
 
   $(function () {
+    var regExp = {
+      email: /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i,
+      date: /^(0?[1-9]|[12][0-9]|3[01])\.(0?[1-9]|1[012])\.\d{4}$/i,
+    };
+
+    //calendar click event
+    document.addEventListener('click', function (e) {
+      if (e.target.className.search('bx-calendar-cell') >= 0) {
+        activeDateFieldLabel.classList.add('active');
+      }
+    });
+
+    //phone mask
+    $('[type=tel]').mask('+7 (999) 999 99 99');
+
+    //add fieldset
+    var ornzAutocomplete = function (ornzAutocompleteBlock) {
+      ornzAutocompleteBlock
+        .querySelectorAll('[data-ornzautocomplete]')
+        .forEach(function (input) {
+          input.addEventListener('keyup', function (e) {
+            if (
+              input.value.length < 5 ||
+              (input.getAttribute('data-ornzautocomplete') === 'companyname' &&
+                input.value.length < 9)
+            ) {
+              return;
+            }
+
+            //get html for the hint
+            $.ajax({
+              url: ornzAutocompleteBlock.getAttribute('data-hint-url'),
+              type: ornzAutocompleteBlock.getAttribute('data-method'), //GET
+              dataType: 'json',
+              data: { str: input.value },
+              success: function (data) {
+                if (data && typeof data === 'object') {
+                  if (data.SUCCESS === 'Y') {
+                    input.closest('.b-float-label').classList.remove('invalid');
+                    input
+                      .closest('.b-float-label')
+                      .querySelector('.b-input-hint').innerHTML = data.HTML;
+                  } else {
+                    input.closest('.b-float-label').classList.add('invalid');
+                    input
+                      .closest('.b-float-label')
+                      .querySelector('.b-input-hint').innerHTML = '';
+                  }
+                }
+              },
+              error: ajaxError,
+            });
+          });
+        });
+
+      //fieldset complete form
+      var companyObject = {};
+      ornzAutocompleteBlock
+        .querySelectorAll('.b-input-hint')
+        .forEach(function (hint) {
+          hint.addEventListener('click', function (e) {
+            if (e.target.matches('a')) {
+              e.preventDefault();
+            }
+
+            //fill the companyObject
+            companyObject.ornz = hint
+              .querySelector('.b-input-hint__item')
+              .getAttribute('data-ornz');
+            companyObject.name = hint
+              .querySelector('.b-input-hint__item')
+              .getAttribute('data-name');
+
+            //fill the inputs
+            ornzAutocompleteBlock
+              .querySelectorAll('.b-float-label')
+              .forEach(function (elem) {
+                elem.querySelector('label').classList.add('active');
+                if (
+                  elem
+                    .querySelector('input[type=text]')
+                    .getAttribute('data-ornzautocomplete') === 'companyname'
+                ) {
+                  elem.querySelector('input[type=text]').value =
+                    companyObject.name;
+                } else {
+                  elem.querySelector('input[type=text]').value =
+                    companyObject.ornz;
+                }
+              });
+
+            //clear hint
+            hint.innerHTML = '';
+          });
+        });
+    };
+
+    document.querySelectorAll('.b-ornz-autocomplete').forEach(ornzAutocomplete);
+
+    //add fieldset
+    document
+      .querySelectorAll('.b-add-fieldset-block')
+      .forEach(function (fieldsetBlock) {
+        var button = fieldsetBlock.querySelector('button');
+
+        //blur event
+        fieldsetBlock.querySelectorAll('input').forEach(function (input) {
+          input.addEventListener('blur', function (e) {
+            var input = e.target;
+            formAutosaveRequest(input.closest('form'));
+          });
+        });
+
+        //change event
+        fieldsetBlock.querySelectorAll('select').forEach(function (select) {
+          select
+            .closest('.b-float-label')
+            .querySelector('.ik-custom-class')
+            .addEventListener('click', function (e) {
+              formAutosaveRequest(e.target.closest('form'));
+            });
+        });
+
+        //add fieldset
+        button.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          var num = fieldsetBlock.querySelectorAll(
+            '.b-add-fieldset-block__item'
+          ).length;
+          var div = document.createElement('div');
+
+          div.className = 'b-add-fieldset-block__item new';
+
+          $.ajax({
+            url: fieldsetBlock.getAttribute('data-url'),
+            type: fieldsetBlock.getAttribute('data-method'), //GET
+            dataType: 'json',
+            data: { num: num },
+            success: function (data) {
+              if (data && typeof data === 'object') {
+                if (data.SUCCESS === 'Y') {
+                  div.innerHTML = data.HTML;
+                  button.before(div);
+
+                  //calendar icon
+                  div
+                    .querySelectorAll('.calendar-icon')
+                    .forEach(function (iconImg) {
+                      var src = iconImg
+                        .closest('.b-float-label')
+                        .getAttribute('data-src');
+                      iconImg.src = src;
+                      iconImg.classList.add('show');
+
+                      iconImg.addEventListener('click', function () {
+                        activeDateFieldLabel = iconImg
+                          .closest('.b-float-label')
+                          .querySelector('label');
+                      });
+                    });
+
+                  //select
+                  $(div).find('select').ikSelect({
+                    equalWidths: true,
+                    ddCustomClass: 'ik-custom-class',
+                  });
+
+                  //ornz autocomplete
+                  div
+                    .querySelectorAll('.b-ornz-autocomplete')
+                    .forEach(function (ornzAutocompleteBlock) {
+                      ornzAutocomplete(ornzAutocompleteBlock);
+                    });
+
+                  //blur event
+                  div.querySelectorAll('input').forEach(function (input) {
+                    input.addEventListener('blur', function (e) {
+                      var input = e.target;
+                      formAutosaveRequest(input.closest('form'));
+                      //float label
+                      var label = input.parentNode.querySelector('label');
+                      if (input.value !== '') {
+                        label.classList.add('active');
+                      } else {
+                        label.classList.remove('active');
+                      }
+                    });
+                  });
+
+                  //change event
+                  div.querySelectorAll('select').forEach(function (select) {
+                    select
+                      .closest('.b-float-label')
+                      .querySelector('.ik-custom-class')
+                      .addEventListener('click', function (e) {
+                        formAutosaveRequest(e.target.closest('form'));
+                      });
+                  });
+
+                  //effect
+                  setTimeout(function () {
+                    div.classList.add('show');
+                    setTimeout(function () {
+                      div.classList.add('visible');
+                      setTimeout(function () {
+                        div.classList.remove('new');
+                      }, 1000);
+                    }, 300);
+                  }, 50);
+                }
+              }
+            },
+            error: ajaxError,
+          });
+        });
+
+        //delete fieldset
+        fieldsetBlock.addEventListener('click', function (e) {
+          if (e.target.matches('.btn-delete')) {
+            e.preventDefault();
+
+            var item = e.target.closest('.b-add-fieldset-block__item');
+            var del_fieldset_id = item
+              .querySelector('.b-add-fieldset-block__wrapper')
+              .getAttribute('data-hl');
+
+            item.classList.remove('visible');
+            setTimeout(function () {
+              item.classList.remove('show');
+              setTimeout(function () {
+                item.remove();
+                //rename controls
+                fieldsetBlock
+                  .querySelectorAll('.b-add-fieldset-block__item')
+                  .forEach(function (item, index) {
+                    //name attribute
+                    item.querySelectorAll('[name]').forEach(function (control) {
+                      var name = control
+                        .getAttribute('name')
+                        .replace(/\[\d*?\]$/, '[' + index + ']');
+                      control.setAttribute('name', name);
+                    });
+
+                    //for attribute
+                    item.querySelectorAll('[for]').forEach(function (control) {
+                      var forAttr = control
+                        .getAttribute('for')
+                        .replace(/_\d*?$/, '_' + index);
+                      control.setAttribute('for', forAttr);
+                    });
+
+                    //id attribute
+                    item.querySelectorAll('[id]').forEach(function (control) {
+                      var id = control
+                        .getAttribute('id')
+                        .replace(/_\d*?$/, '_' + index);
+                      control.setAttribute('id', id);
+                    });
+                  });
+                formAutosaveRequest(
+                  fieldsetBlock.closest('form'),
+                  0,
+                  del_fieldset_id
+                );
+              }, 300);
+            }, 300);
+          }
+        });
+      });
+
     //add input
     document.querySelectorAll('.b-add-input-block').forEach(function (block) {
       var button = block.querySelector('button');
@@ -10,6 +281,7 @@
         .getAttribute('id')
         .split('_');
 
+      //add control
       button.addEventListener('click', function (e) {
         e.preventDefault();
 
@@ -29,9 +301,10 @@
           '">Название организации</label><a href="" class="btn-delete"></a></div><hr>';
         button.before(div);
 
+        //blur event
         div.querySelector('input').addEventListener('blur', function (e) {
           var input = e.target;
-          fieldAutocompleteRequest(input);
+          fieldAutosaveRequest(input);
           //float label
           var label = input.parentNode.querySelector('label');
           if (input.value !== '') {
@@ -41,6 +314,7 @@
           }
         });
 
+        //effect
         setTimeout(function () {
           div.classList.add('show');
           setTimeout(function () {
@@ -76,6 +350,7 @@
                   item.querySelector('input').setAttribute('name', controlName);
                   item.querySelector('label').setAttribute('for', controlId);
                 });
+              formAutosaveRequest(block.closest('form'));
             }, 300);
           }, 300);
         }
@@ -97,7 +372,7 @@
           var table = tr.closest('table');
 
           //send ajax
-          staffMembersAutocompleteRequest(btn);
+          staffMembersAutosaveRequest(btn);
 
           //remove td in tr
           tr.style.height = tr.clientHeight + 'px';
@@ -159,7 +434,7 @@
       });
 
       //staff modal complete form
-      var memberObject = {};
+      var companyObject = {};
       staffModal.querySelectorAll('.b-input-hint').forEach(function (hint) {
         hint.addEventListener('click', function (e) {
           if (e.target.matches('a')) {
@@ -180,10 +455,10 @@
               if (data && typeof data === 'object') {
                 if (data.SUCCESS === 'Y') {
                   //fill the memeberObject
-                  memberObject.ornz = data.ORNZ;
-                  memberObject.fio = data.FIO;
-                  memberObject.html = data.HTML;
-                  memberObject.url = data.URL;
+                  companyObject.ornz = data.ORNZ;
+                  companyObject.fio = data.FIO;
+                  companyObject.html = data.HTML;
+                  companyObject.url = data.URL;
 
                   //fill the inputs
                   staffModal
@@ -224,6 +499,10 @@
               .classList.remove('active');
           });
 
+        if (!Object.keys(companyObject).length) {
+          return;
+        }
+
         //show the table
         var table = document
           .querySelector(
@@ -235,18 +514,33 @@
 
         //add tr
         var tr = document.createElement('tr');
-        tr.setAttribute('data-url', memberObject.url);
-        tr.innerHTML = memberObject.html;
+        tr.setAttribute('data-url', companyObject.url);
+        tr.innerHTML = companyObject.html;
 
         table.querySelector('tbody').appendChild(tr);
+        companyObject = {};
       });
     });
+
+    var activeDateFieldLabel;
+    if (document.querySelector('.calendar-icon')) {
+      activeDateFieldLabel = document
+        .querySelector('.calendar-icon')
+        .closest('.b-float-label')
+        .querySelector('label');
+    }
 
     //calendar icon
     document.querySelectorAll('.calendar-icon').forEach(function (iconImg) {
       var src = iconImg.closest('.b-float-label').getAttribute('data-src');
       iconImg.src = src;
       iconImg.classList.add('show');
+
+      iconImg.addEventListener('click', function () {
+        activeDateFieldLabel = iconImg
+          .closest('.b-float-label')
+          .querySelector('label');
+      });
     });
 
     //complete inputs
@@ -256,7 +550,7 @@
         completeLink.addEventListener('click', function (e) {
           e.preventDefault();
           completeInput(completeLink);
-          fieldAutocompleteRequest(
+          fieldAutosaveRequest(
             completeLink
               .closest('.row')
               .querySelector('.b-float-label input, .b-float-label textarea')
@@ -285,7 +579,7 @@
             .forEach(function (completeLink) {
               completeInput(completeLink);
             });
-          formAutocompleteRequest(buttonsBlock.closest('form'));
+          formAutosaveRequest(buttonsBlock.closest('form'));
           resetClearButton(clearButton);
         });
 
@@ -326,7 +620,7 @@
             resetClearButton(clearButton);
           }
 
-          formAutocompleteRequest(buttonsBlock.closest('form'));
+          formAutosaveRequest(buttonsBlock.closest('form'));
         });
       });
 
@@ -338,7 +632,7 @@
       .forEach(function (input) {
         input.addEventListener('blur', function (e) {
           //send ajax
-          fieldAutocompleteRequest(input);
+          fieldAutosaveRequest(input);
           resetClearButton(
             input
               .closest('.b-collapse-block__body')
@@ -350,7 +644,7 @@
     //autosave
     setInterval(function () {
       var form = document.querySelector('.b-report-form form');
-      formAutocompleteRequest(form);
+      formAutosaveRequest(form);
     }, 120000);
 
     //check the form on page load
@@ -388,7 +682,7 @@
             if (fieldIndex !== null) {
               return;
             }
-            if (input.value.trim() === '') {
+            if (!isInputValid(input)) {
               fieldIndex = index;
             }
           });
@@ -398,30 +692,38 @@
           fieldIndex
         ];
         if (fieldIndex !== null && field) {
+          setInvalid(field);
           field.focus();
         }
       });
 
-    var regExp = {
-      email: /^([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})$/i,
-    };
-
-    function inputValidation(input) {
+    function isInputValid(input) {
       var validFlag = false;
       var inputValue = input.value.trim();
 
-      //is valid
       if (inputValue !== '') {
         validFlag = true;
 
         if (
           (input.getAttribute('type') === 'email' &&
             !inputValue.match(regExp.email)) ||
-          (input.getAttribute('type') === 'checkbox' && !input.checked)
+          (input.getAttribute('kl_ab.original_type') &&
+            input.getAttribute('kl_ab.original_type') === 'email' &&
+            !inputValue.match(regExp.email)) ||
+          (input.getAttribute('type') === 'checkbox' && !input.checked) ||
+          (input.parentNode.querySelector('img.calendar-icon') &&
+            !inputValue.match(regExp.date))
         ) {
           validFlag = false;
         }
       }
+
+      return validFlag;
+    }
+
+    function inputValidation(input) {
+      //is valid
+      var validFlag = isInputValid(input);
 
       //highlight input
       if (validFlag === true) {
@@ -514,7 +816,7 @@
       inputValidation(input);
     }
 
-    function staffMembersAutocompleteRequest(btn, cnt) {
+    function staffMembersAutosaveRequest(btn, cnt) {
       var memberId = btn.closest('tr').getAttribute('data-url');
       var counter = cnt || 0;
       var id;
@@ -531,7 +833,7 @@
         success: function (data) {
           if (data && typeof data === 'object' && data.SUCCESS) {
             if (data.SUCCESS !== 'Y' && counter < 3) {
-              fieldAutocompleteRequest(btn, ++counter);
+              fieldAutosaveRequest(btn, ++counter);
             } else if (data.SUCCESS === 'Y' && typeof data.DATE === 'string') {
               //showAutocompleteTime( data.DATE );
             }
@@ -541,25 +843,35 @@
       });
     }
 
-    function fieldAutocompleteRequest(input, cnt) {
-      var inputName = input.getAttribute('name');
-      var inputValue = input.value;
+    function fieldAutosaveRequest(input, cnt) {
       var counter = cnt || 0;
-      var id;
+      var data = {};
+
+      //check if this is .b-add-input-block
+      if (input.closest('.b-add-input-block')) {
+        input
+          .closest('.b-add-input-block')
+          .querySelectorAll('.b-float-label input')
+          .forEach(function (inp) {
+            data[inp.getAttribute('name')] = inp.value;
+          });
+      } else {
+        data[input.getAttribute('name')] = input.value;
+      }
 
       if (document.getElementById('element_id')) {
-        id = document.getElementById('element_id').value;
+        data.element_id = document.getElementById('element_id').value;
       }
 
       $.ajax({
         url: input.closest('form').getAttribute('data-ajax-url'),
         type: input.closest('form').getAttribute('method'), //GET
         dataType: 'json',
-        data: { name: inputName, value: inputValue, element_id: id },
+        data: data,
         success: function (data) {
           if (data && typeof data === 'object' && data.SUCCESS) {
             if (data.SUCCESS !== 'Y' && counter < 3) {
-              fieldAutocompleteRequest(input, ++counter);
+              fieldAutosaveRequest(input, ++counter);
             } else if (data.SUCCESS === 'Y' && typeof data.DATE === 'string') {
               //showAutocompleteTime( data.DATE );
             }
@@ -575,18 +887,18 @@
       });
     }
 
-    function formAutocompleteRequest(form, cnt) {
+    function formAutosaveRequest(form, cnt, del_id) {
       var counter = cnt || 0;
 
       $.ajax({
         url: form.getAttribute('data-ajax-url'),
         type: form.getAttribute('method'), //GET
         dataType: 'json',
-        data: $(form).serialize(),
+        data: $(form).serialize() + '&del_fieldset_id=' + del_id,
         success: function (data) {
           if (data && typeof data === 'object' && data.SUCCESS) {
             if (data.SUCCESS !== 'Y' && counter < 3) {
-              formAutocompleteRequest(form, ++counter);
+              formAutosaveRequest(form, ++counter);
             } else if (data.SUCCESS === 'Y' && typeof data.DATE === 'string') {
               showAutocompleteTime(data.DATE);
             }

@@ -162,7 +162,6 @@
       opacity 1
 
 .b-complete-link
-  white-space nowrap
 
   .icon
     display inline-block
@@ -291,31 +290,31 @@
         em
           display inline
 
-  .b-input-hint
-    position absolute
-    top 48px
-    left 0
-    width 100%
-    background #fff
-    box-shadow 0 5px 10px #0000000d
-    border-radius 0 0 5px 5px
-    z-index 1
+.b-input-hint
+  position absolute
+  top 48px
+  left 0
+  width 100%
+  background #fff
+  box-shadow 0 5px 10px #0000000d
+  border-radius 0 0 5px 5px
+  z-index 2
 
-    &__item
-      display flex
-      align-items center
-      justify-content flex-start
-      padding 20px
+  &__item
+    display flex
+    align-items center
+    justify-content flex-start
+    padding 20px
 
-    &__img
-      width 64px
-      height 64px
-      border-radius 51%
-      background-bg()
-      margin-right 30px
+  &__img
+    width 64px
+    height 64px
+    border-radius 51%
+    background-bg()
+    margin-right 30px
 
-    &__text
-      font-size $14px
+  &__text
+    font-size $14px
 
 .b-add-input-block__item
   opacity 0
@@ -341,6 +340,55 @@
     input:not([type=checkbox]),
     input:not([type=radio]),
     textarea
+      background-color #e7f8e8
+
+    label
+      color #74c37a
+
+.b-add-fieldset-block__wrapper
+  position relative
+
+  .btn-delete
+    position absolute
+    top 7px
+    right 0
+
+    @media (max-width: 1199px)
+      position static
+      width 100%
+      background-size contain
+      background-color #ff0000
+      border-radius 10px
+
+.b-add-fieldset-block__item
+  opacity 0
+  height 0
+  transition( all .3s ease )
+
+  &.show
+    height calc(459px + 20px)
+
+    @media(max-width: 1199px)
+      height 728px
+
+  &.visible
+    opacity 1
+
+  input:not([type=checkbox]),
+  input:not([type=radio]),
+  textarea,
+  .ik_select_link_text
+    transition( background-color 1s ease )
+
+  label
+    transition( all .2s ease )
+
+  &.new
+
+    input:not([type=checkbox]),
+    input:not([type=radio]),
+    textarea,
+    .ik_select_link_text
       background-color #e7f8e8
 
     label

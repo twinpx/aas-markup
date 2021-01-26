@@ -181,7 +181,7 @@ hr
     margin-bottom 2rem
     
   &.hr--line
-    border-top 1px solid #eee !important
+    border-top 1px solid $line-color !important
 
 h1,.h1,
 h2,.h2,
@@ -542,6 +542,9 @@ h2,.h2
 .text-muted
   color #9b9b9b !important
   
+.text-semimuted
+  color #3b3b3b !important
+  
 .text-danger
   color $danger-color !important
 
@@ -608,3 +611,54 @@ label
 
   &.tab-3
     width 144px
+
+.ik_select
+  min-width 160px
+  width 100% !important
+
+  &_link
+  
+    &_text
+      height 48px
+      background-color #f5f5f5
+      font-size $16px
+      line-height 48px
+      padding 0 0 0 15px
+      position relative
+      white-space nowrap
+
+      &:after
+        content ''
+        display block
+        width 16px
+        height 16px
+        position absolute
+        top 16px
+        right 16px
+        background-bg()
+        z-index 1
+        background-image url(images/arrow-drop-down.svg)
+
+  &_dropdown
+    background-color #fff
+    border-radius 0 0 5px 5px
+    box-shadow 0 5px 5px #eee
+    border-top 1px solid #fff
+    padding 9px 0
+
+    ul
+      padding 5px 0
+      margin 0
+
+    li
+      list-style-type none
+      padding 0 20px
+      margin 0
+      font-size $16px
+      line-height 48px
+      cursor default
+      min-width 160px
+
+      &:hover
+        background-color #f2e4d84d
+        color #f39442
