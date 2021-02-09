@@ -2,6 +2,30 @@
 
 .b-float-label
   position relative
+
+  .password-invisible
+    position absolute
+    top 19px
+    right 14px
+    cursor pointer
+    z-index 1
+    
+
+    div
+      background-bg()
+      width 16px
+      height 10px
+    
+      &:first-child
+        display none
+
+    &.inverse
+
+      div:first-child
+        display block
+
+      div:last-child
+        display none
   
   input:not([type=checkbox]),
   input:not([type=radio]),

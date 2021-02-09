@@ -1,12 +1,8 @@
 document.querySelectorAll('.b-collapse-block__head').forEach(function (elem) {
   //hide on load
   if (
-    elem.closest('.b-collapse-block').getAttribute('class').search('open') ===
-      -1 &&
-    elem
-      .closest('.b-collapse-block')
-      .getAttribute('class')
-      .search('show-on-load') !== -1
+    elem.closest('.b-collapse-block').className.search('open') === -1 &&
+    elem.closest('.b-collapse-block').className.search('show-on-load') !== -1
   ) {
     $(elem)
       .closest('.b-collapse-block')
@@ -19,6 +15,7 @@ document.querySelectorAll('.b-collapse-block__head').forEach(function (elem) {
     return false;
   });
 
+  //open collapsed
   elem.addEventListener('click', function (e) {
     e.preventDefault();
     e.stopPropagation();

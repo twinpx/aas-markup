@@ -16,15 +16,31 @@ String.prototype.deformat = function () {
 };
 // String('2 150 000').deformat(); //2150000
 
+//phone mask
+document.querySelectorAll('[type=tel]').forEach(function (input) {
+  var phoneMask = IMask(input, {
+    mask: '+{7} (000) 000 00 00',
+  });
+});
+
 //input--num
 document.querySelectorAll('.input--num').forEach(function (input) {
+  var mask = IMask(input, {
+    mask: Number,
+    scale: 3,
+    signed: false,
+    radix: '.',
+    mapToRadix: [','],
+  });
   input.addEventListener('keyup', function (e) {
-    var value = String(input.value).deformat();
-    input.value = value === '' ? value : Number(value).format();
+    input.parentNode.querySelector('.span--num').classList.add('show--num');
   });
   input.addEventListener('blur', function (e) {
-    var value = String(input.value).deformat();
-    input.value = value === '' ? value : Number(value).format();
+    if (input.value === '') {
+      input.parentNode
+        .querySelector('.span--num')
+        .classList.remove('show--num');
+    }
   });
 });
 

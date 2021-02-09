@@ -30,6 +30,12 @@ else
           | 
           span 13 апреля 2020 14:53
 
+        .b-form-error
+          .b-form-error__icon( style="background-image: url( '/template/images/warning.svg' );" )
+          .b-form-error__text
+            p Личный кабинет доступен только физическим лицам. Информация о компании доступна в личном кабинете «Единоличного органа управления» СРО (генерального директора).
+            a( href="" ) Подробнее
+
         .b-collapse-block.open.slide
           .b-collapse-block__head
             a( href="" )
@@ -136,7 +142,7 @@ else
 
               .col-lg-6.col-12.small
                 span.text-muted Данные из реестра: 
-                a.b-complete-link( href="" ) +7 (903) 126 26 26
+                a.b-complete-link( href="" ) +7 (903) 1262626
                   span.icon( style="background-image: url( '/template/images/copy.svg' );" )
               
             hr
@@ -420,6 +426,7 @@ else
 
                 .b-float-label
 
+                  span.span--num тыс. руб.
                   input#SERVICE1.input--num( type="text" name="SERVICE1" value="" autocomplete="off" )
                   label( for="SERVICE1" ) Объем услуг за отчетный период
 
@@ -576,7 +583,7 @@ else
                 .b-add-input-block
                   .b-float-label
                     input#PROPERTY_176_0( type="text" name="PROPERTY[176][0]" value="FCGA" autocomplete="off" )
-                    label.active( for="PROPERTY_176_0" ) Название организации
+                    label.active( for="PROPERTY_176_0" ) Номер организации
                 
                   hr
 

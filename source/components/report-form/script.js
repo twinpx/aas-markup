@@ -7,15 +7,39 @@
       date: /^(0?[1-9]|[12][0-9]|3[01])\.(0?[1-9]|1[012])\.\d{4}$/i,
     };
 
+    //open collapsed
+    var openedLS = window.localStorage.getItem('collapseOpened');
+    if (openedLS && openedLS.length > 0) {
+      openedLS = openedLS.split(',');
+      document
+        .querySelectorAll('.b-collapse-block')
+        .forEach(function (block, index) {
+          if (
+            (openedLS[index] * 1 === 1 &&
+              block.className.search('slide') === -1) ||
+            (openedLS[index] * 1 === 0 &&
+              block.className.search('slide') !== -1)
+          ) {
+            block.querySelector('.b-collapse-block__head').click();
+          }
+        });
+    }
+
+    //save opened collapsed
+    document
+      .querySelectorAll('.b-collapse-block__head')
+      .forEach(function (head) {
+        head.addEventListener('click', function (e) {
+          saveOpenedCollapsed();
+        });
+      });
+
     //calendar click event
     document.addEventListener('click', function (e) {
       if (e.target.className.search('bx-calendar-cell') >= 0) {
         activeDateFieldLabel.classList.add('active');
       }
     });
-
-    //phone mask
-    $('[type=tel]').mask('+7 (999) 999 99 99');
 
     //add fieldset
     var ornzAutocomplete = function (ornzAutocompleteBlock) {
@@ -288,6 +312,8 @@
         var num = block.querySelectorAll('.b-float-label').length;
         var controlName = nameArray[0] + '[' + nameArray[1] + '][' + num + ']';
         var controlId = nameArray[0] + '_' + nameArray[1] + '_' + num;
+        var controlLable = block.querySelector('.b-float-label label')
+          .textContent;
         var div = document.createElement('div');
 
         div.className = 'b-add-input-block__item new';
@@ -298,7 +324,9 @@
           controlName +
           '" value="" autocomplete="off"><label for="' +
           controlId +
-          '">Название организации</label><a href="" class="btn-delete"></a></div><hr>';
+          '">' +
+          controlLable +
+          '</label><a href="" class="btn-delete"></a></div><hr>';
         button.before(div);
 
         //blur event
@@ -693,7 +721,20 @@
         ];
         if (fieldIndex !== null && field) {
           setInvalid(field);
-          field.focus();
+
+          if (
+            field.closest('.b-collapse-block').className.search('slide') === -1
+          ) {
+            field
+              .closest('.b-collapse-block')
+              .querySelector('.b-collapse-block__head')
+              .click();
+            setTimeout(function () {
+              field.focus();
+            }, 500);
+          } else {
+            field.focus();
+          }
         }
       });
 
@@ -814,6 +855,11 @@
         .querySelector('.b-float-label label')
         .classList.add('active');
       inputValidation(input);
+      if (input.getAttribute('type') === 'tel') {
+        IMask(input, {
+          mask: '+{7} (000) 000 00 00',
+        });
+      }
     }
 
     function staffMembersAutosaveRequest(btn, cnt) {
@@ -887,9 +933,23 @@
       });
     }
 
+    function saveOpenedCollapsed() {
+      //save opened blocks
+      var collapseOpenedValue = [];
+      document.querySelectorAll('.b-collapse-block').forEach(function (block) {
+        if (block.className.search('slide') === -1) {
+          collapseOpenedValue.push(0);
+        } else {
+          collapseOpenedValue.push(1);
+        }
+      });
+      window.localStorage.setItem('collapseOpened', collapseOpenedValue);
+    }
+
     function formAutosaveRequest(form, cnt, del_id) {
       var counter = cnt || 0;
 
+      //send request
       $.ajax({
         url: form.getAttribute('data-ajax-url'),
         type: form.getAttribute('method'), //GET
