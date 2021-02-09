@@ -214,6 +214,9 @@
                         label.classList.remove('active');
                       }
                     });
+                    input.addEventListener('keyup', function () {
+                      restartFormAutosaveTimeout();
+                    });
                   });
 
                   //change event
@@ -330,7 +333,8 @@
         button.before(div);
 
         //blur event
-        div.querySelector('input').addEventListener('blur', function (e) {
+        var input = div.querySelector('input');
+        input.addEventListener('blur', function (e) {
           var input = e.target;
           fieldAutosaveRequest(input);
           //float label
@@ -340,6 +344,9 @@
           } else {
             label.classList.remove('active');
           }
+        });
+        input.addEventListener('keyup', function () {
+          restartFormAutosaveTimeout();
         });
 
         //effect
@@ -547,6 +554,9 @@
 
         table.querySelector('tbody').appendChild(tr);
         companyObject = {};
+
+        //autosave
+        formAutosaveRequest();
       });
     });
 
@@ -583,6 +593,7 @@
               .closest('.row')
               .querySelector('.b-float-label input, .b-float-label textarea')
           );
+          restartFormAutosaveTimeout();
           resetClearButton(
             completeLink
               .closest('.b-collapse-block__body')
@@ -597,10 +608,11 @@
       .forEach(function (buttonsBlock) {
         var bodyElem = buttonsBlock.closest('.b-collapse-block__body');
         var buttons = buttonsBlock.querySelectorAll('.btn');
+        var completeButton = buttons[0];
         var clearButton = buttons[1];
 
         //complete button
-        buttons[0].addEventListener('click', function (e) {
+        completeButton.addEventListener('click', function (e) {
           e.preventDefault();
           bodyElem
             .querySelectorAll('.b-complete-link')
@@ -667,13 +679,10 @@
               .querySelectorAll('.b-report-form__buttons .btn ')[1]
           );
         });
+        input.addEventListener('keyup', function () {
+          restartFormAutosaveTimeout();
+        });
       });
-
-    //autosave
-    setInterval(function () {
-      var form = document.querySelector('.b-report-form form');
-      formAutosaveRequest(form);
-    }, 120000);
 
     //check the form on page load
     if (isFormValid()) {
@@ -880,6 +889,7 @@
           if (data && typeof data === 'object' && data.SUCCESS) {
             if (data.SUCCESS !== 'Y' && counter < 3) {
               fieldAutosaveRequest(btn, ++counter);
+              restartFormAutosaveTimeout();
             } else if (data.SUCCESS === 'Y' && typeof data.DATE === 'string') {
               //showAutocompleteTime( data.DATE );
             }
@@ -946,7 +956,22 @@
       window.localStorage.setItem('collapseOpened', collapseOpenedValue);
     }
 
+    //autosave
+    var formAutosaveTimeoutId;
+
+    function restartFormAutosaveTimeout() {
+      console.log('restartFormAutosaveTimeout');
+      if (formAutosaveTimeoutId) {
+        clearTimeout(formAutosaveTimeoutId);
+      }
+      formAutosaveTimeoutId = setTimeout(function () {
+        var form = document.querySelector('.b-report-form form');
+        formAutosaveRequest(form);
+      }, 120000);
+    }
+
     function formAutosaveRequest(form, cnt, del_id) {
+      var form = form || document.querySelector('.b-report-form form');
       var counter = cnt || 0;
 
       //send request
