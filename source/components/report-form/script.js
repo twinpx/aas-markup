@@ -233,12 +233,16 @@
                   setTimeout(function () {
                     div.classList.add('show');
                     setTimeout(function () {
+                      div.classList.add('height-auto');
                       div.classList.add('visible');
                       setTimeout(function () {
                         div.classList.remove('new');
                       }, 1000);
                     }, 300);
                   }, 50);
+
+                  //autosave
+                  formAutosaveRequest();
                 }
               }
             },
@@ -960,7 +964,6 @@
     var formAutosaveTimeoutId;
 
     function restartFormAutosaveTimeout() {
-      console.log('restartFormAutosaveTimeout');
       if (formAutosaveTimeoutId) {
         clearTimeout(formAutosaveTimeoutId);
       }

@@ -32,16 +32,17 @@ document.querySelectorAll('.input--num').forEach(function (input) {
     radix: '.',
     mapToRadix: [','],
   });
-  input.addEventListener('keyup', function (e) {
-    input.parentNode.querySelector('.span--num').classList.add('show--num');
-  });
-  input.addEventListener('blur', function (e) {
-    if (input.value === '') {
-      input.parentNode
-        .querySelector('.span--num')
-        .classList.remove('show--num');
-    }
-  });
+  var spanNum = input.parentNode.querySelector('.span--num');
+  if (spanNum) {
+    input.addEventListener('keyup', function (e) {
+      spanNum.classList.add('show--num');
+    });
+    input.addEventListener('blur', function (e) {
+      if (input.value === '') {
+        spanNum.classList.remove('show--num');
+      }
+    });
+  }
 });
 
 //td click
