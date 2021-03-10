@@ -7,6 +7,14 @@
       date: /^(0?[1-9]|[12][0-9]|3[01])\.(0?[1-9]|1[012])\.\d{4}$/i,
     };
 
+    //open modal
+    if (document.getElementById('ieAlertModal')) {
+      $('#ieAlertModal').modal('show');
+      $('#ieAlertModal').on('hide.bs.modal', function (event) {
+        window.location.href = window.backUrl;
+      });
+    }
+
     //open collapsed
     var openedLS = window.localStorage.getItem('collapseOpened');
     if (openedLS && openedLS.length > 0) {

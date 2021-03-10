@@ -24,7 +24,31 @@ else
       a.b-reports-list__title( href="/pages/report-form/" ) Пора сдавать отчет
       .b-reports-list__data
         span Крайний срок: 22 марта 2021 (56 дней)
-        a.btn.btn-secondary.btn-md( href="/pages/report-form/" ) Необходимо сдать
+        | <!--[if lte IE 9]><a class="btn btn-secondary btn-md" data-toggle="modal" data-target="#ieAlertModal">Необходимо сдать</a><![endif]-->
+        |	<!--[if gt IE 9]><a class="btn btn-secondary btn-md" href="/profile/reports/auditor/edit.php?edit=Y">Необходимо сдать</a><![endif]-->
+        |	<!--[if !IE]>-->
+        <a class="btn btn-secondary btn-md" href="/profile/reports/auditor/edit.php?edit=Y">Необходимо сдать</a>
+        | <!--<![endif]-->
+
+        #ieAlertModal.modal--text.modal--alert.modal.fade(tabindex="-1" aria-labelledby="editConfirmModalLabel" aria-hidden="true")
+          .modal-dialog
+            .modal-content
+              button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
+              .modal-body( data-hint-url="/components/report-form/hint-response.json" data-info-url="/components/report-form/info-response.json" data-method="GET" )
+                h3.text-center Вы используете Internet Explorer 10
+
+                hr
+
+                p С 12 января 2016 года Microsoft перестала обновлять системы безопасности и осуществлять техническую поддержку старых версий Internet Explorer. При своевременном обновлении браузера система безопасности защищает данные на компьютерах пользователей от установки вредоносного ПО и хакерских атак.
+                
+                p Корректное отображение сайта и работа его сервисов в Microsoft Internet Explorer 10 и более ранних версиях, не гарантируется.
+                
+                p Для безопасной и надежной работы рекомендуем Вам использовать один из современных бесплатных браузеров:
+
+                hr
+
+                include ../../modules/browser-choice/include
+        
 
     hr.hr--md
 

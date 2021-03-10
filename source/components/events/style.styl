@@ -21,6 +21,85 @@
     
 .b-events
 
+  &__menu
+    border-bottom 1px solid $placeholder-color
+    padding-bottom 10px
+    margin-bottom 30px
+
+    @media(min-width 768px)
+      display block !important
+
+    div
+      display inline-block
+
+    a,
+    span
+      display inline-block
+      font-size $14px
+      font-weight $bold
+
+    &-title
+      position relative
+      font-family $roboto
+      font-weight $bold
+      font-size 1.2rem
+      line-height 1.4
+      margin 0 0 1rem
+      letter-spacing -1px
+
+      span
+        position absolute
+        top 0
+        right 0
+        width 26px
+        height 26px
+        background-bg()
+
+    &-base
+      margin-right 78px
+
+      a,
+      span
+        margin-right 30px
+
+        &:last-child
+          margin-right 0
+
+    &-back
+      margin-right 78px
+
+      a,
+      span
+        padding-left 20px
+        background-repeat no-repeat
+        background-position left center
+        background-size 12px
+
+    &-calendar
+      background-repeat no-repeat
+      background-position left center
+      background-size 16px
+
+      a
+        padding-left 28px
+
+    @media(max-width 767px)
+      display none
+      background-color $placeholder-color
+      padding 20px
+
+      a,
+      span
+        display block
+        padding 6px
+        padding-left 28px
+        margin 0
+        font-weight $normal
+
+      &-base,
+      &-back
+        margin 0
+
   &-item
     height 100%
     background-color #fafafa
@@ -115,4 +194,47 @@
       @media( min-width 992px ) and ( max-width 1199px )
         font-size $12px
         
-            
+ /*datepicker*/
+ #events-menu-calendar {
+   position: relative;
+ }
+ .mx-input {
+  font-size: 0.88rem !important;
+  border: none;
+  background: transparent;
+  padding: 0;
+  margin: 0;
+  width: 100% !important;
+  height: 100%;
+  cursor: pointer;
+  opacity: 0;
+}
+.mx-input-wrapper {
+  width: 100%;
+}
+.mx-datepicker {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+.mx-icon-calendar {
+  width: 16px;
+  height: 16px;
+  background: url('/local/templates/aas/images/calendar.svg') no-repeat center;
+  background-size: cover;
+  cursor: pointer;
+  right: 15px;
+  display: none;
+}
+.mx-icon-calendar svg {
+  display: none;
+}
+.mx-datepicker {
+  width: 100%;
+}
+.mx-datepicker+label {
+  pointer-events: none;
+} 
+.mx-icon-clear {
+  display: none !important;
+}          

@@ -453,6 +453,33 @@ h2,.h2
         &:focus
           box-shadow none
   
+  &-danger
+    
+    &,
+    &:hover,
+    &.focus,
+    &:focus,
+    &.disabled,
+    &:disabled
+      color #fff
+      background-color $danger-color
+      border-color $danger-color
+      
+    &.focus,
+    &:focus
+      box-shadow none
+
+    &:not(:disabled):not(.disabled)
+
+      &.active,
+      &:active
+        color #fff
+        background-color $danger-color
+        border-color $danger-color
+
+        &:focus
+          box-shadow none
+  
   &[disabled],
   &.disabled
     pointer-events none
@@ -561,6 +588,9 @@ h2,.h2
   
 .text-success
   color $success-color !important
+  
+.text-normal
+  color #F2762E
 
 label
   font-family $roboto
@@ -579,6 +609,11 @@ label
       margin 0 auto
       padding-top 70px
       padding-bottom 70px
+
+  &--alert
+    
+    .modal-dialog
+      box-shadow 0 5px 10px #FF000026
 
   &-buttons
 
