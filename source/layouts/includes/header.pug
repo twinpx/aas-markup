@@ -524,15 +524,72 @@ header.b-header.ph-block
               input( type="text" name="search" value="" )
               
       .b-header__profile-menu
-        a( href="/pages/profile/" ) Контроль качества
-        a( href="/pages/profile/" ) Повышение квалификации
-        a( href="/pages/profile/" ) Подтверждение повышения квалификации
-        span Аттестация аудиторов
-        a( href="/pages/profile/" ) Дисциплинарное производство
-        a( href="/pages/profile/" ) Международное сотрудничество
-        a( href="/pages/profile/" ) МФБ (IFAC)
+        .b-header__menu-item.bx-nav-1-lvl(data-dropdown="true")
+          .b-header__menu-arrow.d-block.d-md-none(style="background-image: url( '/local/components/twinpx/menu.multilevel/templates/header_horizontal_multilevel/images/arrow-right.svg' );")
+          span
+            a(href="/events/") Мероприятия
+
+          .b-header__menu-dropdown.bx-nav-2-lvl-wrap
+              
+            .b-header__menu-dropdown__item.bx-nav-2-lvl
+              a(href="/events/vebinary/")
+                | Вебинары
+            
+            .b-header__menu-dropdown__item.bx-nav-2-lvl
+              a(href="/events/zasedanie/")
+                | Заседания
+            
+            .b-header__menu-dropdown__item.bx-nav-2-lvl
+              a(href="/events/konferentsiya/")
+                | Конференции
+
+        .b-header__menu-item.bx-nav-1-lvl(data-dropdown="true")
+          .b-header__menu-arrow.d-block.d-md-none(style="background-image: url( '/local/components/twinpx/menu.multilevel/templates/header_horizontal_multilevel/images/arrow-right.svg' );")
+          span
+            a(href="/events/") Повышение квалификации
+            
+          .b-header__menu-dropdown.bx-nav-2-lvl-wrap
+              
+            .b-header__menu-dropdown__item.bx-nav-2-lvl
+              a(href="/events/vebinary/")
+                | Вебинары
+            
+            .b-header__menu-dropdown__item.bx-nav-2-lvl
+              a(href="/events/zasedanie/")
+                | Заседания
+            
+            .b-header__menu-dropdown__item.bx-nav-2-lvl
+              a(href="/events/konferentsiya/")
+                | Конференции
+                
+        .b-header__menu-item.bx-nav-1-lvl(data-dropdown="true")
+          .b-header__menu-arrow.d-block.d-md-none(style="background-image: url( '/local/components/twinpx/menu.multilevel/templates/header_horizontal_multilevel/images/arrow-right.svg' );")
+          span
+            a(href="/events/") Контроль качества
+            
+          .b-header__menu-dropdown.bx-nav-2-lvl-wrap
+              
+            .b-header__menu-dropdown__item.bx-nav-2-lvl
+              a(href="/events/vebinary/")
+                | Вебинары
+            
+            .b-header__menu-dropdown__item.bx-nav-2-lvl
+              a(href="/events/zasedanie/")
+                | Заседания
+            
+            .b-header__menu-dropdown__item.bx-nav-2-lvl
+              a(href="/events/konferentsiya/")
+                | Конференции
+              
+        //-a( href="/pages/profile/" ) Контроль качества
+        //-a( href="/pages/profile/" ) Повышение квалификации
+        //-a( href="/pages/profile/" ) Подтверждение повышения квалификации
+        //-span Аттестация аудиторов
+        //-a( href="/pages/profile/" ) Дисциплинарное производство
+        //-a( href="/pages/profile/" ) Международное сотрудничество
+        //-a( href="/pages/profile/" ) МФБ (IFAC)
           em.b-note-badge( style="background-color: #f00;" ) !
-        a( href="/pages/profile/" ) ICAEW
+        //-a( href="/pages/profile/" ) ICAEW
 
 //-.container-fluid
 
