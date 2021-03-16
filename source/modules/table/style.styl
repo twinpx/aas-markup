@@ -1,42 +1,14 @@
-table.table
-  font-family $roboto
+@import '../../styl/component-include.styl'
 
-  th,
-  td
-    font-size $14px
-    text-align center
-    vertical-align middle
-    border-top none
+.table,
+.table-responsive
+
+  thead th
     border-bottom 1px solid $line-color
-    cursor pointer
-
-    &.asc,
-    &.desc
-      background-color #f2e4d866
-
-    @media( max-width 1399px )
-
-      &:nth-child(6)
-        display none
-
-    @media( max-width 1199px )
-
-      &:nth-child(5)
-        display none
-
-    @media( max-width 991px )
-
-      &:nth-child(4)
-        display none
-
-    @media( max-width 575px )
-
-      &:nth-child(2)
-        display none
-
-  th
-    padding-right 35px
-    padding-left 35px
+    font-family $roboto
+    font-weight 600
+    font-size 0.8rem
+    line-height 1rem
 
     &.asc,
     &.desc
@@ -74,16 +46,76 @@ table.table
         transform( rotate( -135deg ))
         margin-top -1px
 
+  th,
   td
+    padding 1.25rem 1.5rem
+    border-top-color $line-color
 
-    &:first-child
-      text-align left
+    &.asc,
+    &.desc
+      background-color rgba(242,228,216,0.4)
 
-  tbody
+    @media( max-width 1399px )
 
-    tr
+      &:nth-child(6)
+        display none
+
+    @media( max-width 1199px )
+
+      &:nth-child(5)
+        display none
+
+    @media( max-width 991px )
+
+      &:nth-child(4)
+        display none
+
+    @media( max-width 575px )
+
+      &:nth-child(2)
+        display none
+
+  tr[data-url]
+    transition( background-color .5s ease )
+
+    td
       cursor pointer
-      transition( background-color .5s ease )
-    
-      &:hover
-        background-color #fcfcfc
+      
+    &:hover
+      background-color #fcfcfc
+
+  &.table--sm
+
+    th,
+    td
+      font-family $roboto
+      font-size $14px
+
+  &.table--center
+
+    th,
+    td
+      text-align center
+      vertical-align middle
+
+      &:first-child
+        text-align left
+
+  &.table--sortable
+
+    th
+      cursor pointer
+      padding-right 35px
+
+    th,
+    td
+      border-top none
+      border-bottom 1px solid $line-color
+
+  &.table--sortable.table--center
+
+    th
+      padding-left 35px
+
+      &:first-child
+        padding-left 1.5rem
