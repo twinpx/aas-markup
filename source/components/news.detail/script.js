@@ -12,6 +12,17 @@
     });
 
     var sidenotesArray = [];
+    
+    function getOffsetTop(elem) {
+      var top = 0;
+
+      while (elem && elem.tagName.toLowerCase() !== 'article' ) {
+        top = top + parseInt(elem.offsetTop);
+        elem = elem.offsetParent;
+      }
+
+      return top;
+    }
 
     //sidenote
     document.querySelectorAll( 'article .b-sidenote' ).forEach( function( sidenote ) {
@@ -25,7 +36,7 @@
       document.querySelectorAll( 'article a[ href="#profile" ]' ).forEach( function( textLink ) {
         var text = textLink.textContent.replace(/\s+/g, ' ').trim();
         if ( text === fio ) {
-          top = textLink.offsetTop;
+          top = getOffsetTop( textLink );
           //hover
           textLink.addEventListener( 'mouseenter', function(e) {
             openSidenote( sidenote );

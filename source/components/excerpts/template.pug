@@ -1,0 +1,60 @@
+// start /components/excerpts/
+
+//- push style and script file to the end of the page
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'excerpts'
+else
+  - var componentsArray = [ 'excerpts' ]
+  
+.b-excerpts.ph-block
+
+  .ph
+
+    .ph__text
+      div
+      div
+      div
+      div
+      div
+      div
+
+  .ph-content
+
+    .b-excerpts__item.message
+      .b-excerpts__title Упрощенная выписка
+      .b-excerpts__data
+        a.btn.btn-secondary.btn-md( href="/pages/excerpt1/" ) Получить выписку
+
+    hr.hr--md
+
+    .b-excerpts__item
+      .b-excerpts__title
+        a( href="/pages/report-form/" ) Упрощенная выписка СРО ААС
+        span 12 марта 2021
+      .b-excerpts__data
+        a.b-excerpts__file( href="/pages/excerpt1/" style="background-image: url('/template/images/pdf.svg')" ) 8.07 Мб .pdf
+
+    .b-excerpts__item
+      .b-excerpts__title
+        a( href="/pages/report-form/" ) Упрощенная выписка СРО ААС
+        span 12 марта 2021
+      .b-excerpts__data
+        a.b-excerpts__file( href="/pages/excerpt1/" style="background-image: url('/template/images/pdf.svg')" ) 8.07 Мб .pdf
+
+    .b-excerpts__item
+      .b-excerpts__title
+        a( href="/pages/report-form/" ) Упрощенная выписка СРО ААС
+        span 12 марта 2021
+      .b-excerpts__data
+        a.b-excerpts__file( href="/pages/excerpt1/" style="background-image: url('/template/images/pdf.svg')" ) 8.07 Мб .pdf
+
+    hr.hr--xl
+
+    .b-excerpts__item.message
+      .b-excerpts__title Полная выписка
+      .b-excerpts__data
+        a.btn.btn-secondary.btn-md( href="/pages/excerpt1/" ) Получить выписку
+
+    .b-excerpts__empty У вас пока нет ни одной выписки.
+
+// end /components/excerpts/

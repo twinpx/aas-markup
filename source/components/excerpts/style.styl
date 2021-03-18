@@ -1,0 +1,92 @@
+@import '../../styl/component-include.styl'
+
+.b-excerpts
+
+  &.ph-block
+    
+    &.ph-block--animated
+      
+      .ph-content
+        position static
+        width auto
+        opacity 1
+        
+      .ph
+        position absolute
+        top 0
+        left 0
+        width 100%
+        opacity 0
+        z-index -1
+    
+.b-excerpts
+
+  &__empty
+    padding 1.25rem 1.5rem
+    font-family $roboto
+
+  &__item
+    border-bottom 1px solid $line-color
+    display flex
+    justify-content space-between
+    align-items center
+    padding 1.25rem 1.5rem
+
+    &:hover
+      background-color #fcfcfc
+
+    &.message
+      background-color #fafafa
+      border-bottom none
+      border-radius 10px
+
+      .b-excerpts__title
+        font-size $24px
+
+    @media( max-width 575px )
+      display block
+
+  &__title
+    font-weight $bold
+    font-family $roboto
+    margin-right 20px
+
+    a
+      display inline-block
+      margin-right 20px
+
+    span 
+      font-weight $normal
+
+  &__data
+    font-size $16px
+    font-family $roboto
+    display flex
+    justify-content flex-end
+    align-items center
+
+    @media( max-width 1100px )
+      display block
+      text-align right
+      margin-right 0
+
+    @media( max-width 575px )
+      text-align left
+
+  &__file
+    display inline-block
+    white-space nowrap
+    padding-right 52px
+    background-repeat no-repeat
+    background-position right center
+    background-size contain
+    line-height 37px
+
+    @media( max-width 1100px )
+      text-align right
+      margin-right 0
+      margin-bottom 10px
+
+    @media( max-width 575px )
+      text-align left
+      margin-top 10px
