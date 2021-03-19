@@ -5,30 +5,31 @@ html
     meta( charset="utf-8" )
     
   body
+    link( href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700" rel="stylesheet" )
     link( href="/components/excerpt/style.css" rel="stylesheet" )
 
     table.header
+      col( width="175" )
+      col( width="425" )
+      col( width="200" )
       tr
         td.aas-logo
-          img( src="" alt="СРО ААС" width="150" height="150" )
-        td.text( style="text-align: center;")
-          div( style="text-decoration: uppercase;" ) Саморегулируемая организация аудиторов
-          div( style="text-decoration: uppercase;" ) Ассоциация «Содружество»
-          div член Международной Федерации бухгалтеров (IFAC)
-          div (ОГРН 1097799010870, ИНН 7729440813, КПП 772901001)
-          div 119192, г. Москва, Мичуринский проспект, дом 21, корпус 4.
-          div т: +7 (495) 734-22-22, ф: +7 (495) 734-04-22,
-            | 
-            span www.auditor-sro.org,
-            | 
-            | info@auditor-sro.org
+          img( src="/template/images/logo-aas.svg" alt="СРО ААС" width="120" )
+        td.text
+          .header-companyname Саморегулируемая организация аудиторов<br>Ассоциация «Содружество»
+          .header-membership Член Международной Федерации Бухгалтеров (IFAC)
 
-        td.ifac-logo
-          img( src="" alt="IFAC" width="70" height="50" )
+        td.header-contacts
+          p +7 (495) 734-22-22
+          p 119192, г. Москва Мичуринский проспект, дом 21, корпус 4
+          p auditor-sro.org
+          p ОГРН 1097799010870 ИНН 7729440813 КПП 772901001
 
     table.h1
       tr
-        td ВЫПИСКА<br>из реестра аудиторов и аудиторских организаций<br>Саморегулируемой организации аудиторов<br>Ассоциации «Содружество»
+        td
+          .h1-title ВЫПИСКА
+          p из реестра аудиторов и аудиторских организаций<br>Саморегулируемой организации аудиторов<br>Ассоциации «Содружество»
 
     table.date-number
       tr
