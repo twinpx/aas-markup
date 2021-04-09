@@ -426,6 +426,33 @@ h2,.h2
         &:focus
           box-shadow none
   
+  &-dark
+    
+    &,
+    &:hover,
+    &.focus,
+    &:focus,
+    &.disabled,
+    &:disabled
+      color #fff
+      background-color #0A355A
+      border-color #0A355A
+      
+    &.focus,
+    &:focus
+      box-shadow none
+
+    &:not(:disabled):not(.disabled)
+
+      &.active,
+      &:active
+        color $primary-color
+        background-color #0A355A
+        border-color #0A355A
+
+        &:focus
+          box-shadow none
+  
   &-success
     
     &,
