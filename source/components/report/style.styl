@@ -28,3 +28,45 @@
     
   .b-collapse-block__body
     padding-bottom 20px
+
+@media print
+
+  .b-body-shutter,
+  #bx-panel-back,
+  #bx-panel,
+  .b-header,
+  .b-breadcrumbs,
+  h1,
+  aside.d-md-block,
+  .b-left-menu,
+  .b-footer,
+  .b-collapse-block__head span
+    display none !important
+
+  article.col-md-8
+    width 100% !important
+    max-width 100% !important
+    flex none !important
+
+  .b-collapse-block
+    border-bottom none
+
+    &__head
+
+      a
+        text-decoration none
+
+    &__body
+      display block !important
+
+      .small
+        font-size 1rem
+
+      .text-muted
+        color #000
+        font-weight bold
+        margin-right 20px
+        float left
+
+      p
+        color #000
