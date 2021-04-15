@@ -63,12 +63,6 @@
     .btn
       min-width 158px
 
-      &.invisible
-        visibility hidden
-
-        @media( max-width 575px )
-          display none
-
     @media( max-width 1100px )
       
       &,
@@ -96,3 +90,18 @@
 
     @media( max-width 575px )
       width 100%
+
+  &__status
+    background-repeat no-repeat
+    background-position 3px center
+    background-size 32px
+    width 158px
+    height 38px
+    border 1px solid $success-color
+    color $success-color
+    border-radius 19px
+    font-size $12px
+    line-height 36px
+    padding 0 12px 0 38px
+    text-align center
+    display inline-block

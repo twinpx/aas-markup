@@ -277,7 +277,6 @@ module.exports = function( grunt ) {
       },
       prodComponents: {
         options: {
-          mangle: true,
           compress: {}
         },
         files: [

@@ -1,5 +1,10 @@
 // start /components/poll/
 
+script( src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js" )
+script( src="https://unpkg.com/vuex" )
+
+script( src="/components/poll/store.js" )
+
 //- push style and script file to the end of the page
 if componentsArray
   - componentsArray[ componentsArray.length ] = 'poll'
@@ -36,53 +41,19 @@ else
 
     hr
 
-    .b-poll__questions
-      
-      .b-poll__questions__item
+    form( action="" method="" )
 
-        h3 Вопрос номер один
+      #pollQuestions
 
-        p Текст анонса и пояснения для вопроса номер 1.
+      hr.hr--lg
 
-        .b-poll__questions__note Выбрано 2 из допустимых 2
+      include ../../modules/checkbox/include
 
-        .b-poll__questions__set
+      hr.hr--lg
 
-          label.b-poll__form-control.i-active
-
-            .b-poll__form-control__img( style="background-image: url('/upload/events/1.jpeg');")
-
-            .b-poll__form-control__text
-              b Вариант ответ номер один с пояснением
-              span Очень короткое пояснение вопроса.
-
-            .b-poll__checkbox
-              input( type="checkbox" class="filled-in" checked )
-              span
-
-          label.b-poll__form-control.i-active
-
-            .b-poll__form-control__img( style="background-image: url('/upload/events/2.jpeg');")
-
-            .b-poll__form-control__text
-              b Вариант ответ номер один с пояснением
-              span Очень короткое пояснение вопроса. Или очень длинное. Очень короткое пояснение вопроса. Или очень длинное. Очень короткое пояснение вопроса. Или очень длинное. Очень короткое пояснение вопроса. Или очень длинное.
-
-            .b-poll__radio
-              input( type="radio" name="r1" class="with-gap" checked )
-              span
-
-          label.b-poll__form-control.i-active
-
-            .b-poll__form-control__img( style="background-image: url('/upload/events/2.jpeg');")
-
-            .b-poll__form-control__text
-              b Вариант ответ номер один с пояснением
-              span Очень короткое пояснение вопроса. Или очень длинное. Очень короткое пояснение вопроса. Или очень длинное. Очень короткое пояснение вопроса. Или очень длинное. Очень короткое пояснение вопроса. Или очень длинное.
-
-            .b-poll__radio
-              input( type="radio" name="r1" class="with-gap" checked )
-              span
+      .b-poll__submit
+        button.btn.btn-secondary.btn-lg( type="submit" disabled ) Проголосовать
+        small.text-muted Вы сможете изменить свой выбор до даты окончания голосования — 13 марта 2021 23:30.
 
 
 
