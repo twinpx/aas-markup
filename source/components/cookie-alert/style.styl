@@ -16,12 +16,16 @@
   transition( transform .5s ease )
   z-index -1
 
-  @media( max-width 767px ) {
+  @media( max-width 767px )
+    left 15px
+    bottom 15px
+
+  @media( max-width 575px )
+    display block
     left 15px
     bottom 15px
     width calc( 100% - 30px )
     max-width 100%
-  }
 
   &.i-show
     opacity 1
@@ -46,6 +50,13 @@
       &:hover
         color #fff
 
+    @media( max-width 575px )
+      width 100%
+      margin-bottom 15px
+
   .btn
     width 158px
     font-size $12px
+
+    @media( max-width 575px )
+      width 100%

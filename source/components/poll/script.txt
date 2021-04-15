@@ -3,7 +3,6 @@ window.onload = function () {
   document
     .querySelector('.b-poll .b-checkbox [type="checkbox"]')
     .addEventListener('change', function (e) {
-      console.log(e.target.checked);
       if (e.target.checked) {
         document
           .querySelector('.b-poll .btn[type="submit"]')

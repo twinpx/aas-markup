@@ -62,3 +62,74 @@
     
   .b-collapse-block__body
     padding-bottom 20px
+
+@media print
+
+  .b-body-shutter,
+  #bx-panel-back,
+  #bx-panel,
+  .b-header,
+  .b-breadcrumbs,
+  aside.d-md-block,
+  .b-left-menu,
+  .b-footer,
+  .b-collapse-block__head span,
+  .b-profile__photo
+    display none !important
+
+  h1
+    margin 0 0 10px !important
+
+  article.col-md-8
+    width 100% !important
+    max-width 100% !important
+    flex none !important
+
+  .b-collapse-block
+    border-bottom none
+
+    &__head
+      padding 0 0 10px !important
+
+      a
+        text-decoration none
+        color #000 !important
+        opacity 1 !important
+
+    &__body
+      display block !important
+      padding-bottom 0 !important
+
+      .small
+        font-size 1rem
+
+      .text-muted
+        color #000 !important
+        font-weight bold
+        margin 0 10px 0 0 !important
+        float left
+        line-height 1.2
+
+      p
+        color #000 !important
+        margin 0 0 5px !important
+        line-height 1.2
+
+        &:after
+          content ''
+          display block
+          clear both
+
+      hr
+        margin 0 !important
+
+      .row
+        margin-bottom 10px
+
+  .b-report__date
+    position static
+    top auto
+    right auto
+    font-size .9rem
+    color #000 !important
+    margin-bottom 20px !important
