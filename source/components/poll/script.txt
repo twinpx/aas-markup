@@ -5,11 +5,11 @@ window.onload = function () {
     .addEventListener('change', function (e) {
       if (e.target.checked) {
         document
-          .querySelector('.b-poll .btn[type="submit"]')
+          .querySelector('.b-poll .btn[data-toggle="modal"]')
           .removeAttribute('disabled');
       } else {
         document
-          .querySelector('.b-poll .btn[type="submit"]')
+          .querySelector('.b-poll .btn[data-toggle="modal"]')
           .setAttribute('disabled', true);
       }
     });
@@ -17,16 +17,33 @@ window.onload = function () {
   //poll vue application
   if (!window.Vue && !window.Vuex) return;
 
+  Vue.use(Vuex);
+
   const store = new Vuex.Store({
     state: window.pollStore,
     mutations: {
       changeChecked(state, payload) {
-        state.questions[payload.questionIndex].answers[
-          payload.answerIndex
-        ].checked = payload.checked;
+        state.groups[payload.groupIndex].questions[
+          payload.questionIndex
+        ].answers[payload.answerIndex].checked = payload.checked;
       },
       changeCheckedNum(state, payload) {
-        state.questions[payload.questionIndex].checkedNum = payload.checkedNum;
+        state.groups[payload.groupIndex].questions[
+          payload.questionIndex
+        ].checkedNum = payload.checkedNum;
+      },
+      setActiveQuestion(state, payload) {
+        this.commit('removeActiveQuestion');
+        state.groups[payload.groupIndex].questions[
+          payload.questionIndex
+        ].isActive = true;
+      },
+      removeActiveQuestion(state) {
+        state.groups.forEach(function (group) {
+          group.questions.forEach(function (question) {
+            question.isActive = false;
+          });
+        });
       },
     },
   });
@@ -34,33 +51,42 @@ window.onload = function () {
   Vue.component('formControlCheckbox', {
     data() {
       return {
-        checked: this.data.checked,
+        checked: this.answer.checked,
       };
     },
-    props: ['data', 'questionIndex', 'index'],
+    props: ['groupIndex', 'questionIndex', 'answerIndex', 'answer'],
     template: `<label class="b-poll__form-control" :class="[{'i-active': checked}, {'i-disabled': getDisabledClass()}]">
       <div class="b-poll__form-control__content">
-        <div class="b-poll__form-control__img" :style="getStyle()" v-if="data.img"></div>
-        <div class="b-poll__form-control__text"><b>{{data.label}}</b><span>{{data.note}}</span></div>
+        <div class="b-poll__form-control__img" :style="getStyle()" v-if="answer.img"></div>
+        <div class="b-poll__form-control__text"><b>{{answer.label}}</b><span>{{answer.note}}</span></div>
       </div>
-      <div class="b-poll__checkbox"><input type="checkbox" :name="data.name" v-model="checked" :value="data.value" class="filled-in" @change="change()"><span></span></div>
+      <div class="b-poll__checkbox"><input type="checkbox" :name="answer.name" v-model="checked" :value="answer.value" class="filled-in" @change="change()"><span></span></div>
     </label>`,
     methods: {
       change() {
+        //emit control change
         this.$emit('form-control-change', {
           checked: this.checked,
-          answerIndex: this.index,
+          answerIndex: this.answerIndex,
+        });
+
+        //set question as active
+        store.commit('setActiveQuestion', {
+          groupIndex: this.groupIndex,
+          questionIndex: this.questionIndex,
         });
       },
       getDisabledClass() {
         return (
           this.checked === false &&
-          store.state.questions[this.questionIndex].allowed ===
-            store.state.questions[this.questionIndex].checkedNum
+          store.state.groups[this.groupIndex].questions[this.questionIndex]
+            .allowed ===
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .checkedNum
         );
       },
       getStyle() {
-        return "background-image: url('" + this.data.img + "')";
+        return "background-image: url('" + this.answer.img + "')";
       },
     },
   });
@@ -68,16 +94,16 @@ window.onload = function () {
   Vue.component('formControlRadio', {
     data() {
       return {
-        checked: this.data.checked,
+        checked: this.answer.checked,
       };
     },
-    props: ['data', 'index'],
+    props: ['answerIndex', 'answer'],
     template: `<label class="b-poll__form-control" :class="{'i-active': checked}">
       <div class="b-poll__form-control__content">
-        <div class="b-poll__form-control__img" :style="getStyle()" v-if="data.img"></div>
-        <div class="b-poll__form-control__text"><b>{{data.label}}</b><span>{{data.note}}</span></div>
+        <div class="b-poll__form-control__img" :style="getStyle()" v-if="answer.img"></div>
+        <div class="b-poll__form-control__text"><b>{{answer.label}}</b><span>{{answer.note}}</span></div>
       </div>
-      <div class="b-poll__radio"><input type="radio" :name="data.name" :checked="checked" :value="data.value" class="with-gap" @change="change"><span></span></div>
+      <div class="b-poll__radio"><input type="radio" :name="answer.name" :checked="checked" :value="answer.value" class="with-gap" @change="change"><span></span></div>
     </label>
     `,
     methods: {
@@ -91,20 +117,28 @@ window.onload = function () {
             });
           e.target.closest('label').classList.add('i-active');
         }
+
+        //set question as active
+        store.commit('removeActiveQuestion');
       },
       getStyle() {
-        return "background-image: url('" + this.data.img + "')";
+        return "background-image: url('" + this.answer.img + "')";
       },
     },
   });
 
   Vue.component('question', {
     data() {
-      return {};
+      return {
+        timeoutId: undefined,
+        animatePulse: false,
+      };
     },
-    props: ['index', 'question'],
+    props: ['groupIndex', 'questionIndex', 'question'],
     template: `
     <div class="b-poll__questions__item">
+
+      <div class="b-poll__questions__info" :class="getInfoClass()">{{question.checkedNum}} из {{question.allowed}}</div>
 
       <h3>{{question.title}}</h3>
       <p>{{question.description}}</p>
@@ -112,42 +146,75 @@ window.onload = function () {
 
       <div class="b-poll__questions__set">
         <div v-for="(answer, answerIndex) in question.answers">
-          <form-control-checkbox v-if="question.type === 'checkbox'" :data="answer" :questionIndex="index" :index="answerIndex" @form-control-change="formControlChange"></form-control-checkbox>
-          <form-control-radio v-else :data="answer" :index="answerIndex"></form-control-radio>
+          <form-control-checkbox v-if="question.type === 'checkbox'" :answer="answer" :groupIndex="groupIndex" :questionIndex="questionIndex" :answerIndex="answerIndex" @form-control-change="formControlChange"></form-control-checkbox>
+          <form-control-radio v-else :answer="answer" :answerIndex="answerIndex"></form-control-radio>
         </div>
       </div>
+
     </div>
     `,
     methods: {
+      getInfoClass() {
+        return {
+          'i-show':
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .checkedNum > 0 &&
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .isActive,
+          'bg-success':
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .allowed ===
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .checkedNum,
+          animate__animated: true,
+          animate__pulse: this.animatePulse,
+        };
+      },
       getNoteClass() {
         return {
           'text-success':
-            store.state.questions[this.index].allowed ===
-            store.state.questions[this.index].checkedNum,
-          'text-danger': store.state.questions[this.index].checkedNum === 0,
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .allowed ===
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .checkedNum,
+          'text-danger':
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .checkedNum === 0,
         };
       },
       formControlChange(obj) {
         //commit checked
         store.commit('changeChecked', {
-          questionIndex: this.index,
+          groupIndex: this.groupIndex,
+          questionIndex: this.questionIndex,
           answerIndex: obj.answerIndex,
           checked: obj.checked,
         });
 
         //change checked num
         this.changeCheckedNum();
+
+        //animate the block
+        this.animatePulse = false;
+        clearTimeout(this.timeoutId);
+        this.timeoutId = setTimeout(() => (this.animatePulse = true), 0);
+        /*this.animatePulse = true;
+        clearTimeout(this.timeoutId);
+        this.timeoutId = setTimeout(() => (this.animatePulse = false), 700);*/
       },
       changeCheckedNum() {
         let num = 0;
-        store.state.questions[this.index].answers.forEach(function (answer) {
+        store.state.groups[this.groupIndex].questions[
+          this.questionIndex
+        ].answers.forEach(function (answer) {
           if (answer.checked === true) {
             num++;
           }
         });
 
         store.commit('changeCheckedNum', {
-          questionIndex: this.index,
+          groupIndex: this.groupIndex,
+          questionIndex: this.questionIndex,
           checkedNum: num,
         });
       },
@@ -159,15 +226,23 @@ window.onload = function () {
 
   let pollApp = new Vue({
     el: '#pollQuestions',
+    store,
     data() {
       return {
         pollData: store.state,
       };
     },
     template: `
-      <div class="b-poll__questions">
-        <div v-for="(question, index) in pollData.questions">
-          <question :index="index" :question="question" ></question>
+      <div class="b-poll__groups">
+        <div class="b-poll__groups__item" v-for="(group, groupIndex) in pollData.groups">
+          <h3>{{group.title}}</h3>
+          <p>{{group.description}}</p>
+          <hr>
+          <div class="b-poll__questions">
+            <div v-for="(question, questionIndex) in group.questions">
+              <question :groupIndex="groupIndex" :questionIndex="questionIndex" :question="question" ></question>
+            </div>
+          </div>
         </div>
       </div>
     `,
