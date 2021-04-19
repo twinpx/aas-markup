@@ -1,0 +1,79 @@
+@import '../../styl/component-include.styl'
+
+.b-poll-result
+
+  &.ph-block
+    
+    &.ph-block--animated
+      
+      .ph-content
+        position static
+        width auto
+        opacity 1
+        
+      .ph
+        position absolute
+        top 0
+        left 0
+        width 100%
+        opacity 0
+        z-index -1
+    
+.b-poll-result
+
+  &-ill
+    background-repeat no-repeat
+    background-position center
+    background-size cover
+    height 500px
+    border-radius 10px
+
+    @media( max-width 767px )
+      height 200px
+
+  &__questions
+
+    &__item 
+      display flex
+      justify-content space-between
+      align-items center
+      margin-bottom 14px
+
+      /*for num in (1...20)
+        &:nth-child(num) .b-graph__wrapper
+          transition-delay 0.3*(num - 1)s*/
+
+    &__title
+      overflow hidden
+      text-overflow ellipsis
+      white-space nowrap
+      line-height 19px
+      height 19px
+      width calc( (100% - 30px) / 12 * 6.5 )
+      flex-shrink 0
+
+    &__graph
+      width calc( (100% - 30px) / 12 * 5 )
+
+.b-graph
+
+  &__wrapper
+    width 0
+    display flex
+    align-items center
+    transition( width 1s cubic-bezier(0, 0.55, 0.45, 1))
+
+  &__img
+    width 100%
+    min-width 5px
+    height 24px
+    background transparent linear-gradient(270deg, #F2762E 0%, #F1944B 100%) 0% 0% no-repeat padding-box
+    border-radius 12px
+
+  &__num
+    font-size $24px
+    font-weight bold
+    font-family $roboto
+    white-space nowrap
+    margin-left 8px
+    line-height normal

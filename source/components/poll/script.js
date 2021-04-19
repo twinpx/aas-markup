@@ -1,4 +1,21 @@
 window.onload = function () {
+  //set checked
+  if (
+    window.pollStore &&
+    window.localStorage.getItem(window.pollStore.pollId)
+  ) {
+    let storageObj = JSON.parse(
+      window.localStorage.getItem(window.pollStore.pollId)
+    );
+    window.pollStore.groups.forEach(function (group) {
+      group.questions.forEach(function (question) {
+        question.answers.forEach(function (answer) {
+          answer.checked = storageObj[answer.value];
+        });
+      });
+    });
+  }
+
   //enable submit button
   document
     .querySelector('.b-poll .b-checkbox [type="checkbox"]')
@@ -75,6 +92,20 @@ window.onload = function () {
           groupIndex: this.groupIndex,
           questionIndex: this.questionIndex,
         });
+
+        //change local storage
+        let storageObj = {};
+        if (window.localStorage.getItem(store.state.pollId)) {
+          storageObj = JSON.parse(
+            window.localStorage.getItem(store.state.pollId)
+          );
+        }
+
+        storageObj[this.answer.value] = this.checked;
+        window.localStorage.setItem(
+          store.state.pollId,
+          JSON.stringify(storageObj)
+        );
       },
       getDisabledClass() {
         return (
@@ -113,6 +144,7 @@ window.onload = function () {
             .closest('.b-poll__questions__set')
             .querySelectorAll('label')
             .forEach(function (label) {
+              //set inactive
               label.classList.remove('i-active');
             });
           e.target.closest('label').classList.add('i-active');
@@ -120,6 +152,35 @@ window.onload = function () {
 
         //set question as active
         store.commit('removeActiveQuestion');
+
+        //set checked
+        this.checked = true;
+
+        //change local storage
+        let storageObj = {};
+        if (window.localStorage.getItem(store.state.pollId)) {
+          storageObj = JSON.parse(
+            window.localStorage.getItem(store.state.pollId)
+          );
+        }
+
+        if (e.target.checked) {
+          //sibling radios
+          e.target
+            .closest('.b-poll__questions__set')
+            .querySelectorAll('input[type=radio]')
+            .forEach(function (radio) {
+              storageObj[radio.value] = radio.checked;
+            });
+          //this radio
+          storageObj[this.answer.value] = this.checked;
+        }
+
+        window.localStorage.removeItem(store.state.pollId);
+        window.localStorage.setItem(
+          store.state.pollId,
+          JSON.stringify(storageObj)
+        );
       },
       getStyle() {
         return "background-image: url('" + this.answer.img + "')";
@@ -198,9 +259,6 @@ window.onload = function () {
         this.animatePulse = false;
         clearTimeout(this.timeoutId);
         this.timeoutId = setTimeout(() => (this.animatePulse = true), 0);
-        /*this.animatePulse = true;
-        clearTimeout(this.timeoutId);
-        this.timeoutId = setTimeout(() => (this.animatePulse = false), 700);*/
       },
       changeCheckedNum() {
         let num = 0;
@@ -233,7 +291,7 @@ window.onload = function () {
       };
     },
     template: `
-      <div class="b-poll__groups">
+      <div class="b-poll__groups" :data-id="$store.state.pollId">
         <div class="b-poll__groups__item" v-for="(group, groupIndex) in pollData.groups">
           <h3>{{group.title}}</h3>
           <p>{{group.description}}</p>
