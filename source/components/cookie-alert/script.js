@@ -30,7 +30,6 @@
           //set cookie
           Cookies.set('cookie-allowed', 'Y', {
             expires: 183,
-            path: '',
             domain: window.location.hostname,
           });
           //hide alert

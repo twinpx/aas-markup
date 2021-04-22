@@ -1,5 +1,10 @@
 // start /components/poll-result/
 
+script( src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js" )
+script( src="https://unpkg.com/vuex" )
+
+script( src="/components/poll-result/store.js" )
+
 //- push style and script file to the end of the page
 if componentsArray
   - componentsArray[ componentsArray.length ] = 'poll-result'
@@ -11,14 +16,32 @@ else
   .ph
 
     .ph__text
-      div
-      div
-      div
-      div
-      div
-      div
+      .ph__num-blocks
+        div
+        div
+        div
+      .ph__ill
+        div
+        div
+        div
+        div
+        div
 
   .ph-content
+
+    .b-num-blocks
+
+      .b-num-block
+        i Проголосовало
+        b 185
+
+      .b-num-block
+        i Доля голосовавших
+        b 13%
+
+      .b-num-block
+        i До окончания
+        b 14 дней
 
     .b-poll-result-ill( style="background-image: url('/upload/events/2.jpeg');")
 
@@ -30,69 +53,18 @@ else
 
     hr
 
-    .b-poll-result__groups
+    #pollResult.b-poll-result__groups
 
-      .b-poll-result__groups__item
+      .b-poll-result__groups__item(v-for="group in $store.state.groups")
 
-        h3 Раздел с вопросами
-        p Описание раздела может быть очень коротким, а может иметь инструкцию.
+        h3 {{group.title}}
+        p( v-html="group.description" )
 
-        hr
-
-        .b-poll-result__questions
-
-          .b-poll-result__questions__item 
-            .b-poll-result__questions__title Вариант ответ номер один с пояснением.
-            .b-poll-result__questions__graph.b-graph
-              .b-graph__wrapper
-                .b-graph__img
-                .b-graph__num 5 600
-          .b-poll-result__questions__item 
-            .b-poll-result__questions__title о взаимодействии с государственными органами и участии в нормотворческой деятельности; об обеспечении работы Территориальных отделений СРО ААС.
-            .b-poll-result__questions__graph.b-graph
-              .b-graph__wrapper
-                .b-graph__img
-                .b-graph__num 12 785
-          .b-poll-result__questions__item 
-            .b-poll-result__questions__title об информационной деятельности СРО ААС и раскрытии информации, о работе официального Интернет-сайта СРО ААС
-            .b-poll-result__questions__graph.b-graph
-              .b-graph__wrapper
-                .b-graph__img
-                .b-graph__num 400
-          .b-poll-result__questions__item 
-            .b-poll-result__questions__title Генеральный директор представила информацию о проделанной в отчётном периоде работе
-            .b-poll-result__questions__graph.b-graph
-              .b-graph__wrapper
-                .b-graph__img
-                .b-graph__num 3 698
-
-      .b-poll-result__groups__item
-
-        h3 Раздел с вопросами
-        p Описание раздела может быть очень коротким, а может иметь инструкцию.
-
-        hr
+        hr.hr--xl
 
         .b-poll-result__questions
-
-          .b-poll-result__questions__item 
-            .b-poll-result__questions__title Вариант ответ номер один с пояснением.
-            .b-poll-result__questions__graph.b-graph
-              .b-graph__wrapper
-                .b-graph__img
-                .b-graph__num 5
-          .b-poll-result__questions__item 
-            .b-poll-result__questions__title о взаимодействии с государственными органами и участии в нормотворческой деятельности; об обеспечении работы Территориальных отделений СРО ААС.
-            .b-poll-result__questions__graph.b-graph
-              .b-graph__wrapper
-                .b-graph__img
-                .b-graph__num 2
-          .b-poll-result__questions__item 
-            .b-poll-result__questions__title об информационной деятельности СРО ААС и раскрытии информации, о работе официального Интернет-сайта СРО ААС
-            .b-poll-result__questions__graph.b-graph
-              .b-graph__wrapper
-                .b-graph__img
-                .b-graph__num 3
-
+          div( v-for="question in group.questions" )
+            poll-question( :question="question" )
+            hr.hr--xl
 
 // end /components/poll/
