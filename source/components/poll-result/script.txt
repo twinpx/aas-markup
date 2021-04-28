@@ -106,6 +106,7 @@ window.onload = function () {
           <hr class="d-block d-sm-none">
           <switch-button :answers="question.answers"></switch-button>
         </div>
+        <hr class="d-block d-sm-none">
         <div class="b-poll-result__answers">
           <poll-answer v-for="(answer, index) in question.answers" :index="index" :answer="answer"></poll-answer>
         </div>

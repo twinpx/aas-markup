@@ -1,5 +1,10 @@
 // start /components/excerpts/
 
+script( src="https://unpkg.com/vue@next" )
+script( src="https://unpkg.com/vuex@4" )
+
+script( src="/components/excerpts/store.js" )
+
 //- push style and script file to the end of the page
 if componentsArray
   - componentsArray[ componentsArray.length ] = 'excerpts'
@@ -20,66 +25,31 @@ else
 
   .ph-content
 
-    .b-excerpts__item.message
-      .b-excerpts__title Упрощенная выписка
-      .b-excerpts__data
-        a.btn.btn-secondary.btn-md( href="/pages/excerpt1/" data-toggle="modal" data-target="#getExcerptModal" ) Получить выписку
+    #excerptsApp
 
-      #getExcerptModal.modal--text.modal.fade(tabindex="-1" aria-labelledby="editConfirmModalLabel" aria-hidden="true")
-        .modal-dialog
-          .modal-content
-            button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
-            .modal-body( data-hint-url="/components/report-form/hint-response.json" data-info-url="/components/report-form/info-response.json" data-method="GET" )
-              h3.text-center Выписка создается
+    #getExcerptModal.modal--text.modal.fade(tabindex="-1" aria-labelledby="editConfirmModalLabel" aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
+          .modal-body( data-hint-url="/components/report-form/hint-response.json" data-info-url="/components/report-form/info-response.json" data-method="GET" )
+            h3.text-center Выписка создается
 
-              hr
+            hr
 
-              p.text-center Процесс создания выписки может занять некоторое время. Пожалуйста, дождитесь предложения загрузить файл на ваш компьютер или вернитесь за ней позже.
+            p.text-center Процесс создания выписки может занять некоторое время. Пожалуйста, дождитесь предложения загрузить файл на ваш компьютер или вернитесь за ней позже.
 
-              hr
+            hr
 
-              .progress-indicator
-                .item.item-1
-                .item.item-2
-                .item.item-3
-                .item.item-4
-                .item.item-5
+            .progress-indicator
+              .item.item-1
+              .item.item-2
+              .item.item-3
+              .item.item-4
+              .item.item-5
 
-              hr
+            hr
 
-              .text-center.modal-buttons
-                button.btn.btn-light( data-dismiss="modal" ) Понятно, я вернусь позже
-
-    hr.hr--md
-
-    .b-excerpts__item
-      .b-excerpts__title
-        a( href="/pages/report-form/" ) Упрощенная выписка СРО ААС
-        span 12 марта 2021
-      .b-excerpts__data
-        a.b-excerpts__file( href="/pages/excerpt1/" style="background-image: url('/template/images/pdf.svg')" ) 8.07 Мб .pdf
-
-    .b-excerpts__item
-      .b-excerpts__title
-        a( href="/pages/report-form/" ) Упрощенная выписка СРО ААС
-        span 12 марта 2021
-      .b-excerpts__data
-        a.b-excerpts__file( href="/pages/excerpt1/" style="background-image: url('/template/images/pdf.svg')" ) 8.07 Мб .pdf
-
-    .b-excerpts__item
-      .b-excerpts__title
-        a( href="/pages/report-form/" ) Упрощенная выписка СРО ААС
-        span 12 марта 2021
-      .b-excerpts__data
-        a.b-excerpts__file( href="/pages/excerpt1/" style="background-image: url('/template/images/pdf.svg')" ) 8.07 Мб .pdf
-
-    hr.hr--xl
-
-    .b-excerpts__item.message
-      .b-excerpts__title Полная выписка
-      .b-excerpts__data
-        a.btn.btn-secondary.btn-md( href="/pages/excerpt1/" ) Получить выписку
-
-    .b-excerpts__empty У вас пока нет ни одной выписки.
+            .text-center.modal-buttons
+              button.btn.btn-light( data-dismiss="modal" ) Понятно, я вернусь позже
 
 // end /components/excerpts/
