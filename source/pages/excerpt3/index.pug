@@ -8,22 +8,26 @@ html
     link( href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;700" rel="stylesheet" )
     link( href="/components/excerpt/style.css" rel="stylesheet" )
 
+    table.signature
+      tr
+        td
+          img( src="/template/images/signature.svg" alt="" width="270" height="100" )
+
     table.header
-      col( width="175" )
-      col( width="425" )
-      col( width="200" )
+      col( width="150" )
+      col( width="500" )
+      col( width="150" )
       tr
         td.aas-logo
-          img( src="/template/images/logo-aas.svg" alt="СРО ААС" width="120" )
+          img( src="/template/images/logo-aas-small.svg" alt="СРО ААС" width="140" )
         td.text
-          .header-companyname Саморегулируемая организация аудиторов<br>Ассоциация «Содружество»
-          .header-membership Член Международной Федерации Бухгалтеров (IFAC)
+          .header-companyname Саморегулируемая организация аудиторов<br><b>Ассоциация «Содружество»</b>
+          .header-membership член Международной Федерации Бухгалтеров (IFAC)
+          .header-inn (ОГРН 1097799010870 ИНН 7729440813 КПП 772901001)
+          .header-address 119192, г. Москва, Мичуринский проспект, дом 21, корпус 4.<br>т: +7 (495) 734-22-22, ф: +7 (495) 734-04-22, www.auditor-sro.org, info@auditor-sro.org
 
-        td.header-contacts
-          p +7 (495) 734-22-22
-          p 119192, г. Москва Мичуринский проспект, дом 21, корпус 4
-          p auditor-sro.org
-          p ОГРН 1097799010870 ИНН 7729440813 КПП 772901001
+        td.ifac-logo
+          img( src="/template/images/logo-ifac.svg" alt="СРО ААС" width="70" )
 
     table.h1
       tr
@@ -310,10 +314,7 @@ html
 
     table.signature
       tr
-        td.occupation Руководитель отдела ведения реестра<br>аудиторов и аудиторских организаций НП ААС
-        td.signature &nbsp;
-        td.fio Лыбаш О.Н. 
-      tr
-        td &nbsp;
-        td.note (подпись)
-        td &nbsp;
+        td.occupation Генеральный директор СРО ААС
+        td.signature
+          img( src="/template/images/signature-stamp.png" alt="" width="280" )
+        td.fio Носова О.А.

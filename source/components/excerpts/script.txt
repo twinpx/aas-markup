@@ -67,7 +67,7 @@ window.onload = function () {
     props: ['index', 'head', 'btnUrl'],
     template: `
       <div class="b-excerpts__head">
-        <div class="b-excerpts__title">{{head}}</div>
+        <div class="b-excerpts__title" v-html="head"></div>
         <div class="b-excerpts__data"><a class="btn btn-secondary btn-md" href="#" data-toggle="modal" data-target="#getExcerptModal" @click="clickHeadBtn($event)">Получить выписку</a></div>
       </div>
     `,
