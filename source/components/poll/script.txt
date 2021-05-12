@@ -75,7 +75,7 @@ window.onload = function () {
     template: `<label class="b-poll__form-control" :class="[{'i-active': checked}, {'i-disabled': getDisabledClass()}]">
       <div class="b-poll__form-control__content">
         <div class="b-poll__form-control__img" :style="getStyle()" v-if="answer.img"></div>
-        <div class="b-poll__form-control__text"><b>{{answer.label}}</b><span>{{answer.note}}</span></div>
+        <div class="b-poll__form-control__text"><b v-html="answer.label"></b><span v-html="answer.note"></span></div>
       </div>
       <div class="b-poll__checkbox"><input type="checkbox" :name="answer.name" v-model="checked" :value="answer.value" class="filled-in" @change="change()"><span></span></div>
     </label>`,
@@ -132,7 +132,7 @@ window.onload = function () {
     template: `<label class="b-poll__form-control" :class="{'i-active': checked}">
       <div class="b-poll__form-control__content">
         <div class="b-poll__form-control__img" :style="getStyle()" v-if="answer.img"></div>
-        <div class="b-poll__form-control__text"><b>{{answer.label}}</b><span>{{answer.note}}</span></div>
+        <div class="b-poll__form-control__text"><b v-html="answer.label"></b><span v-html="answer.note"></span></div>
       </div>
       <div class="b-poll__radio"><input type="radio" :name="answer.name" :checked="checked" :value="answer.value" class="with-gap" @change="change"><span></span></div>
     </label>
@@ -202,7 +202,7 @@ window.onload = function () {
       <div class="b-poll__questions__info" :class="getInfoClass()">{{question.checkedNum}} из {{question.allowed}}</div>
 
       <h3>{{question.title}}</h3>
-      <p>{{question.description}}</p>
+      <p v-html="question.description"></p>
       <div class="b-poll__questions__note" :class="getNoteClass()" v-if="question.type === 'checkbox'"><div>Выбрано {{question.checkedNum}} из допустимых {{question.allowed}}</div></div>
 
       <div class="b-poll__questions__set">
@@ -294,7 +294,7 @@ window.onload = function () {
       <div class="b-poll__groups" :data-id="$store.state.pollId">
         <div class="b-poll__groups__item" v-for="(group, groupIndex) in pollData.groups">
           <h3>{{group.title}}</h3>
-          <p>{{group.description}}</p>
+          <p v-html="group.description"></p>
           <hr>
           <div class="b-poll__questions">
             <div v-for="(question, questionIndex) in group.questions">
