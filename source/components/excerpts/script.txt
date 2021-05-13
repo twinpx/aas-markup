@@ -135,8 +135,13 @@ window.onload = function () {
               prop: 'files',
               value: excerpt.DATA.files,
             });
+
+            //download the excerpt immediately
+            if (excerpt.DATA.files.pdf.url) {
+              window.location.href = excerpt.DATA.files.pdf.url;
+            }
           } catch (err) {
-            alert(err);
+            console.log(err);
           }
         })();
       },
@@ -161,7 +166,7 @@ window.onload = function () {
           <span>{{date}}</span>
         </div>
         <div class="b-excerpts__data">
-          <a class="b-excerpts__file" :href="files.pdf.url" style="background-image: url('/template/images/pdf.svg')">{{files.pdf.size}}</a>
+          <a class="b-excerpts__file" ref="pdflink" :href="files.pdf.url" style="background-image: url('/template/images/pdf.svg')">{{files.pdf.size}}</a>
           <div class="b-excerpts__more" v-if="false">
             <a class="b-excerpts__more__button" href="#" style="background-image: url('/template/images/more-btn.svg')" @click="clickMoreBtn($event)"></a>
             <div class="b-excerpts__more__files" :class="{show: $store.state.blocks[index].isMoreOpen}">
