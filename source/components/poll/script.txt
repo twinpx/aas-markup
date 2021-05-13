@@ -199,7 +199,7 @@ window.onload = function () {
     template: `
     <div class="b-poll__questions__item">
 
-      <div class="b-poll__questions__info" :class="getInfoClass()">{{question.checkedNum}} из {{question.allowed}}</div>
+      <div class="b-poll__questions__info" :class="getInfoClass()" v-if="question.allowed">{{question.checkedNum}} из {{question.allowed}}</div>
 
       <h3>{{question.title}}</h3>
       <p v-html="question.description"></p>
