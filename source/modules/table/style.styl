@@ -5,6 +5,7 @@
 
   thead th
     border-bottom 1px solid $line-color
+    border-top 1px solid $line-color
     font-family $roboto
     font-weight 600
     font-size 0.8rem
@@ -49,31 +50,11 @@
   th,
   td
     padding 1.25rem 1.5rem
-    border-top-color $line-color
+    border-top 1px solid $line-color
 
     &.asc,
     &.desc
       background-color rgba(242,228,216,0.4)
-
-    @media( max-width 1399px )
-
-      &:nth-child(6)
-        display none
-
-    @media( max-width 1199px )
-
-      &:nth-child(5)
-        display none
-
-    @media( max-width 991px )
-
-      &:nth-child(4)
-        display none
-
-    @media( max-width 575px )
-
-      &:nth-child(2)
-        display none
 
   tr[data-url]
     transition( background-color .5s ease )
@@ -119,3 +100,50 @@
 
       &:first-child
         padding-left 1.5rem
+
+.table
+
+  th,
+  td
+
+    @media( max-width 1399px )
+
+      &:nth-child(6)
+        display none
+
+    @media( max-width 1199px )
+
+      &:nth-child(5)
+        display none
+
+    @media( max-width 991px )
+
+      &:nth-child(4)
+        display none
+
+    @media( max-width 575px )
+
+      &:nth-child(2)
+        display none
+
+.table-responsive
+
+  //scrollbar
+
+  //FF
+  scrollbar-color: #ccc #fff;
+  scrollbar-width: thin;
+
+  //webkit
+  &::-webkit-scrollbar
+    width 4px /* ширина для вертикального скролла */
+    height 4px /* высота для горизонтального скролла */
+    background-color #fff
+
+  /* ползунок скроллбара */
+  &::-webkit-scrollbar-thumb
+    background-color #ccc
+    border-radius 2px
+
+  &::-webkit-scrollbar-thumb:hover
+    background-color #c0c0c0
