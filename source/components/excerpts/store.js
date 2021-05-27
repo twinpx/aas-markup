@@ -8,12 +8,18 @@ window.excerptStore = {
       state: 'excerpt',
       files: {
         pdf: {
-          url: '/pages/excerpt1/',
+          url: '/upload/example.pdf',
           size: '8.07 Мб',
         },
-        sig: {
-          url: '/pages/excerpt2/',
-          size: '18.07 Мб',
+        'pdf-sig': {
+          pdf: {
+            url: '/upload/example.pdf',
+            size: '8.07 Мб',
+          },
+          sig: {
+            url: '/pages/excerpt2/',
+            size: '1.07 Мб',
+          },
         },
       },
     },

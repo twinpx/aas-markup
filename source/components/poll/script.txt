@@ -22,11 +22,11 @@ window.onload = function () {
     .addEventListener('change', function (e) {
       if (e.target.checked) {
         document
-          .querySelector('.b-poll .btn[data-toggle="modal"]')
+          .querySelector('.b-poll__submit .btn')
           .removeAttribute('disabled');
       } else {
         document
-          .querySelector('.b-poll .btn[data-toggle="modal"]')
+          .querySelector('.b-poll__submit .btn')
           .setAttribute('disabled', true);
       }
     });
