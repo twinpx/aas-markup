@@ -1,0 +1,35 @@
+// start /components/report-form-ozo/
+
+script( src="https://unpkg.com/vue@next" )
+script( src="https://unpkg.com/vuex@4" )
+
+script( src="/components/report-form-ozo/store.js" )
+
+//- push style and script file to the end of the page
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'report-form-ozo'
+else
+  - var componentsArray = [ 'report-form-ozo' ]
+
+.b-report-form-ozo.ph-block
+
+  .ph
+
+    .ph__text
+      div
+      div
+      div
+      div
+      div
+      div
+
+  .ph-content
+
+    form(action="" method="GET")
+
+      .b-report-form-ozo__hidden 
+        input(type="hidden", name="SOME" value="") 
+
+        #reportFormOZO
+
+// end /components/report-form-ozo/
