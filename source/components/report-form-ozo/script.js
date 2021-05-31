@@ -1,10 +1,10 @@
 window.onload = function () {
   if (!window.Vue && !window.Vuex) return;
 
-  const store = Vuex.createStore({
-    state() {
-      return window.reportFormOZOStore;
-    },
+  Vue.use(Vuex);
+
+  const store = new Vuex.Store({
+    state: window.reportFormOZOStore,
     mutations: {
       changeChecked(state, payload) {
         state.formBlocks[0].controls[payload.index].value = payload.value;
@@ -12,21 +12,22 @@ window.onload = function () {
       changeRadio(state, payload) {
         state.formBlocks[1].controls[payload.index].value = payload.value;
       },
+      addCompany(state, payload) {
+        let newCompany = state.audiOZOList.companies.slice(-1)[0];
+        newCompany.controls = newCompany.controls.map(control => {
+          //control.value = '';
+          return control;
+        });
+        state.audiOZOList.companies.push( newCompany );
+      },
+      removeCompany(state, payload) {
+        state.audiOZOList.companies.splice(payload.index, 1);
+      },
     },
   });
 
-  const App = {
-    template: `
-      <collapse-block-1></collapse-block-1>
-      <collapse-block-2></collapse-block-2>
-    `,
-  };
-
-  const app = Vue.createApp(App);
-  app.use(store);
-
   //checkbox
-  app.component('formControlCheckbox', {
+  Vue.component('formControlCheckbox', {
     data() {
       return {
         checked: this.control.value,
@@ -51,7 +52,7 @@ window.onload = function () {
   });
 
   //radio
-  app.component('formControlRadio', {
+  Vue.component('formControlRadio', {
     data() {
       return {
         checked: this.control.value,
@@ -95,7 +96,7 @@ window.onload = function () {
   });
 
   //collapse block 1
-  app.component('collapseBlock1', {
+  Vue.component('collapseBlock1', {
     data() {
       return {
         slide: true,
@@ -127,7 +128,7 @@ window.onload = function () {
   });
 
   //collapse block 1
-  app.component('collapseBlock2', {
+  Vue.component('collapseBlock2', {
     data() {
       return {
         slide: true,
@@ -150,7 +151,33 @@ window.onload = function () {
             <form-control-radio :index="index" :control="control" @set-form-active="setFormActive"></form-control-radio>
           </div>
         </div>
-        <div v-if="formIsActive">Form</div>
+        <div v-if="formIsActive">
+          <h3>Список организаций, где был проведен аудит ОЗО</h3>
+          <p>Перечислите все аудит ОЗО с 2017 по 2021 год. Все поля формы обязательны.</p>
+
+          <div class="b-add-fieldset-block">
+
+            <div class="b-add-fieldset-block__item show visible" v-for="(company, index) in $store.state.audiOZOList.companies">
+              <h4>Организация {{index+1}}</h4>
+              <hr>
+              <div class="b-add-fieldset-block__wrapper" data-hl="17">
+
+                <div v-for="formControl in company.controls" class="b-add-fieldset-block__control" key="formControl">
+
+                  <form-control-date v-if="formControl.type==='date'" :formControl="formControl" :fieldsetBlockIndex="index"></form-control-date>
+                  <form-control-select v-else-if="formControl.type==='select'" :formControl="formControl" :fieldsetBlockIndex="index"></form-control-select>
+                  <form-control v-else :formControl="formControl" :fieldsetBlockIndex="index"></form-control>
+
+                </div>
+                <hr class="hr--xl hr--line">
+                <a class="btn-delete" href="" v-if="index>0" @click.prevent="deleteFieldsetBlock(index)"></a>
+                <hr class="d-block d-xl-none">
+              </div>
+            </div>
+            <button class="btn btn-success btn-md" @click.prevent="addFieldsetBlock()">Добавить</button>
+          </div>
+
+        </div>
       </div>
     </div>
     `,
@@ -164,8 +191,83 @@ window.onload = function () {
       setFormActive(index) {
         this.formIsActive = !index;
       },
+      addFieldsetBlock() {
+        //add company
+        store.commit('addCompany');
+      },
+      deleteFieldsetBlock(index) {
+        //remove company
+        store.commit('removeCompany', {index: index});
+      },
     },
   });
 
-  app.mount('#reportFormOZO');
+  //form control
+  Vue.component('formControl', {
+    data() {
+      return {
+        controlValue: this.formControl.value,
+        isActive: this.formControl.value === '' ? false : true
+      };
+    },
+    props: [ 'formControl', 'fieldsetBlockIndex' ],
+    template: `
+      <div class="b-float-label">
+        <input :id="'PROPERTY_'+formControl.name+'_'+fieldsetBlockIndex" type="text" :name="'PROPERTY['+formControl.name+']['+fieldsetBlockIndex+']'" autocomplete="off" required="" @blur="blurControl()" v-model="controlValue">
+        <label :for="'PROPERTY_'+formControl.name+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}} *</label>
+      </div>
+    `,
+    methods: {
+      blurControl() {
+        if ( this.controlValue !== '' ) {
+          this.isActive = true;
+        } else {
+          this.isActive = false;
+        }
+      }
+    },
+  });
+
+  //form control select
+  Vue.component('formControlSelect', {
+    data() {
+      return {};
+    },
+    props: [ 'formControl', 'fieldsetBlockIndex' ],
+    template: `
+      <div class="b-float-label">
+        <input :id="'PROPERTY_'+formControl.name+'_'+fieldsetBlockIndex" type="text" :name="'PROPERTY['+formControl.name+']['+fieldsetBlockIndex+']'" :value="formControl.value" autocomplete="off" required="">
+        <label :for="'PROPERTY_'+formControl.name+'_'+fieldsetBlockIndex">{{formControl.label}} *</label>
+      </div>
+    `,
+    methods: {
+    },
+  });
+
+  //form control date
+  Vue.component('formControlDate', {
+    data() {
+      return {};
+    },
+    props: [ 'formControl', 'fieldsetBlockIndex' ],
+    template: `
+      <div class="b-float-label">
+        <input :id="'PROPERTY_'+formControl.name+'_'+fieldsetBlockIndex" type="text" :name="'PROPERTY['+formControl.name+']['+fieldsetBlockIndex+']'" :value="formControl.value" autocomplete="off" required="">
+        <label :for="'PROPERTY_'+formControl.name+'_'+fieldsetBlockIndex">{{formControl.label}} *</label>
+      </div>
+    `,
+    methods: {
+    },
+  });
+
+  const App = {
+    el: '#reportFormOZO',
+    store,
+    template: `
+      <collapse-block-1></collapse-block-1>
+      <collapse-block-2></collapse-block-2>
+    `,
+  };
+  
+  const app = new Vue(App);
 };
