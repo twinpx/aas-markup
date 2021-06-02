@@ -1,14 +1,14 @@
 @import '../../../styl/component-include.styl'
 
-.b-add-fieldset-block__wrapper
+.b-add-fieldset-block__item
   position relative
 
   .btn-delete
     position absolute
-    top 7px
+    top 0
     right 0
 
-    @media (max-width: 1199px)
+    @media (max-width: 575px)
       position static
       width 100%
       background-size contain
@@ -17,14 +17,7 @@
 
 .b-add-fieldset-block__item
   opacity 0
-  height 0
   transition( all .3s ease )
-
-  &.show
-    height calc(481px + 20px)
-
-    @media(max-width: 1199px)
-      height calc(820px + 0.5rem + 1px)
 
   &.height-auto
     height auto !important
