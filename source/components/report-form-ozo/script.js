@@ -86,6 +86,9 @@ window.onload = function () {
           case '#collapse2':
             state.formBlocks[1].invalid = true;
             break;
+          case '#agreement':
+            state.agreement.invalid = true;
+            break;
         }
       },
     },
@@ -806,16 +809,14 @@ window.onload = function () {
   Vue.component('submitButton', {
     data() {
       return {
-        checked: false,
+        checked: store.state.agreement.checked,
       };
     },
     template: `
       <div>
-        <div class="b-checkbox">
+        <div class="b-checkbox" id="agreement" :class="{invalid: $store.state.agreement.invalid}">
           <label>
-            <input class="filled-in" type="checkbox" required="" :checked="checked" v-model="checked"><span>
-              Я принимаю <a href="/" target="_blank">условия Пользовательского соглашения</a> 
-              и даю своё согласие СРО ААС на обработку моей персональной информации на условиях, определенных Политикой конфиденциальности.</span>
+            <input class="filled-in" type="checkbox" required="" :name="$store.state.agreement.name" :value="$store.state.agreement.value" :checked="checked" v-model="checked"><span v-html="$store.state.agreement.text"></span>
           </label>
         </div>
         <hr class="hr--lg">
@@ -871,12 +872,18 @@ window.onload = function () {
           });
         }
 
+        if (!elem && !store.state.agreement.checked) {
+          elem = '#agreement';
+
         //scroll to
-        this.$scrollTo(elem, 500, {
-          offset: -180,
-        });
-        //highlight invalid
-        store.commit('setInvalid', elem);
+        if (elem && document.querySelector(elem)) {
+          this.$scrollTo(elem, 500, {
+            offset: -180,
+          });
+
+          //highlight invalid
+          store.commit('setInvalid', elem);
+        }
       },
     },
   });

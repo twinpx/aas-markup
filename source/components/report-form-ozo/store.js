@@ -218,4 +218,11 @@ window.reportFormOZOStore = {
       },
     ],
   },
+  agreement: {
+    name: 'FORM_AGREEMENT',
+    value: 'Y',
+    checked: false,
+    text: 'Я принимаю <a href="/" target="_blank">условия Пользовательского соглашения</a> и даю своё согласие СРО ААС на обработку моей персональной информации на условиях, определенных Политикой конфиденциальности.',
+    invalid: false,
+  },
 };
