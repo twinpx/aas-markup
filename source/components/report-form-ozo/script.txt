@@ -874,6 +874,7 @@ window.onload = function () {
 
         if (!elem && !store.state.agreement.checked) {
           elem = '#agreement';
+        }
 
         //scroll to
         if (elem && document.querySelector(elem)) {
