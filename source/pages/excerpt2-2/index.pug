@@ -1,7 +1,7 @@
 doctype html
 html
   head
-    title "Стандартная выписка по (индивидуальному) аудитору", форма от 07.06.2021
+    title "Стандартная выписка по организации", форма от 07.06.2021
     meta( charset="utf-8" )
     
   body
@@ -40,12 +40,12 @@ html
 
     table.text
       tr
-        td.text( style="padding-bottom: 15px;") Настоящая выписка содержит сведения об индивидуальном аудиторе
+        td.text( style="padding-bottom: 15px;") Настоящая выписка содержит сведения об аудиторской организации
       tr
         td.fio
           b ДАННЫЕ
       tr
-        td.note фамилия, имя, отчество (при наличии)
+        td.note наименование аудиторской организации
 
     table.certificate
       tr
@@ -76,46 +76,28 @@ html
       col( width="460" )
       tbody
         tr 
-          td( colspan="3" ) Сведения об индивидуальном аудиторе:
+          td( colspan="3" ) Сведения об аудиторской организации:
         tr.border 
           td( align="center" ) 1
-          td Фамилия, имя, отчество (при наличии)
+          td Полное наименование аудиторской организации
           td ДАННЫЕ
         tr.border 
           td( align="center" ) 2
-          td Фамилия, имя, отчество (при наличии) на иностранном языке
+          td Сокращенное наименование аудиторской организации
           td ДАННЫЕ
         tr.border 
           td( align="center" ) 3
-          td Сведения о государственной регистрации индивидуального предпринимателя (ОГРНИП)
+          td Сведения о государственной регистрации (ОГРН)
           td ДАННЫЕ
         tr.border 
           td( align="center" ) 4
-          td Область аудита (тип КАА)
+          td ИНН
           td ДАННЫЕ
 
       tbody
         tr 
-          td( colspan="3" ) Сведения о квалификационных аттестатах индивидуального аудитора: 
+          td( colspan="3" ) Сведения о членстве в других СРО аудиторов:
 
-        tr.border 
-          td( align="center" colspan="3" )
-            b 1
-        tr.border 
-          td( align="center" ) 1
-          td Номер аттестата
-          td ДАННЫЕ
-        tr.border 
-          td( align="center" ) 2
-          td Дата принятия решения о выдаче аттестата
-          td ДАННЫЕ 
-        tr.border 
-          td( align="center" ) 3
-          td Наименование органа (организации), выдавшей аттестат
-          td ДАННЫЕ 
-
-        tr 
-          td( colspan="3" ) Сведения о членстве в других СРО аудиторов: 
         tr.border 
           td( align="center" colspan="3" )
             b 1
@@ -126,23 +108,38 @@ html
         tr.border 
           td( align="center" ) 2
           td ОРНЗ
-          td ДАННЫЕ
+          td ДАННЫЕ 
         tr.border 
           td( align="center" ) 3
           td Дата начала периода
-          td ДАННЫЕ
+          td ДАННЫЕ 
         tr.border 
           td( align="center" ) 4
           td Дата окончания периода
           td ДАННЫЕ
 
+        tr 
+          td( colspan="3" ) Сведения о правопреемстве: 
+        tr.border 
+          td( align="center" colspan="3" )
+            b 1
+        tr.border 
+          td( align="center" ) 1
+          td Наименование аудиторской организации
+          td ДАННЫЕ
+        tr.border 
+          td( align="center" ) 2
+          td ОГРН
+          td ДАННЫЕ
+
     table.issue-date
       tr
-        td Выписка сформирована по состоянию на <b>«5» февраля 2021 года</b>.
+        td Выписка сформирована по состоянию на <b>«7» апреля 2021 года</b>.
 
-    table.signature( autosize="1" )
+    table.footer( autosize="1" )
       tr
-        td.occupation Генеральный директор СРО ААС
-        td.signature
-          img( src="/template/images/signature-stamp.png" alt="" width="280" )
-        td.fio Носова О.А.
+        td.occupation Генеральный директор<br>СРО ААС
+        td.signature _________________________________
+        td.fio /_______________________ /
+      tr
+        td.note( colspan="3" ) М.П.
