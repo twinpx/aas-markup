@@ -35,18 +35,18 @@ window.onload = function () {
     template: `
       <div class="b-excerpts__block">
 
-        <excerpt-head :index="index" :head="block.head" :btnUrl="block.btnUrl"></excerpt-head>
+        <excerpt-head :index="index" :text="block.text" :btnUrl="block.btnUrl"></excerpt-head>
 
         <hr class="hr--md">
 
         <excerpt-item v-if="block.state==='excerpt'" :index="index" :title="block.title" :date="block.date" :files="block.files"></excerpt-item>
 
-        <div class="b-excerpts__empty" v-else-if="block.state==='empty'">У вас пока нет ни одной выписки.</div>
+        <div class="b-excerpts__empty" v-else-if="block.state==='empty'" v-html="block.text.empty"></div>
 
-        <div class="b-excerpts__error" v-else-if="block.state==='error'">{{block.error}}</div>
+        <div class="b-excerpts__error" v-else-if="block.state==='error'" v-html="block.text.error"></div>
 
         <div class="b-excerpts__loader" v-else-if="block.state==='loading'">
-          <b>Идет генерация выписки</b>
+          <b v-html="block.text.loading"></b>
           <div class="circle-loader">
             <div class="circle circle-1"></div>
             <div class="circle circle-2"> </div>
@@ -64,17 +64,15 @@ window.onload = function () {
 
   //excerpt head component
   excerptsApp.component('excerpt-head', {
-    props: ['index', 'head', 'btnUrl'],
+    props: ['index', 'text', 'btnUrl'],
     template: `
       <div class="b-excerpts__head">
-        <div class="b-excerpts__title" v-html="head"></div>
-        <div class="b-excerpts__data"><a class="btn btn-secondary btn-md" href="#" data-toggle="modal" data-target="#getExcerptModal" @click="clickHeadBtn($event)">Получить выписку</a></div>
+        <div class="b-excerpts__title" v-html="text.head"></div>
+        <div class="b-excerpts__data"><a class="btn btn-secondary btn-md" href="#" data-toggle="modal" data-target="#getExcerptModal" @click.prevent="clickHeadBtn($event)">{{text.btn}}</a></div>
       </div>
     `,
     methods: {
       clickHeadBtn(e) {
-        e.preventDefault();
-
         //show modal
         $('#getExcerptModal').modal('show');
 
@@ -142,7 +140,7 @@ window.onload = function () {
             }
           } catch (err) {
             if (window.console) {
-              console.log(err);
+              throw err;
             }
           }
         })();
