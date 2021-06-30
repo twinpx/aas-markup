@@ -5,16 +5,29 @@
   
   .ph
 
-    &__text
-      margin-top 20px
+    &__input
+      background-color $placeholder-color
+      widows 100%
+      max-width 530px
+      height 48px
+      margin-bottom 2rem
+      border-radius 5px
+
+    &__person-card
+      background-color $placeholder-color
+      height 120px
+      border-radius 10px
+      margin-bottom 2.5rem
+
+    &__items
+      display flex
+      justify-content space-between
 
       div
-        height 7px
         background-color $placeholder-color
-        margin-bottom 10px
-      
-        &:last-child
-          width 70%
+        padding-top calc((100% - 30px * 2) / 3 * .7)
+        border-radius 10px
+        width calc((100% - 30px * 2) / 3)
         
     &-content
       position absolute
