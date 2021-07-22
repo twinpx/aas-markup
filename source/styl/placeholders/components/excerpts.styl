@@ -7,7 +7,7 @@
 
     &__input
       background-color $placeholder-color
-      widows 100%
+      width 100%
       max-width 530px
       height 48px
       margin-bottom 2rem
@@ -28,6 +28,21 @@
         padding-top calc((100% - 30px * 2) / 3 * .7)
         border-radius 10px
         width calc((100% - 30px * 2) / 3)
+
+        @media(max-width 1250px)
+          width calc((100% - 30px) / 2)
+          padding-top calc((100% - 30px) / 2 * .7)
+
+          &:nth-child(3)
+            display none
+
+        @media(max-width 676px)
+          width 100%
+          padding-top 70%
+
+          &:nth-child(2),
+          &:nth-child(3)
+            display none
         
     &-content
       position absolute

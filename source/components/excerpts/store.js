@@ -1,144 +1,39 @@
 window.excerptStore = {
-  blocks: [
+  text: {
+    noUser: 'Найдите аудитора или организацию и вы сможете сделать выписку',
+    btn: 'Получить выписку',
+    error: 'Ошибка загрузки выписки',
+  },
+  images: {
+    placeholder:
+      'background-image: url(/template/images/excerpt-placeholder.svg)',
+  },
+  user: {},
+  // blocks possible states - excerpt, empty, loading
+  /*blocks: [
     {
+      id: 128,
       text: {
-        head: 'Стандартная выписка по (индивидуальному) аудитору',
-        btn: 'Получить выписку',
-        title:
-          'Стандартная выписка по (индивидуальному) аудитору &quot;СРО ААС&quot;',
-        empty: 'У вас пока нет ни одной выписки.',
-        loading: 'Идет генерация выписки',
-        error: 'Ошибка загрузки выписки',
-      },
-      btnUrl: '/components/excerpts/getExcerpt.json',
-      date: '7 июня 2021',
-      state: 'excerpt', //excerpt, empty, loading
-      files: {
-        pdf: {
-          url: '/upload/example.pdf',
-          size: '8.07 Мб',
-        },
-        'pdf-sig': {
-          pdf: {
-            url: '/upload/example.pdf',
-            size: '8.07 Мб',
-          },
-          sig: {
-            url: '/pages/excerpt2/',
-            size: '1.07 Мб',
-          },
-        },
-      },
-    },
-    {
-      text: {
-        head: 'Стандартная выписка по организации',
-        btn: 'Получить выписку',
-        title: 'Стандартная выписка по организации &quot;СРО ААС&quot;',
-        empty: 'У вас пока нет ни одной выписки.',
-        loading: 'Идет генерация выписки',
-        error: 'Ошибка загрузки выписки',
-      },
-      btnUrl: '/components/excerpts/getExcerpt.json',
-      date: '7 июня 2021',
-      state: 'excerpt',
-      files: {
-        pdf: {
-          url: '/upload/example.pdf',
-          size: '8.07 Мб',
-        },
-        'pdf-sig': {
-          pdf: {
-            url: '/upload/example.pdf',
-            size: '8.07 Мб',
-          },
-          sig: {
-            url: '/pages/excerpt2/',
-            size: '1.07 Мб',
-          },
-        },
-      },
-    },
-    {
-      text: {
-        head: 'Расширенная выписка по организации',
-        btn: 'Получить выписку',
-        empty: 'У вас пока нет ни одной выписки.',
-        loading: 'Идет генерация выписки',
-        error: 'Ошибка загрузки выписки',
+        head: 'Стандартная выписка для аудитора с подписью',
       },
       btnUrl: '/components/excerpts/getExcerpt.json',
       state: 'empty',
     },
     {
+      id: 129,
       text: {
-        head: 'Расширенная выписка по (индивидуальному) аудитору',
-        btn: 'Получить выписку',
-        title:
-          'Расширенная выписка по (индивидуальному) аудитору &quot;СРО ААС&quot;',
-        empty: 'У вас пока нет ни одной выписки.',
-        loading: 'Идет генерация выписки',
-        error: 'Ошибка загрузки выписки',
-      },
-      btnUrl: '/components/excerpts/getExcerpt.json',
-      date: '7 июня 2021',
-      state: 'excerpt',
-      files: {
-        pdf: {
-          url: '/upload/example.pdf',
-          size: '8.07 Мб',
-        },
-        'pdf-sig': {
-          pdf: {
-            url: '/upload/example.pdf',
-            size: '8.07 Мб',
-          },
-          sig: {
-            url: '/pages/excerpt2/',
-            size: '1.07 Мб',
-          },
-        },
-      },
-    },
-    {
-      text: {
-        head: 'Справка индивидуального аудитора',
-        btn: 'Получить выписку',
-        title: 'Справка индивидуального аудитора',
-        empty: 'У вас пока нет ни одной выписки.',
-        loading: 'Идет генерация выписки',
-        error: 'Ошибка загрузки выписки',
-      },
-      btnUrl: '/components/excerpts/getExcerpt.json',
-      date: '7 июня 2021',
-      state: 'excerpt',
-      files: {
-        pdf: {
-          url: '/upload/example.pdf',
-          size: '8.07 Мб',
-        },
-        'pdf-sig': {
-          pdf: {
-            url: '/upload/example.pdf',
-            size: '8.07 Мб',
-          },
-          sig: {
-            url: '/pages/excerpt2/',
-            size: '1.07 Мб',
-          },
-        },
-      },
-    },
-    {
-      text: {
-        head: 'Справка аудиторской организации',
-        btn: 'Получить выписку',
-        empty: 'У вас пока нет ни одной выписки.',
-        loading: 'Идет генерация выписки',
-        error: 'Ошибка загрузки выписки',
+        head: 'Расширенная выписка для аудитора',
       },
       btnUrl: '/components/excerpts/getExcerpt.json',
       state: 'empty',
     },
-  ],
+    {
+      id: 123,
+      text: {
+        head: 'Справка о мерах дисциплинарного воздействия для аудитора',
+      },
+      btnUrl: '/components/excerpts/getExcerpt.json',
+      state: 'empty',
+    },
+  ],*/
 };

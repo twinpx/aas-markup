@@ -753,6 +753,11 @@ label
     justify-content flex-start
     padding 20px
 
+    &:hover,
+    &.active
+      background-color #F2E4D84D
+      cursor pointer
+
   &__img
     width 64px
     height 64px
@@ -762,3 +767,16 @@ label
 
   &__text
     font-size $14px
+    pointer-events none
+
+.b-input-clear
+  position absolute
+  top 50%
+  right 10px
+  width 16px
+  height 16px
+  cursor pointer
+  background url( '/local/templates/aas/images/cancel.svg' ) no-repeat center
+  background-size 16px
+  margin-top -8px
+  z-index 1
