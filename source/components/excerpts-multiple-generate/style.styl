@@ -39,6 +39,7 @@
       justify-content flex-start
       align-items center
       width calc( 100% - 100px )
+      margin-right 15px
 
     &__num
       font-size $18px
@@ -52,6 +53,10 @@
 
         label
             transform( translateY(-1.2rem))
+
+    .vs__dropdown-menu
+        top auto
+        bottom calc( 100% + 1px )
 
     @media( max-width 767px )
         display block
@@ -237,3 +242,15 @@
 
 @import './style/select.styl'
 @import './style/preloaders.styl'
+
+
+
+/*Bottom animation*/
+.slide-fade-enter-active,
+.slide-fade-leave-active
+    transition( all 0.8s ease)
+
+.slide-fade-enter-from,
+.slide-fade-leave-to
+    transform( translateY(20px))
+    opacity 0

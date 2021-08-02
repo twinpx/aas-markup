@@ -98,24 +98,28 @@ window.onload = function () {
           return {};
         },
         computed: {
+            checkedNum() {
+                return this.$store.state.employees.filter(employee => employee.checked === true).length;
+            },
             num() {
-                let num = this.$store.state.employees.filter(employee => employee.checked === true).length;
-                let word = this.declOfNum(num, ['выписка', 'выписки', 'выписок']);
-                return `${num} ${word}`;
+                let word = this.declOfNum(this.checkedNum, ['выписка', 'выписки', 'выписок']);
+                return `${this.checkedNum} ${word}`;
             }
         },
         template: `
-            <div class="b-poll__form-bottom-panel">
-                <div class="b-poll__form-bottom-panel__left">
-                    <div class="b-poll__form-bottom-panel__num">{{ num }}</div>
-                    <div class="b-poll__form-bottom-panel__select">
-                        <form-control-select :select="$store.state.bottomPanel.select"></form-control-select>
+            <transition name="slide-fade">
+                <div class="b-poll__form-bottom-panel" v-if="checkedNum > 0">
+                    <div class="b-poll__form-bottom-panel__left">
+                        <div class="b-poll__form-bottom-panel__num">{{ num }}</div>
+                        <div class="b-poll__form-bottom-panel__select">
+                            <form-control-select :select="$store.state.bottomPanel.select"></form-control-select>
+                        </div>
+                    </div>
+                    <div class="b-poll__form-bottom-panel__button">
+                        <button class="btn btn-secondary" @click.prevent="clickBtn()">Сгенерировать выписки</button>
                     </div>
                 </div>
-                <div class="b-poll__form-bottom-panel__button">
-                    <button class="btn btn-secondary" @click.prevent="clickBtn()">Сгенерировать выписки</button>
-                </div>
-            </div>
+            </transition>
         `,
         methods: {
             declOfNum(number, words) {  
@@ -135,8 +139,8 @@ window.onload = function () {
                     try {
                         let response = await fetch(
                             window.excerptsMultipleGeneratePaths.response, {
-                                //method: 'POST',
-                                //body: formData
+                                method: 'POST',
+                                body: formData
                             }
                         );
                         let result = await response.json();
@@ -193,7 +197,7 @@ window.onload = function () {
                 <div>
                     <h2>Список сотрудников согласно реестру</h2>
                     <form action="" method="POST" id="excerptsMultipleGenerateForm">
-                        <form-control-checkbox v-for="(person, index) in $store.state.employees" v-key="person.id" :item="{label: person.name, note: person.ornz, name: 'user', value: person.id}" :itemIndex="index"></form-control-checkbox>
+                        <form-control-checkbox v-for="(person, index) in $store.state.employees" v-key="person.id" :item="{label: person.name, note: person.ornz, name: 'user[]', value: person.id}" :itemIndex="index"></form-control-checkbox>
                         <form-bottom-panel></form-bottom-panel>
                     </form>
                 </div>
