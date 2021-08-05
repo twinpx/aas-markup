@@ -46,20 +46,6 @@ window.onload = function () {
           checked: this.checked,
           itemIndex: this.itemIndex,
         });
-
-        //change local storage
-        /*let storageObj = {};
-            if (window.localStorage.getItem(store.state.pollId)) {
-              storageObj = JSON.parse(
-                window.localStorage.getItem(store.state.pollId)
-              );
-            }
-    
-            storageObj[this.answer.value] = this.checked;
-            window.localStorage.setItem(
-              store.state.pollId,
-              JSON.stringify(storageObj)
-            );*/
       },
     },
   });
@@ -140,6 +126,8 @@ window.onload = function () {
         this.$store.commit('changeStatus', 'loading');
         //send request
         this.generate();
+        //scroll to top
+        window.scrollTo(0, 0);
       },
       generate() {
         let formData = new FormData(
@@ -151,8 +139,8 @@ window.onload = function () {
               let response = await fetch(
                 window.excerptsMultipleGeneratePaths.response,
                 {
-                  //method: 'POST',
-                  //body: formData,
+                  method: 'POST',
+                  body: formData,
                 }
               );
               let result = await response.json();
@@ -213,6 +201,15 @@ window.onload = function () {
                         </div>
                         <div class="b-generated__right">
                             <a :href="$store.state.generated.fileURL" :style="'background-image: url(' +  $store.state.generated.fileIcon + ')'">{{ $store.state.generated.size }}</a>
+
+                            <div class="b-excerpts__more" v-if="$store.state.generated['pdf-sig']">
+                              <a class="b-excerpts__more__button" href="#" style="background-image: url('/template/images/more-btn.svg')" @click="clickMoreBtn($event)"></a>
+                              <div class="b-excerpts__more__files" :class="{show: isMoreOpen}">
+                                <span>Для некоторых сервисов требуется формат PDF + .sig</span>
+                                <a :href="$store.state.generated['pdf-sig'].pdf.url" target="_blank" :style="'background-image: url(' +  $store.state.generated.fileIcon + ')'">pdf</a>
+                                <a :href="$store.state.generated['pdf-sig'].sig.url" target="_blank" :style="'background-image: url(' +  $store.state.generated.fileIcon + ')'">sig</a>
+                              </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -226,7 +223,19 @@ window.onload = function () {
             </div>
         </div>
       `,
+    data() {
+      return {
+        isMoreOpen: false,
+      };
+    },
     methods: {
+      clickMoreBtn(e) {
+        e.preventDefault();
+        this.isMoreOpen = !this.isMoreOpen;
+      },
+      hideMoreBtn() {
+        this.isMoreOpen = false;
+      },
       async sendRequest() {
         do {
           try {
@@ -265,4 +274,16 @@ window.onload = function () {
   };
 
   const app = new Vue(App);
+
+  //hide more
+  document.documentElement.addEventListener('click', (e) => {
+    if (
+      e.target.closest('.b-excerpts__more__files') ||
+      e.target.className.search('b-excerpts__more__files') !== -1 ||
+      e.target.className.search('b-excerpts__more__button') !== -1
+    ) {
+      return;
+    }
+    app.hideMoreBtn();
+  });
 };
