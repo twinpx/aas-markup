@@ -128,21 +128,37 @@ window.onload = function () {
         this.generate();
         //scroll to top
         window.scrollTo(0, 0);
+        //reset checked
+        this.$store.state.employees.forEach((employee, index) => {
+          this.$store.commit('changeChecked', {
+            checked: false,
+            itemIndex: index,
+          });
+        });
       },
       generate() {
         let formData = new FormData(
           document.getElementById('excerptsMultipleGenerateForm')
         );
         (async () => {
+          let counter = 0;
           do {
             try {
-              let response = await fetch(
-                window.excerptsMultipleGeneratePaths.response,
-                {
-                  method: 'POST',
-                  body: formData,
-                }
-              );
+              let response;
+              if (counter === 0) {
+                response = await fetch(
+                  window.excerptsMultipleGeneratePaths.response,
+                  {
+                    method: 'POST',
+                    body: formData,
+                  }
+                );
+              } else {
+                response = await fetch(
+                  window.excerptsMultipleGeneratePaths.onMounted
+                );
+              }
+              counter++;
               let result = await response.json();
 
               if (result.STATUS === 'LOADING') {
@@ -165,6 +181,10 @@ window.onload = function () {
                 }, 500);
                 return;
               } else {
+                //hide modal
+                $('#getExcerptModal').modal('hide');
+                //hide loading
+                this.$store.commit('changeStatus', '');
                 break;
               }
             } catch (err) {
@@ -182,7 +202,7 @@ window.onload = function () {
     template: `
         <div>
             <div v-if="$store.state.status === 'loading'" class="b-loading-status">
-                <b>Идет генерация выписок, это займет длительное время...</b>
+                <b>Подождите, пожалуйста...</b>
                 <div class="circle-loader">
                     <div class="circle circle-1"></div>
                     <div class="circle circle-2"> </div>
@@ -196,7 +216,7 @@ window.onload = function () {
                     <h2>Сгенерированная выписка</h2>
                     <div class="b-generated">
                         <div class="b-generated__left">
-                            <a :href="$store.state.generated.archiveURL">Архив с выписками</a>
+                            <a :href="$store.state.generated.fileURL">Архив с выписками</a>
                             <span>{{ $store.state.generated.date }}</span>
                         </div>
                         <div class="b-generated__right">
@@ -206,8 +226,8 @@ window.onload = function () {
                               <a class="b-excerpts__more__button" href="#" style="background-image: url('/template/images/more-btn.svg')" @click="clickMoreBtn($event)"></a>
                               <div class="b-excerpts__more__files" :class="{show: isMoreOpen}">
                                 <span>Для некоторых сервисов требуется формат PDF + .sig</span>
-                                <a :href="$store.state.generated['pdf-sig'].pdf.url" target="_blank" :style="'background-image: url(' +  $store.state.generated.fileIcon + ')'">pdf</a>
-                                <a :href="$store.state.generated['pdf-sig'].sig.url" target="_blank" :style="'background-image: url(' +  $store.state.generated.fileIcon + ')'">sig</a>
+                                <a v-if="$store.state.generated['pdf-sig'].pdf" :href="$store.state.generated['pdf-sig'].pdf.url" target="_blank" :style="'background-image: url(' +  $store.state.generated.fileIcon + ')'">pdf</a>
+                                <a v-if="$store.state.generated['pdf-sig'].sig" :href="$store.state.generated['pdf-sig'].sig.url" target="_blank" :style="'background-image: url(' +  $store.state.generated.fileIcon + ')'">sig</a>
                               </div>
                             </div>
                         </div>
@@ -258,6 +278,10 @@ window.onload = function () {
               }, 500);
               return;
             } else {
+              //hide modal
+              $('#getExcerptModal').modal('hide');
+              //hide loading
+              this.$store.commit('changeStatus', '');
               break;
             }
           } catch (err) {
@@ -287,3 +311,13 @@ window.onload = function () {
     app.hideMoreBtn();
   });
 };
+
+window.addEventListener('scroll', () => {
+  //bottom panel select
+  const panel = document.querySelector('.b-poll__form-bottom-panel');
+  if (panel.getBoundingClientRect().top < 168 + 86) {
+    panel.classList.add('i-bottom');
+  } else {
+    panel.classList.remove('i-bottom');
+  }
+});
