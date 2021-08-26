@@ -1,0 +1,46 @@
+{
+  "cols": [
+    { "field": "fio", "title": "ФИО", "sortType": "asc" },
+    { "field": "ornz", "title": "ОРНЗ" },
+    { "field": "date", "title": "Дата" },
+    { "field": "status", "title": "Статус" },
+    { "field": "type", "title": "Тип выписки" },
+    { "field": "icon" }
+  ],
+  "rows": [
+    {
+      "data": {
+        "fio": "Лимаренко Дмитрий Николаевич",
+        "ornz": "21506024777",
+        "date": "03.02.2021",
+        "status": "<span class='text-success'>Успешно</span>",
+        "type": "Упрощенная выписка аудитора",
+        "icon": "<a href=\"/profile/excerption/getfile.php?id=78226\" class='pdf-icon' style=\"background-image: url(/template/images/pdf.svg);\"></a>"
+      }
+    },
+    {
+      "url": "",
+      "target": "",
+      "title": "",
+      "data": {
+        "fio": "Лошкова Мария Игоревна",
+        "ornz": "22006266513",
+        "date": "30.01.2021",
+        "status": "<span class='text-success'>Успешно</span>",
+        "type": "Упрощенная выписка аудитора",
+        "icon": "<a href=\"/profile/excerption/getfile.php?id=78226\" class='pdf-icon' style=\"background-image: url(/template/images/pdf.svg);\"></a>"
+      }
+    },
+    {
+      "data": {
+        "fio": "Темникова Надежда Николаевна",
+        "ornz": "22006015097",
+        "date": "31.01.2021",
+        "status": "<span class='text-danger'>Ошибка</span>",
+        "type": "Упрощенная выписка аудитора",
+        "icon": "<a href=\"/profile/excerption/getfile.php?id=78226\" class='pdf-icon' style=\"background-image: url(/template/images/pdf.svg);\"></a>"
+      }
+    }
+  ],
+  "pagination": "<div class=\"b-pagination-block text-right ph-block sys-pagination-aas ph-block--animated\"><a class=\"main-ui-pagination-page\" href=\"/profile/moderate/auditor/?userId=&amp;status=&amp;start=&amp;end=&amp;PAGEN_1=1\">1</a><span class=\"main-ui-pagination-page main-ui-pagination-active i-active\">2</span><a class=\"main-ui-pagination-page\" href=\"/profile/moderate/auditor/?userId=&amp;status=&amp;start=&amp;end=&amp;PAGEN_1=3\">3</a><a class=\"main-ui-pagination-page main-ui-pagination-dots\" href=\"/profile/moderate/auditor/?userId=&amp;status=&amp;start=&amp;end=&amp;PAGEN_1=151\">...</a><a class=\"main-ui-pagination-page\" href=\"/profile/moderate/auditor/?userId=&amp;status=&amp;start=&amp;end=&amp;PAGEN_1=298\">298</a><a class=\"main-ui-pagination-arrow main-ui-pagination-prev i-backward\" href=\"/profile/moderate/auditor/?userId=&amp;status=&amp;start=&amp;end=&amp;PAGEN_1=1\">Предыдущая</a><a class=\"main-ui-pagination-arrow main-ui-pagination-next i-forward\" href=\"/profile/moderate/auditor/?userId=&amp;status=&amp;start=&amp;end=&amp;PAGEN_1=3\">Следующая</a></div>"
+}

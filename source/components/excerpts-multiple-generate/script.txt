@@ -1,4 +1,4 @@
-window.onload = function () {
+window.addEventListener('load', () => {
   if (!window.Vue && !window.Vuex) return;
 
   window.moderationSrcPath = '/template/images/';
@@ -310,7 +310,7 @@ window.onload = function () {
     }
     app.hideMoreBtn();
   });
-};
+});
 
 window.addEventListener('scroll', () => {
   //bottom panel select
