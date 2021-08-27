@@ -20,9 +20,13 @@ script( src="/components/appeal.inbox/store.js" )
 .b-appeal-inbox.ph-block
 
   .ph
-    div
-    div
-    div
+
+    .ph__title
+    
+    .ph__num-blocks
+      div
+      div
+      div
 
   .ph-content
 
@@ -30,9 +34,9 @@ script( src="/components/appeal.inbox/store.js" )
 
     include ../../modules/num-blocks/appeal-inbox
 
-    #moderation.b-registry-report
-      moderation-filter( @rendertable="renderTable" @seturl="seturl" ref="filter")
+    #appealInbox.b-registry-report
+      inbox-filter( @rendertable="renderTable" @seturl="seturl" ref="filter")
       hr
-      moderation-table( @rendertable="renderTable" @seturl="seturl" )
+      inbox-table( @rendertable="renderTable" @seturl="seturl" )
 
 // end /components/appeal.inbox/

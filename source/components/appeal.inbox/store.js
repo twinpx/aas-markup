@@ -27,8 +27,9 @@ window.selectData = {
   },
 };
 
-window.moderationScriptURL = {
+window.inboxScriptURL = {
   getTable: '/components/appeal.inbox/table.json',
+  getNewNum: '/components/appeal.inbox/newNum.json',
 };
 
-window.moderationSrcPath = '/template/images/';
+window.inboxSrcPath = '/template/images/';

@@ -3,6 +3,7 @@
   overflow hidden
   
   .container-fluid
+    position relative
   
     &:before
       content ''
@@ -14,7 +15,7 @@
       height 144px
       background-color $placeholder-color
       transition( background-color .5s ease )
-      z-index 1
+      z-index 1002
       
       @media ( max-width 767px )
         left 0
@@ -24,6 +25,7 @@
   @media ( max-width 767px )
     height 86px
 
-  &__top
+  &__top,
+  &__bottom
     opacity 0
     transition( all .5s ease )

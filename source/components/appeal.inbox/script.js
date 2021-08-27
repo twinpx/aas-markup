@@ -1,4 +1,44 @@
 window.addEventListener('load', () => {
+  //get new number
+  (async () => {
+    do {
+      let response = await fetch(window.inboxScriptURL.getNewNum);
+      if (response.ok) {
+        let json = await response.json();
+        if (json.STATUS === 'Y' && json.DATA) {
+          document.querySelector(
+            '.b-num-blocks .b-num-block:not(.inactive) b'
+          ).innerHTML = json.DATA.num;
+        }
+      }
+      await new Promise((r) => setTimeout(r, 1000));
+    } while (true);
+  })();
+
+  //num blocks
+  document
+    .querySelector('.b-num-blocks .b-num-block:not(.inactive)')
+    .addEventListener('click', () => {
+      //reset fields
+      app.$refs.filter.$refs.id.reset();
+      app.$refs.filter.$refs.object.reset();
+      app.$refs.filter.$refs.author.reset();
+      app.$refs.filter.$refs.date.reset();
+      //Новые
+      app.$refs.filter.$refs.status.selectedOption =
+        window.selectData.options.filter((obj) => {
+          return obj.label === 'Новые';
+        })[0];
+      store.commit(
+        'changeStatus',
+        app.$refs.filter.$refs.status.selectedOption.code
+      );
+      //set url, render table
+      store.commit('changePage', 1);
+      app.renderTable();
+      app.seturl();
+    });
+
   if (!window.Vue && !window.Vuex) return;
 
   Vue.use(Vuex);
@@ -6,7 +46,9 @@ window.addEventListener('load', () => {
   const store = new Vuex.Store({
     state: {
       tableHtml: '',
-      q: undefined,
+      id: undefined,
+      object: undefined,
+      author: undefined,
       status: '',
       start: '',
       end: '',
@@ -25,7 +67,7 @@ window.addEventListener('load', () => {
         state.status = payload;
       },
       changeQuery(state, payload) {
-        state.q = payload;
+        state[payload.name] = payload.value;
       },
       changeStart(state, payload) {
         state.start = payload;
@@ -49,7 +91,7 @@ window.addEventListener('load', () => {
   Vue.component('date-picker', DatePicker);
 
   Vue.component('form-control-date', {
-    template: `<div class="b-float-label" data-src="${window.moderationSrcPath}calendar.svg">
+    template: `<div class="b-float-label" data-src="${window.inboxSrcPath}calendar.svg">
       <date-picker :lang="lang" v-model="dateRange" value-type="X" range format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDateRange"></date-picker>
       <label for="DATE" :class="{ active: isActive }">Дата</label>
     </div>`,
@@ -155,6 +197,12 @@ window.addEventListener('load', () => {
           this.isActive = false;
         }
       },
+      reset() {
+        this.dateRange = [];
+        this.closeInput();
+        store.commit('changeStart', this.dateRange[0]);
+        store.commit('changeEnd', this.dateRange[1]);
+      },
       inputDateRange() {
         //reset page
         store.commit('changePage', 1);
@@ -210,6 +258,11 @@ window.addEventListener('load', () => {
       };
     },
 
+    props: {
+      code: String,
+      label: String,
+    },
+
     computed: {
       isClearable() {
         return this.inputText !== '' && this.hover ? true : false;
@@ -217,8 +270,8 @@ window.addEventListener('load', () => {
     },
 
     template: `<div class="b-float-label" @mouseover="hover=true;" @mouseout="hover=false;">
-      <input id="moderation-filter-fio" type="text" name="FIO" required="" autocomplete="off" v-model="inputText" @input="changeInput" @blur="blurInput($event)">
-      <label for="moderation-filter-fio" :class="{active: isActive}">ФИО или ОРНЗ</label>
+      <input :id="'inbox-filter-' + code" type="text" name="FIO" required="" autocomplete="off" v-model="inputText" @input="changeInput" @blur="blurInput($event)">
+      <label :for="'inbox-filter-' + code" :class="{active: isActive}">{{label}}</label>
       <div class="b-input-clear" @click="clearInput($event)" v-show="isClearable"></div>
     </div>`,
 
@@ -226,8 +279,8 @@ window.addEventListener('load', () => {
       changeInput() {
         if (this.inputText.length >= 5) {
           this.getTableData();
-        } else if (store.state.q) {
-          store.commit('changeQuery', undefined);
+        } else if (store.state[this.code]) {
+          store.commit('changeQuery', { name: this.code, value: undefined });
           this.getTableData(false);
         }
       },
@@ -239,17 +292,30 @@ window.addEventListener('load', () => {
         }
       },
       clearInput(e) {
-        e.preventDefault();
+        if (e) {
+          e.preventDefault();
+        }
         this.inputText = '';
         this.isActive = false;
         this.getTableData();
+      },
+      reset() {
+        this.inputText = '';
+        this.isActive = false;
+        store.commit('changeQuery', {
+          name: this.code,
+          value: undefined,
+        });
       },
       getTableData(setQueryFlag) {
         //reset page
         store.commit('changePage', 1);
         //set query
         if (setQueryFlag !== false) {
-          store.commit('changeQuery', this.inputText || undefined);
+          store.commit('changeQuery', {
+            name: this.code,
+            value: this.inputText || undefined,
+          });
         }
         //render Table
         this.$emit('rendertable');
@@ -259,37 +325,14 @@ window.addEventListener('load', () => {
     },
   });
 
-  Vue.component('moderation-filter', {
-    template: `<div id="moderation-filter">
-        <div class="row">
-          <div class="col-xl-2 col-12">
-            <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="fio"></form-control-fio>
-          </div>
-
-          <hr class="d-block d-xl-none w-100">
-        
-          <div class="col-xl-2 col-12">
-            <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="fio"></form-control-fio>
-          </div>
-
-          <hr class="d-block d-xl-none w-100">
-
-          <div class="col-xl-2 col-12">
-            <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="fio"></form-control-fio>
-          </div>
-
-          <hr class="d-block d-xl-none w-100">
-
-          <div class="col-xl-3 col-12">
-            <form-control-status @rendertable="renderTable" @seturl="seturl" :status="$store.state.status"></form-control-status>
-          </div>
-
-          <hr class="d-block d-xl-none w-100">
-
-          <div class="col-xl-3 col-12">
-            <form-control-date @rendertable="renderTable" @seturl="seturl"></form-control-date>
-          </div>
-        </div>
+  Vue.component('inbox-filter', {
+    template: `
+      <div id="inbox-filter">
+        <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="id" code="id" label="Номер (ID)"></form-control-fio>
+        <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="object" code="object" label="Объект изменений"></form-control-fio>
+        <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="author" code="author" label="Автор (ФИО, ОРНЗ)"></form-control-fio>
+        <form-control-status @rendertable="renderTable" @seturl="seturl" :status="$store.state.status" ref="status"></form-control-status>
+        <form-control-date @rendertable="renderTable" @seturl="seturl" ref="date"></form-control-date>
       </div>`,
     methods: {
       renderTable() {
@@ -302,7 +345,7 @@ window.addEventListener('load', () => {
     },
   });
 
-  Vue.component('moderation-table', {
+  Vue.component('inbox-table', {
     data() {
       return {
         sorting: {
@@ -311,7 +354,7 @@ window.addEventListener('load', () => {
         },
       };
     },
-    template: `<div id="moderation-table" class="b-registry-report">
+    template: `<div id="inbox-table" class="b-registry-report">
       <div v-if="$store.state.tableHtml.rows">
         <table class="table">
           <thead>
@@ -371,14 +414,21 @@ window.addEventListener('load', () => {
   });
 
   const app = new Vue({
-    el: '#moderation',
+    el: '#appealInbox',
     store,
     methods: {
       renderTable() {
+        console.log('render');
         (async () => {
           const requestObj = {};
-          if (store.state.q) {
-            requestObj.q = store.state.q;
+          if (store.state.id) {
+            requestObj.id = store.state.id;
+          }
+          if (store.state.object) {
+            requestObj.object = store.state.object;
+          }
+          if (store.state.author) {
+            requestObj.author = store.state.author;
           }
           if (store.state.status) {
             requestObj.status = store.state.status;
@@ -400,7 +450,7 @@ window.addEventListener('load', () => {
           }
 
           const response = await fetch(
-            `${window.moderationScriptURL.getTable}${getQuery(requestObj)}`,
+            `${window.inboxScriptURL.getTable}${getQuery(requestObj)}`,
             {
               headers: {
                 Authentication: 'secret',
@@ -413,13 +463,26 @@ window.addEventListener('load', () => {
           } else {
             let result = await response.json();
             store.commit('changeTableHtml', result);
+            $.scrollTo(
+              document.querySelector('#appealInbox').getBoundingClientRect()
+                .top +
+                pageYOffset -
+                190,
+              500
+            );
           }
         })();
       },
       seturl() {
         const queryObj = {};
-        if (store.state.q) {
-          queryObj.q = store.state.q;
+        if (store.state.id) {
+          queryObj.id = store.state.id;
+        }
+        if (store.state.object) {
+          queryObj.object = store.state.object;
+        }
+        if (store.state.author) {
+          queryObj.author = store.state.author;
         }
         if (store.state.status) {
           queryObj.status = store.state.status;
@@ -448,8 +511,23 @@ window.addEventListener('load', () => {
       const queryObject = parseQuery(window.location.search);
       for (let key in queryObject) {
         switch (key) {
-          case 'q':
-            store.commit('changeQuery', queryObject[key] || undefined);
+          case 'id':
+            store.commit('changeQuery', {
+              name: key,
+              value: queryObject[key] || undefined,
+            });
+            break;
+          case 'object':
+            store.commit('changeQuery', {
+              name: key,
+              value: queryObject[key] || undefined,
+            });
+            break;
+          case 'author':
+            store.commit('changeQuery', {
+              name: key,
+              value: queryObject[key] || undefined,
+            });
             break;
           case 'status':
             store.commit('changeStatus', queryObject[key] || '');
@@ -485,11 +563,13 @@ window.addEventListener('load', () => {
       store.commit('changeSelectedOption', selected[0].label);
     },
     mounted() {
-      //get user fio
-      if (store.state.q) {
-        this.$refs.filter.$refs.fio.inputText = store.state.q;
-        this.$refs.filter.$refs.fio.isActive = true;
-      }
+      const textInputs = ['id', 'object', 'author'];
+      textInputs.forEach((code) => {
+        if (store.state[code]) {
+          this.$refs.filter.$refs[code].inputText = store.state[code];
+          this.$refs.filter.$refs[code].isActive = true;
+        }
+      });
       //render the table
       this.renderTable();
     },

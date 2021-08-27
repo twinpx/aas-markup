@@ -1,44 +1,47 @@
 {
   "cols": [
-    { "field": "fio", "title": "ФИО", "sortType": "asc" },
-    { "field": "ornz", "title": "ОРНЗ" },
-    { "field": "date", "title": "Дата" },
-    { "field": "status", "title": "Статус" },
-    { "field": "type", "title": "Тип выписки" },
-    { "field": "icon" }
+    { "field": "id", "title": "Номер (ID)", "sortType": "asc" },
+    { "field": "date", "title": "Дата создания" },
+    { "field": "author", "title": "Автор" },
+    { "field": "object", "title": "Объект обращения" },
+    { "field": "type", "title": "Тип обращения" },
+    { "field": "status", "title": "Статус" }
   ],
   "rows": [
     {
       "data": {
-        "fio": "Лимаренко Дмитрий Николаевич",
-        "ornz": "21506024777",
-        "date": "03.02.2021",
-        "status": "<span class='text-success'>Успешно</span>",
-        "type": "Упрощенная выписка аудитора",
-        "icon": "<a href=\"/profile/excerption/getfile.php?id=78226\" class='pdf-icon' style=\"background-image: url(/template/images/pdf.svg);\"></a>"
+        "id": "34",
+        "date": "18 мая 2021<br>15:12:41",
+        "author": "Савельева Мария Евгеньевна<br>139847198247",
+        "object": "Петров Петр Иванович<br>22006051514",
+        "type": "Изменение в реестре",
+        "status": "На рассмотрении"
       }
     },
     {
-      "url": "",
-      "target": "",
-      "title": "",
+      "url": "/",
+      "target": "_self",
+      "title": "Обращение 35",
       "data": {
-        "fio": "Лошкова Мария Игоревна",
-        "ornz": "22006266513",
-        "date": "30.01.2021",
-        "status": "<span class='text-success'>Успешно</span>",
-        "type": "Упрощенная выписка аудитора",
-        "icon": "<a href=\"/profile/excerption/getfile.php?id=78226\" class='pdf-icon' style=\"background-image: url(/template/images/pdf.svg);\"></a>"
+        "id": "35",
+        "date": "18 мая 2021<br>15:12:41",
+        "author": "Савельева Мария Евгеньевна<br>139847198247",
+        "object": "Петров Петр Иванович<br>22006051514",
+        "type": "Изменение в реестре",
+        "status": "На рассмотрении"
       }
     },
     {
+      "url": "/",
+      "target": "_self",
+      "title": "Обращение 36",
       "data": {
-        "fio": "Темникова Надежда Николаевна",
-        "ornz": "22006015097",
-        "date": "31.01.2021",
-        "status": "<span class='text-danger'>Ошибка</span>",
-        "type": "Упрощенная выписка аудитора",
-        "icon": "<a href=\"/profile/excerption/getfile.php?id=78226\" class='pdf-icon' style=\"background-image: url(/template/images/pdf.svg);\"></a>"
+        "id": "36",
+        "date": "18 мая 2021<br>15:12:41",
+        "author": "Савельева Мария Евгеньевна<br>139847198247",
+        "object": "Петров Петр Иванович<br>22006051514",
+        "type": "Изменение в реестре",
+        "status": "На рассмотрении"
       }
     }
   ],

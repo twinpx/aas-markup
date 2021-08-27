@@ -25,6 +25,43 @@
     margin-top 0
     margin-bottom 40px
 
+  .b-num-block:not(.inactive)
+    cursor pointer
+
+  #inbox-filter
+    display flex
+    justify-content space-between
+
+    > div
+      width calc((100% - 30px * 4) / 9 * 2)
+      margin-right 30px
+
+      &:first-child
+        width calc((100% - 30px * 4) / 9 * 1)
+
+      &:last-child
+        margin-right 0
+
+    @media( max-width 1199px )
+      flex-wrap wrap
+      
+      > div
+        width calc( (100% - 30px) / 2 )
+        margin 0 0 30px
+
+        &:first-child
+          width 100%
+
+    @media( max-width 767px )
+      flex-wrap wrap
+      
+      > div
+        width 100%
+        margin 0 0 30px
+
+        &:last-child
+          margin-bottom 0
+
   &__form
 
     form
@@ -107,7 +144,8 @@
 
       @media( max-width 575px )
 
-        &:nth-child(2)
+        &:nth-child(2),
+        &:nth-child(6)
           display none
 
     th
@@ -155,27 +193,22 @@
       &.normal
         color $secondary-color-2
 
-      &:first-child
-        text-align left
-        
-      &:last-child
-        padding-left 0
-        padding-right 0
-
     tbody
 
       tr
-        cursor pointer
         transition( background-color .5s ease )
       
         &:hover
           background-color #fcfcfc
 
+        &[data-url]
+          cursor pointer
+
 .text-normal
   color #F2762E
 
 .form-control-select .vs__dropdown-toggle {
-  background-color: #f2f2f2;
+  background-color: $form-control-color;
   border: 0;
   border-radius: 3px;
 }
@@ -199,16 +232,18 @@
   border: 0;
   height: 48px;
   padding: 0 15px;
+  font-size $14px
   z-index: 1;
 }
 .form-control-select input[type=search]:focus:not([readonly]) {
   border: 0 !important;
 }
 .form-control-select .vs__dropdown-menu {
-  padding: 9px 0;
+  padding: 0;
   box-shadow: 0 5px 5px #eee;
   border: 0;
   border-radius: 0 0 5px 5px;
+  font-size $14px
 }
 .form-control-select .vs__dropdown-option {
 	line-height: 48px;
@@ -220,8 +255,8 @@
 	cursor: pointer
 }
 .form-control-select .vs__dropdown-option--highlight {
-	background: rgba(242,228,216,0.302);
-	color: #f39442
+	background: $form-control-color;
+	color: #5F7696
 }
 .form-control-select .vs__clear {
   display: none !important;
@@ -239,6 +274,11 @@
 .form-control-select .vs__actions {
   padding: 0 15px 0 3px;
 }
+.form-control-select .vs__search
+  
+  &,
+  &:focus
+    font-size $14px
 
 .mx-input {
   font-size: 0.88rem !important;
