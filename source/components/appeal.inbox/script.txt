@@ -1,17 +1,46 @@
 window.addEventListener('load', () => {
+  const spaceStep = $.animateNumber.numberStepFactories.separator(' ');
+
   //get new number
   (async () => {
     do {
+      //hide digit
+      const digitNode = document.querySelector('.b-num-block__b');
+      const currentNum = digitNode.textContent;
+      //make request
       let response = await fetch(window.inboxScriptURL.getNewNum);
       if (response.ok) {
         let json = await response.json();
         if (json.STATUS === 'Y' && json.DATA) {
-          document.querySelector(
-            '.b-num-blocks .b-num-block:not(.inactive) b'
-          ).innerHTML = json.DATA.num;
+          //if the filter is not applied
+          let filterFlag = false;
+          for (let key in store.state) {
+            if (
+              (key ===
+                ('id' ||
+                  'object' ||
+                  'author' ||
+                  'status' ||
+                  'start' ||
+                  'end') &&
+                !!store.state[key]) ||
+              (key === 'page' && store.state[key] !== '1') ||
+              (key === 'sorting' && !!store.state[key].field)
+            ) {
+              filterFlag = true;
+            }
+          }
+
+          if (!filterFlag && Number(json.DATA.num) !== Number(currentNum)) {
+            app.renderTable();
+          }
+          $(digitNode).animateNumber({
+            number: json.DATA.num,
+            numberStep: spaceStep,
+          });
         }
       }
-      await new Promise((r) => setTimeout(r, 1000));
+      await new Promise((r) => setTimeout(r, 2 * 1000));
     } while (true);
   })();
 
@@ -52,7 +81,7 @@ window.addEventListener('load', () => {
       status: '',
       start: '',
       end: '',
-      selectedOption: { label: 'Успешно' },
+      selectedOption: { label: 'Все' },
       page: '1',
       sorting: {
         field: '',
@@ -233,7 +262,10 @@ window.addEventListener('load', () => {
           },
       };
     },
-    template: `<div><v-select :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="selectedOption"></v-select></div>`,
+    template: `<div class="form-control-wrapper">
+      <v-select :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="selectedOption"></v-select>
+      <label>Статус обращения</label>
+    </div>`,
     props: ['status'],
     methods: {
       onSelect() {
@@ -362,8 +394,13 @@ window.addEventListener('load', () => {
               <th v-for="col in tableHtml.cols" :class="col.sortType" @click="sortTable($event, col.field, col.sortType)">{{col.title}}</th>
             </tr>
           </thead>
+          <tbody v-if="tableHtml.new">
+            <tr v-for="row in tableHtml.new" class="tr--new" :data-id="row.data.id" :data-url="row.url" :title="row.title" :data-target="row.target" @click="clickTr($event)">
+              <td v-for="(value, name) in row.data" v-html="value" :class="sorting.field === name ? sorting.sortType : ''"></td>
+            </tr>
+          </tbody>
           <tbody>
-            <tr v-for="row in tableHtml.rows" :data-id="row.data.id" :data-url="row.url" :title="row.title" :data-target="row.target">
+            <tr v-for="row in tableHtml.rows" :data-id="row.data.id" :data-url="row.url" :title="row.title" :data-target="row.target" @click="clickTr($event)">
               <td v-for="(value, name) in row.data" v-html="value" :class="sorting.field === name ? sorting.sortType : ''"></td>
             </tr>
           </tbody>
@@ -398,6 +435,17 @@ window.addEventListener('load', () => {
         //set url
         this.$emit('seturl');
       },
+      clickTr(event) {
+        event.preventDefault();
+        let url = event.target.closest('tr').getAttribute('data-url');
+        let target = event.target.closest('tr').getAttribute('data-target');
+        if (!url) return;
+        if (target === '_self') {
+          window.location.href = url;
+        } else if (target === '_blank') {
+          window.open(url, 'new');
+        }
+      },
       clickPagination(e) {
         e.preventDefault();
         if (e.target.getAttribute('href')) {
@@ -418,7 +466,6 @@ window.addEventListener('load', () => {
     store,
     methods: {
       renderTable() {
-        console.log('render');
         (async () => {
           const requestObj = {};
           if (store.state.id) {
@@ -462,7 +509,9 @@ window.addEventListener('load', () => {
             throw new Error(`HTTP error! status: ${response.status}`);
           } else {
             let result = await response.json();
+            //table data
             store.commit('changeTableHtml', result);
+            //scroll
             $.scrollTo(
               document.querySelector('#appealInbox').getBoundingClientRect()
                 .top +

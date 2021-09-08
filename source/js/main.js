@@ -1,3 +1,18 @@
+//h1
+var elem = document.querySelector('h1');
+if (elem) {
+  elem.classList.add('no-transition');
+  var fontSize = parseInt(window.getComputedStyle(elem)['font-size']);
+  var i = 0;
+  do {
+    i++;
+    elem.setAttribute('style', 'font-size: ' + (1 * fontSize - i) + 'px');
+  } while (
+    elem.clientHeight >
+    Math.floor(parseInt(window.getComputedStyle(elem)['line-height'])) * 3
+  );
+}
+
 //select
 $('select').ikSelect({
   equalWidths: true,

@@ -19,14 +19,34 @@
         opacity 0
         z-index -1
 
+/*@keyframes rotateDigit
+  from
+    transform(rotate(0))
+  to
+    transform(rotate(360deg))*/
+
 .b-appeal-inbox
 
   h3
     margin-top 0
     margin-bottom 40px
 
-  .b-num-block:not(.inactive)
-    cursor pointer
+  .b-num-block
+  
+    &--counter
+      cursor pointer
+
+      &__b
+        display inline-block
+
+        span
+          display inline-block
+
+        &.hide-down
+          //transform(rotate(360deg))
+          //animation-duration .3s
+          //animation-name rotateDigit
+          //animation-iteration-count 1
 
   #inbox-filter
     display flex
@@ -195,6 +215,17 @@
 
     tbody
 
+      &.body--new
+        transition( all 0.3s ease)
+        overflow hidden
+        
+        tr
+          opacity 1
+
+        tr:not(.tr--show)
+          display none
+          opacity 0
+
       tr
         transition( background-color .5s ease )
       
@@ -204,8 +235,35 @@
         &[data-url]
           cursor pointer
 
+        &.tr--new
+
+          td
+            background-color #F0F5FC
+
+            &.desc,
+            &.asc
+              background-color #F1F2F5
+
+  .table tbody+tbody
+    border-top 0
+
 .text-normal
   color #F2762E
+
+.form-control-wrapper
+  position relative
+
+.form-control-select + label
+  color #2b2b2b
+  position absolute
+  top 0
+  left 15px
+  font-size 0.69rem
+  cursor text
+  transition( transform 0.2s ease-out)
+  transform-origin 0% 100%
+  text-align initial
+  transform( translateY(-22px))
 
 .form-control-select .vs__dropdown-toggle {
   background-color: $form-control-color;
