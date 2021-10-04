@@ -1,0 +1,48 @@
+// start /components/appeal.new.change-form/
+
+script( src="https://cdn.jsdelivr.net/npm/vue@2" )
+script( src="https://unpkg.com/vuex" )
+
+script( src="https://cdn.jsdelivr.net/npm/vue2-datepicker@3.9.0/index.min.js" )
+link( rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vue2-datepicker@3.9.0/index.min.css" )
+
+script( src="https://cdn.jsdelivr.net/npm/vue-scrollto" )
+script( src="https://cdnjs.cloudflare.com/ajax/libs/velocity/1.2.3/velocity.min.js" )
+
+script( src="/components/appeal.new.change-form/store.js" )
+
+script
+  | window.appealNewChangeFormPaths = {
+  |   addCompany: '/components/appeal.new.change-form/addCompany.json',
+  |   removeCompany: '/components/appeal.new.change-form/removeCompany.json',
+  |   autosave: '/components/appeal.new.change-form/removeCompany.json',
+  | };
+
+//- push style and script file to the end of the page
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'appeal.new.change-form'
+else
+  - var componentsArray = [ 'appeal.new.change-form' ]
+
+.b-appeal-new-change-form.ph-block
+
+  .ph
+
+    .ph__text
+      div
+      div
+      div
+      div
+      div
+      div
+
+  .ph-content
+
+    form(action="" method="GET")
+
+      .b-appeal-new-change-form__hidden 
+        input(type="hidden", name="SOME" value="") 
+
+      #appealNewChangeForm
+
+// end /components/appeal.new.change-form/

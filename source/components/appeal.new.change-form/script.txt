@@ -1,0 +1,658 @@
+window.onload = function () {
+  if (!window.Vue && !window.Vuex) return;
+
+  window.moderationSrcPath = '/template/images/';
+
+  Vue.use(Vuex);
+  Vue.use(VueScrollTo);
+
+  const store = new Vuex.Store({
+    state: window.appealNewChangeFormStore,
+    mutations: {
+      changeChecked(state, payload) {
+        state.formBlocks[0].controls[payload.index].checked = payload.checked;
+      },
+      changeRadio(state, payload) {
+        state.formBlocks[1].controls.forEach(
+          (control) => (control.checked = false)
+        );
+        state.formBlocks[1].controls[payload.index].checked = true;
+      },
+      changeSelect2(state, payload) {
+        state.formBlocks[2].controls[payload.index].selected = payload.selected;
+      },
+      addCompany(state, payload) {
+        //add fields
+        let newCompany = {};
+        newCompany.id = payload.companyId;
+        newCompany.hidden = payload.hidden.map((elem) => {
+          return { name: elem.name, value: elem.value };
+        });
+        newCompany.controls = [];
+        state.audiOZOList.template.controls.forEach((control) => {
+          if (control.type === 'text' || control.type === 'date') {
+            newCompany.controls.push({
+              name: control.name,
+              label: control.label,
+              value: '',
+              type: control.type,
+            });
+          }
+        });
+        state.audiOZOList.companies.push(newCompany);
+      },
+      removeCompany(state, payload) {
+        state.audiOZOList.companies.splice(payload.index, 1);
+      },
+      changeSelect(state, payload) {
+        state.audiOZOList.companies[payload.fieldsetBlockIndex].controls[
+          payload.controlIndex
+        ].selected = payload.selected;
+      },
+      changeDate(state, payload) {
+        state.audiOZOList.companies[payload.fieldsetBlockIndex].controls[
+          payload.controlIndex
+        ].value = payload.value;
+      },
+      changeTextControl(state, payload) {
+        state.audiOZOList.companies[payload.fieldsetBlockIndex].controls[
+          payload.controlIndex
+        ].value = payload.value;
+      },
+      changeAutosaveTimeoutId(state, payload) {
+        state.autosaveTimeoutId = payload;
+      },
+      setInvalid(state, payload) {
+        switch (payload) {
+          case '#collapse1':
+            state.formBlocks[0].invalid = true;
+            break;
+          case '#collapse2':
+            state.formBlocks[1].invalid = true;
+            break;
+          case '#agreement':
+            state.agreement.invalid = true;
+            break;
+        }
+      },
+    },
+  });
+
+  Vue.component('date-picker', DatePicker);
+
+  //hidden fields
+  Vue.component('hiddenFields', {
+    data() {
+      return {};
+    },
+    template: `
+      <div>
+        <input v-for="field in $store.state.hidden" :key="generateKey()" type="hidden" :name="field.name" :value="field.value">
+      </div>
+    `,
+    methods: {
+      toggleBody() {
+        //set slide class for the main div
+        this.slide = !this.slide;
+        //slide body
+        this.open = !this.open;
+      },
+      generateKey() {
+        return Date.now() * Math.random();
+      },
+    },
+  });
+
+  //radio
+  Vue.component('formControlRadio', {
+    data() {
+      return {
+        checked: this.control.checked,
+      };
+    },
+    props: ['index', 'control'],
+    template: `<label class="b-form-control-vc" :class="{'i-active': checked}">
+      <div class="b-form-control-vc__content">
+        <div class="b-form-control-vc__text"><b v-html="control.title"></b><span v-html="control.text"></span></div>
+      </div>
+      <div class="b-radio-vc"><input type="radio" :name="control.name" :checked="checked" :value="control.value" class="with-gap" @change="change"><span></span></div>
+    </label>
+    `,
+    methods: {
+      change(e) {
+        //highlight
+        if (e.target.checked) {
+          e.target
+            .closest('.row')
+            .querySelectorAll('label')
+            .forEach(function (label) {
+              //set inactive
+              label.classList.remove('i-active');
+            });
+          e.target.closest('label').classList.add('i-active');
+        }
+
+        //set checked
+        this.checked = true;
+
+        //set question as active
+        store.commit('changeRadio', {
+          index: this.index,
+        });
+
+        //show the form if it is the first radio
+        this.$emit('set-form-active', this.index);
+
+        //show empty form if there are no companies yet
+        if (this.index === 0 && !store.state.audiOZOList.companies.length) {
+          this.$emit('addFieldsetBlock');
+        }
+
+        //autosave
+        (async () => {
+          try {
+            let response = await fetch(
+              `${window.appealNewChangeFormPaths.autosave}?name=${this.control.name}&value=${this.control.value}&element_id=${store.state.reportId}`
+            );
+            let result = await response.json();
+            if (result.STATUS !== 'Y') {
+              throw new Error('Ошибка автосохранения');
+            }
+          } catch (err) {
+            throw err;
+          }
+        })();
+        //autosave whole form
+        this.$emit('autosave');
+      },
+    },
+  });
+
+  //data to change
+  Vue.component('dataToChange', {
+    data() {
+      return {
+        formIsActive: store.state.formBlocks[1].controls[0].checked,
+      };
+    },
+    template: `
+    <div>
+      <h2>Данные для изменения</h2>
+      <p>Подробное описание заполнения формы с пояснением о том, какие поля надо заполнять и как они должны выглядеть. Описанием может быть довольно большим.</p>
+      <div v-for="(formControl, controlIndex) in $store.state.controls" class="b-add-fieldset-block__control" :key="formControl.id">
+        <form-control-date v-if="formControl.type==='date'" :formControl="formControl" fieldsetBlockIndex="2" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control-date>
+        <form-control v-else :formControl="formControl" fieldsetBlockIndex="3" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control>
+      </div>
+    </div>
+    `,
+    methods: {
+      //transition
+      enter: function (el, done) {
+        Velocity(el, 'slideDown', {
+          easing: 'ease',
+          duration: 500,
+        });
+      },
+      leave: function (el, done) {
+        Velocity(el, 'slideUp', {
+          easing: 'ease',
+          duration: 500,
+        });
+      },
+
+      toggleBody() {
+        //set slide class for the main div
+        this.slide = !this.slide;
+        //slide body
+        this.open = !this.open;
+      },
+      setFormActive(index) {
+        this.formIsActive = !index;
+      },
+      addFieldsetBlock() {
+        //send request
+        (async () => {
+          try {
+            let response = await fetch(
+              `${window.appealNewChangeFormPaths.addCompany}?blockId=${store.state.reportId}`
+            );
+            let result = await response.json();
+            if (result.STATUS === 'Y') {
+              //add company
+              store.commit('addCompany', {
+                companyId: result.DATA.companyId,
+                hidden: result.DATA.hidden,
+              });
+            } else {
+              throw new Error('Ошибка при добавлении организации.');
+            }
+          } catch (err) {
+            throw err;
+          }
+        })();
+      },
+      deleteFieldsetBlock(index, company) {
+        //remove company
+        store.commit('removeCompany', { index: index });
+        //send info
+        if (company.id) {
+          (async () => {
+            try {
+              let response = await fetch(
+                `${window.appealNewChangeFormPaths.removeCompany}?blockId=${store.state.reportId}&companyId=${company.id}`
+              );
+              let result = await response.json();
+              if (result.STATUS !== 'Y') {
+                throw new Error('Ошибка при удалении организации.');
+              }
+            } catch (err) {
+              throw err;
+            }
+          })();
+        }
+      },
+      generateKey(index) {
+        return Date.now() * Math.random() + index;
+      },
+      autosave() {
+        this.$emit('autosave');
+      },
+    },
+  });
+
+  //form control
+  Vue.component('formControl', {
+    data() {
+      return {
+        controlValue: this.formControl.value,
+        isActive: this.formControl.value === '' ? false : true,
+        isInvalid: false,
+      };
+    },
+    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
+    template: `
+      <div class="row align-items-center">
+        <div class="col-lg-6 col-12">
+          <div class="b-float-label active">
+            <input id="COMPANYNAME" type="text" name="COMPANYNAME" value="ООО «Компания + Я»" required autocomplete="off">
+            <label for="COMPANYNAME">Наименование организации *</label>
+          </div>
+        </div>
+        <hr class="hr--xs d-block d-lg-none w-100">
+        <div class="col-lg-6 col-12 small"><span class="text-muted">Данные из реестра: </span><a class="b-complete-link" href="">ООО &laquo;Компания + Я&raquo;<span class="icon" style="background-image: url( '/template/images/copy.svg' );"></span></a></div>
+      </div>
+    `,
+    methods: {
+      inputControl() {
+        //validate
+        if (!!this.controlValue) {
+          this.isInvalid = false;
+        }
+        //set value
+        store.commit('changeTextControl', {
+          fieldsetBlockIndex: this.fieldsetBlockIndex,
+          controlIndex: this.controlIndex,
+          value: this.controlValue,
+        });
+      },
+      blurControl() {
+        if (this.controlValue !== '') {
+          this.isActive = true;
+        } else {
+          this.isActive = false;
+        }
+        //validate
+        if (this.required && !this.controlValue) {
+          this.isInvalid = true;
+        } else {
+          this.isInvalid = false;
+        }
+        //autosave
+        (async () => {
+          try {
+            let response = await fetch(
+              `${window.appealNewChangeFormPaths.autosave}?name=PROPERTY[${
+                this.formControl.name
+              }][${this.fieldsetBlockIndex}]&value=${
+                this.formControl.value
+              }&company_id=${
+                store.state.audiOZOList.companies[this.fieldsetBlockIndex].id
+              }`
+            );
+            let result = await response.json();
+            if (result.STATUS !== 'Y') {
+              throw new Error('Ошибка автосохранения');
+            }
+          } catch (err) {
+            throw err;
+          }
+        })();
+        //autosave whole form
+        this.$emit('autosave');
+      },
+    },
+  });
+
+  //form control date
+  Vue.component('form-control-date', {
+    template: `<div class="b-float-label" data-src="${window.moderationSrcPath}calendar.svg" :class="{invalid: isInvalid}">
+      <date-picker :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @blur="blurInput"></date-picker>
+      <label :for="'PROPERTY_'+formControl.name+'_'+fieldsetBlockIndex" :class="{ active: isActive }">{{formControl.label}}</label>
+    </div>`,
+    data() {
+      return {
+        inputAttr: {
+          id: `PROPERTY_${this.formControl.name}_${this.fieldsetBlockIndex}`,
+          name: `PROPERTY[${this.formControl.name}][${this.fieldsetBlockIndex}]`,
+        },
+        isActive: !!this.formControl.value,
+        isInvalid: false,
+        date: this.formControl.value,
+        lang: {
+          // the locale of formatting and parsing function
+          formatLocale: {
+            // MMMM
+            months: [
+              'Январь',
+              'Февраль',
+              'Март',
+              'Апрель',
+              'Май',
+              'Июнь',
+              'Июль',
+              'Август',
+              'Сентябрь',
+              'Октябрь',
+              'Ноябрь',
+              'Декабрь',
+            ],
+            // MMM
+            monthsShort: [
+              'Янв',
+              'Фев',
+              'Мар',
+              'Апр',
+              'Май',
+              'Июн',
+              'Июл',
+              'Авг',
+              'Сен',
+              'Окт',
+              'Ноя',
+              'Дек',
+            ],
+            // dddd
+            weekdays: [
+              'Воскресенье',
+              'Понедельник',
+              'Вторник',
+              'Среда',
+              'Четверг',
+              'Пятница',
+              'Суббота',
+            ],
+            // ddd
+            weekdaysShort: ['Вск', 'Пнд', 'Втр', 'Сре', 'Чтв', 'Птн', 'Суб'],
+            // dd
+            weekdaysMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+            // first day of week
+            firstDayOfWeek: 1,
+            // first week contains January 1st.
+            firstWeekContainsDate: 1,
+            // format 'a', 'A'
+            meridiem(h, _, isLowercase) {
+              const word = h < 12 ? 'AM' : 'PM';
+              return isLowercase ? word.toLocaleLowerCase() : word;
+            },
+            // parse ampm
+            meridiemParse: /[ap]\.?m?\.?/i,
+            // parse ampm
+            isPM(input) {
+              return `${input}`.toLowerCase().charAt(0) === 'p';
+            },
+          },
+          // the calendar header, default formatLocale.weekdaysMin
+          days: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+          // the calendar months, default formatLocale.monthsShort
+          months: [
+            'Январь',
+            'Февраль',
+            'Март',
+            'Апрель',
+            'Май',
+            'Июнь',
+            'Июль',
+            'Август',
+            'Сентябрь',
+            'Октябрь',
+            'Ноябрь',
+            'Декабрь',
+          ],
+          // the calendar title of year
+          yearFormat: 'YYYY',
+          // the calendar title of month
+          monthFormat: 'MMMM',
+          // the calendar title of month before year
+          monthBeforeYear: true,
+        },
+      };
+    },
+    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
+    methods: {
+      openInput() {
+        this.isActive = true;
+      },
+      closeInput() {
+        if (!this.date) {
+          this.isActive = false;
+          this.isInvalid = true;
+        }
+      },
+      blurInput() {
+        //validate
+        if (this.required && !this.date) {
+          this.isInvalid = true;
+        } else {
+          this.isInvalid = false;
+        }
+      },
+      inputDate() {
+        if (this.date) {
+          this.isInvalid = false;
+        }
+        store.commit('changeDate', {
+          fieldsetBlockIndex: this.fieldsetBlockIndex,
+          controlIndex: this.controlIndex,
+          value: this.date,
+        });
+        //autosave
+        this.autosave();
+      },
+      autosave() {
+        (async () => {
+          try {
+            let response = await fetch(
+              `${window.appealNewChangeFormPaths.autosave}?name=${
+                this.inputAttr.name
+              }&value=${this.date}&company_id=${
+                store.state.audiOZOList.companies[this.fieldsetBlockIndex].id
+              }`
+            );
+            let result = await response.json();
+            if (result.STATUS !== 'Y') {
+              throw new Error('Ошибка автосохранения');
+            }
+          } catch (err) {
+            throw err;
+          }
+        })();
+        //autosave whole form
+        this.$emit('autosave');
+      },
+    },
+  });
+
+  //submit button
+  Vue.component('submitButton', {
+    data() {
+      return {
+        checked: store.state.agreement.checked,
+      };
+    },
+    template: `
+      <div>
+        <div class="b-checkbox" id="agreement" :class="{invalid: $store.state.agreement.invalid}">
+          <label>
+            <input class="filled-in" type="checkbox" required="" :name="$store.state.agreement.name" :value="$store.state.agreement.value" :checked="checked" v-model="checked"><span v-html="$store.state.agreement.text"></span>
+          </label>
+        </div>
+        <hr class="hr--lg">
+        <div class="b-appeal-new-change-form__submit">
+          <input type="submit" name="iblock_submit" class="btn btn-secondary btn-lg" value="Сдать отчет" :disabled="isDisabled">
+          <small class="text-muted" v-if="isDisabled">Вы не закончили заполнение обязательных полей. <a href="#" @click.prevent="clickContinue()">Продолжить</a></small>
+        </div>
+      </div>
+    `,
+    computed: {
+      isDisabled() {
+        let requireds = true;
+        if (store.state.formBlocks[1].controls[0].checked === true) {
+          requireds = store.state.audiOZOList.companies.every((company) => {
+            return company.controls.every((control) => !!control.value);
+          });
+        }
+
+        return !(
+          store.state.formBlocks[0].controls.some(
+            (control) => control.checked === true
+          ) &&
+          store.state.formBlocks[1].controls.some(
+            (control) => control.checked === true
+          ) &&
+          requireds &&
+          this.checked
+        );
+      },
+    },
+    methods: {
+      clickContinue() {
+        let elem;
+        if (
+          !store.state.formBlocks[0].controls.some(
+            (control) => control.checked === true
+          )
+        ) {
+          elem = '#collapse1';
+        } else if (
+          !store.state.formBlocks[1].controls.some(
+            (control) => control.checked === true
+          )
+        ) {
+          elem = '#collapse2';
+        } else {
+          store.state.audiOZOList.companies.forEach((company, index) => {
+            company.controls.forEach((control) => {
+              if (!control.value && !elem) {
+                elem = `#company${index}`;
+              }
+            });
+          });
+        }
+
+        if (!elem && !store.state.agreement.checked) {
+          elem = '#agreement';
+        }
+
+        //scroll to
+        if (elem && document.querySelector(elem)) {
+          this.$scrollTo(elem, 500, {
+            offset: -180,
+          });
+
+          //highlight invalid
+          store.commit('setInvalid', elem);
+        }
+      },
+    },
+  });
+
+  //document block
+  Vue.component('docsBlock', {
+    template: `
+    <div>
+      <h2>{{$store.state.docsBlock.title}}</h2>
+      <div class="b-docs-block">
+        <div class="b-docs-block__item" href="/pages/news/" v-for="(item, index) in $store.state.docsBlock.items" :key="item.id">
+          <hr v-if="index !== 0">
+          <div class="b-docs-block__body">
+            <a class="b-docs-block__icon" :href="item.url" :style="'background-image: url( ' + item.icon + ' );'"></a>
+            <span class="b-docs-block__text">
+              <a :href="item.url">{{item.title}}</a>
+              <span class="b-docs-block__data" v-if="item.data.length">
+                <span class="text-muted" v-for="data in item.data" :key="data">{{data}}</span>
+              </span>
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>`,
+  });
+
+  const App = {
+    el: '#appealNewChangeForm',
+    store,
+    template: `
+      <div>
+        <docs-block></docs-block>
+        <hidden-fields></hidden-fields>
+
+        <hr class="hr--lg">
+        
+        <data-to-change @autosave="timeoutAutosave"></data-to-change>
+
+        <hr class="hr--lg">
+
+        <submit-button @autosave="timeoutAutosave"></submit-button>
+
+      </div>
+    `,
+    methods: {
+      timeoutAutosave() {
+        //autosave whole form
+        clearTimeout(store.state.autosaveTimeoutId);
+        store.commit(
+          'changeAutosaveTimeoutId',
+          setTimeout(() => {
+            this.autosave();
+          }, 5000)
+        );
+      },
+      autosave(form, cnt) {
+        var form =
+          form || document.querySelector('.b-appeal-new-change-form form');
+        var counter = cnt || 0;
+
+        //send request
+        (async () => {
+          try {
+            let response = await fetch(
+              `${window.appealNewChangeFormPaths.autosave}`
+              //{ method: 'POST', body: new FormData(form) }
+            );
+            let result = await response.json();
+            if (result.STATUS !== 'Y' && counter < 3) {
+              this.autosave(form, ++counter);
+            }
+          } catch (err) {
+            throw err;
+          }
+        })();
+      },
+    },
+    mounted() {
+      this.timeoutAutosave();
+    },
+  };
+
+  const app = new Vue(App);
+};
