@@ -1,4 +1,5 @@
 window.selectTypeData = {
+  name: 'type',
   options: [
     {
       label: 'Все',
@@ -23,6 +24,7 @@ window.selectTypeData = {
   },
 };
 window.selectStatusData = {
+  name: 'status',
   options: [
     {
       label: 'Все',

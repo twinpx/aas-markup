@@ -318,9 +318,6 @@
       display none
       background-color #fff
       
-      @media( min-width 768px )
-        //columns 4
-      
       hr
         margin 0
         border none
@@ -331,6 +328,16 @@
         padding 5px 0
         font-weight $normal
         line-height 24px
+
+      &__icons
+
+        a
+          display inline-block
+          padding-left 50px !important
+          margin-bottom 0 !important
+          background-repeat no-repeat
+          background-position left center
+          background-size 32px
         
       @media( min-width 768px )
         position absolute
@@ -342,7 +349,7 @@
         border-top none
         border-radius 0 0 5px 5px
         font-size $14px
-        padding 45px 35px 25px
+        padding 35px
         pointer-events none
         opacity 0
         display block
@@ -356,6 +363,7 @@
           display flex
           justify-content space-between
           align-items flex-start
+          flex-wrap wrap
 
         &__item
           margin-bottom 20px
@@ -376,6 +384,26 @@
 
         &__column
           width calc( 25% - 30px * 3 / 4 )
+          flex-shrink 0
+
+        &__text-column
+          width calc( 75% - 30px * 3 / 4 )
+
+          & .b-header__menu-dropdown__wrap:first-of-type
+            margin-bottom 20px
+
+          & .b-header__menu-dropdown__wrap:after
+            display block
+            content ''
+            width calc( 100% / 3 - 30px * 2 / 3 )
+
+          & .b-header__menu-dropdown__column
+            width calc( 100% / 3 - 30px * 2 / 3 )
+
+        &__icons
+
+          .b-header__menu-dropdown__item
+            margin-bottom 0 !important
 
         &.ready
           pointer-events auto
@@ -392,6 +420,13 @@
         i
           padding 0
           transition( all .3s ease )
+
+      .b-header__menu-dropdown__b
+        display block
+
+        img
+          width 100%
+          border-radius 5px
           
     .b-header__bottom--search &
       opacity 0

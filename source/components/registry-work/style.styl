@@ -80,6 +80,9 @@
       border-bottom 1px solid $line-color
       cursor pointer
 
+      &:first-child
+        width 50%
+
       &.asc,
       &.desc
         background-color #f2e4d866
@@ -136,7 +139,7 @@
           margin-top -3px
           z-index 2
 
-      &.desc
+      &.asc
 
         &:after
           transform( rotate( -135deg ))

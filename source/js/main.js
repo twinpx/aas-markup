@@ -77,7 +77,7 @@ document.querySelectorAll('.table').forEach(function (table) {
 });
 
 //dropdown columns
-if (window.matchMedia('(min-width: 768px)').matches) {
+/*if (window.matchMedia('(min-width: 768px)').matches) {
   //desktop
 
   setTimeout(function () {
@@ -135,7 +135,7 @@ if (window.matchMedia('(min-width: 768px)').matches) {
         headerTest.classList.add('ready');
       });
   }, 1000);
-}
+}*/
 
 //not authorized
 if (document.querySelector('.b-header__profile .btn')) {

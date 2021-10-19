@@ -54,10 +54,12 @@ window.onload = function () {
           payload.controlIndex
         ].value = payload.value;
       },
-      changeTextControl(state, payload) {
-        state.audiOZOList.companies[payload.fieldsetBlockIndex].controls[
-          payload.controlIndex
-        ].value = payload.value;
+      changeControl(state, payload) {
+        console.log(payload.value);
+        const control = state.controls.filter(
+          (control) => control.property === payload.property
+        )[0];
+        control.value = payload.value;
       },
       changeAutosaveTimeoutId(state, payload) {
         state.autosaveTimeoutId = payload;
@@ -91,12 +93,6 @@ window.onload = function () {
       </div>
     `,
     methods: {
-      toggleBody() {
-        //set slide class for the main div
-        this.slide = !this.slide;
-        //slide body
-        this.open = !this.open;
-      },
       generateKey() {
         return Date.now() * Math.random();
       },
@@ -171,17 +167,17 @@ window.onload = function () {
   //data to change
   Vue.component('dataToChange', {
     data() {
-      return {
-        formIsActive: store.state.formBlocks[1].controls[0].checked,
-      };
+      return {};
     },
     template: `
     <div>
       <h2>Данные для изменения</h2>
       <p>Подробное описание заполнения формы с пояснением о том, какие поля надо заполнять и как они должны выглядеть. Описанием может быть довольно большим.</p>
-      <div v-for="(formControl, controlIndex) in $store.state.controls" class="b-add-fieldset-block__control" :key="formControl.id">
-        <form-control-date v-if="formControl.type==='date'" :formControl="formControl" fieldsetBlockIndex="2" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control-date>
-        <form-control v-else :formControl="formControl" fieldsetBlockIndex="3" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control>
+      <div v-for="(formControl, controlIndex) in $store.state.controls" :key="formControl.id">
+        <form-control-multy v-if="formControl.multy" :formControl="formControl" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control-multy>
+        <form-control-date v-else-if="formControl.type==='date'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control-date>
+        <form-control-textarea v-else-if="formControl.type==='textarea'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control-textarea>
+        <form-control v-else :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control>
       </div>
     </div>
     `,
@@ -205,9 +201,6 @@ window.onload = function () {
         this.slide = !this.slide;
         //slide body
         this.open = !this.open;
-      },
-      setFormActive(index) {
-        this.formIsActive = !index;
       },
       addFieldsetBlock() {
         //send request
@@ -271,27 +264,48 @@ window.onload = function () {
     },
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
     template: `
+    <div>
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
-          <div class="b-float-label active">
-            <input id="COMPANYNAME" type="text" name="COMPANYNAME" value="ООО «Компания + Я»" required autocomplete="off">
-            <label for="COMPANYNAME">Наименование организации *</label>
+          <div class="b-float-label" :class="{invalid: isInvalid}">
+            <input ref="input" :id="'PROPERTY_'+formControl.property+'_'+fieldsetBlockIndex" type="text" :name="'PROPERTY['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" :required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue">
+            <label ref="label" :for="'PROPERTY_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
           </div>
         </div>
         <hr class="hr--xs d-block d-lg-none w-100">
-        <div class="col-lg-6 col-12 small"><span class="text-muted">Данные из реестра: </span><a class="b-complete-link" href="">ООО &laquo;Компания + Я&raquo;<span class="icon" style="background-image: url( '/template/images/copy.svg' );"></span></a></div>
+        <div class="col-lg-6 col-12 small">
+          <span class="text-muted" v-if="this.formControl.completeBlock && this.formControl.completeBlock.title">{{ this.formControl.completeBlock.title }}</span>
+          <span v-if="this.formControl.completeBlock && this.formControl.completeBlock.title">
+            <a v-if="this.formControl.completeBlock.value" class="b-complete-link" ref="link" href="" @click.prevent="clickLink">
+              {{ this.formControl.completeBlock.value }}
+              <span class="icon" style="background-image: url( '/template/images/copy.svg' );"></span>
+            </a>
+            <span v-else class="text-muted">Пусто.</span>
+          </span>
+          <div v-if="this.formControl.completeBlock && this.formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ this.formControl.completeBlock.comment }}</div>
+        </div>
       </div>
+      <hr>
+    </div>
     `,
+
     methods: {
+      clickLink() {
+        this.controlValue = this.formControl.completeBlock.value;
+        this.isActive = true;
+        this.validate();
+        //if tel
+        //fieldAutosaveRequest(this.$refs.input);
+        //restartFormAutosaveTimeout();
+      },
       inputControl() {
         //validate
         if (!!this.controlValue) {
           this.isInvalid = false;
         }
         //set value
-        store.commit('changeTextControl', {
-          fieldsetBlockIndex: this.fieldsetBlockIndex,
-          controlIndex: this.controlIndex,
+        store.commit('changeControl', {
+          property: this.formControl.property,
           value: this.controlValue,
         });
       },
@@ -301,14 +315,9 @@ window.onload = function () {
         } else {
           this.isActive = false;
         }
-        //validate
-        if (this.required && !this.controlValue) {
-          this.isInvalid = true;
-        } else {
-          this.isInvalid = false;
-        }
+        this.validate();
         //autosave
-        (async () => {
+        /*(async () => {
           try {
             let response = await fetch(
               `${window.appealNewChangeFormPaths.autosave}?name=PROPERTY[${
@@ -328,16 +337,181 @@ window.onload = function () {
           }
         })();
         //autosave whole form
+        this.$emit('autosave');*/
+      },
+      validate() {
+        if (this.required && !this.controlValue) {
+          this.isInvalid = true;
+        } else {
+          this.isInvalid = false;
+        }
+      },
+    },
+  });
+
+  //form control textarea
+  Vue.component('formControlTextarea', {
+    data() {
+      return {
+        controlValue: this.formControl.value,
+        isActive: this.formControl.value === '' ? false : true,
+        isInvalid: false,
+      };
+    },
+    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
+    template: `
+    <div>
+      <div class="row align-items-center">
+        <div class="col-lg-6 col-12">
+          <div class="b-float-label active" :class="{invalid: isInvalid}">
+            <textarea ref="input" :id="'PROPERTY_'+formControl.property+'_'+fieldsetBlockIndex" :name="'PROPERTY['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" :required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue"></textarea>
+            <label ref="label" :for="'PROPERTY_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
+          </div>
+        </div>
+        <hr class="hr--xs d-block d-lg-none w-100">
+        <div class="col-lg-6 col-12 small">
+          <span class="text-muted" v-if="this.formControl.completeBlock && this.formControl.completeBlock.title">{{ this.formControl.completeBlock.title }}</span>
+          <span v-if="this.formControl.completeBlock && this.formControl.completeBlock.title">
+            <a v-if="this.formControl.completeBlock.value" class="b-complete-link" ref="link" href="" @click.prevent="clickLink">
+              {{ this.formControl.completeBlock.value }}
+              <span class="icon" style="background-image: url( '/template/images/copy.svg' );"></span>
+            </a>
+            <span v-else class="text-muted">Пусто.</span>
+          </span>
+          <div v-if="this.formControl.completeBlock && this.formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ this.formControl.completeBlock.comment }}</div>
+        </div>
+      </div>
+      <hr>
+    </div>
+    `,
+
+    methods: {
+      clickLink() {
+        this.controlValue = this.formControl.completeBlock.value;
+        this.isActive = true;
+        this.validate();
+        //if tel
+        //fieldAutosaveRequest(this.$refs.input);
+        //restartFormAutosaveTimeout();
+      },
+      inputControl() {
+        //validate
+        if (!!this.controlValue) {
+          this.isInvalid = false;
+        }
+        //set value
+        store.commit('changeControl', {
+          property: this.formControl.property,
+          value: this.controlValue,
+        });
+      },
+      blurControl() {
+        if (this.controlValue !== '') {
+          this.isActive = true;
+        } else {
+          this.isActive = false;
+        }
+        this.validate();
+        //autosave
+        /*(async () => {
+          try {
+            let response = await fetch(
+              `${window.appealNewChangeFormPaths.autosave}?name=PROPERTY[${
+                this.formControl.name
+              }][${this.fieldsetBlockIndex}]&value=${
+                this.formControl.value
+              }&company_id=${
+                store.state.audiOZOList.companies[this.fieldsetBlockIndex].id
+              }`
+            );
+            let result = await response.json();
+            if (result.STATUS !== 'Y') {
+              throw new Error('Ошибка автосохранения');
+            }
+          } catch (err) {
+            throw err;
+          }
+        })();
+        //autosave whole form
+        this.$emit('autosave');*/
+      },
+      validate() {
+        if (this.required && !this.controlValue) {
+          this.isInvalid = true;
+        } else {
+          this.isInvalid = false;
+        }
+      },
+    },
+  });
+
+  //form control multy
+  Vue.component('formControlMulty', {
+    data() {
+      return {
+        counter: 1,
+      };
+    },
+    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
+    template: `
+      <div>
+        <hr class="hr--line hr--xl" style="margin-top: 0;">
+        <div v-if="formControl.type==='date'">
+          <form-control-date v-for="(control, controlIndex) in counter" :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control-date>
+        </div>
+        <div v-else-if="formControl.type==='textarea'">
+          <form-control-textarea v-for="(control, controlIndex) in counter" :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control-textarea>
+        </div>
+        <div v-else>
+          <form-control v-for="(control, controlIndex) in counter" :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control>
+        </div>
+        
+        <button class="btn btn-success btn-md" @click.prevent="add">Добавить</button>
+        <hr class="hr--line hr--xl">
+      </div>
+    `,
+    methods: {
+      autosave() {
         this.$emit('autosave');
+      },
+      validate() {
+        if (this.required && !this.controlValue) {
+          this.isInvalid = true;
+        } else {
+          this.isInvalid = false;
+        }
+      },
+      add() {
+        this.counter++;
       },
     },
   });
 
   //form control date
   Vue.component('form-control-date', {
-    template: `<div class="b-float-label" data-src="${window.moderationSrcPath}calendar.svg" :class="{invalid: isInvalid}">
-      <date-picker :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @blur="blurInput"></date-picker>
-      <label :for="'PROPERTY_'+formControl.name+'_'+fieldsetBlockIndex" :class="{ active: isActive }">{{formControl.label}}</label>
+    template: `
+    <div>
+      <div class="row align-items-center">
+        <div class="col-lg-6 col-12">
+        <div class="b-float-label" data-src="${window.moderationSrcPath}calendar.svg" :class="{invalid: isInvalid}">
+          <date-picker :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @blur="blurInput"></date-picker>
+          <label :for="'PROPERTY_'+formControl.name+'_'+fieldsetBlockIndex" :class="{ active: isActive }">{{formControl.label}}</label>
+        </div>
+        </div>
+        <hr class="hr--xs d-block d-lg-none w-100">
+        <div class="col-lg-6 col-12 small">
+          <span class="text-muted" v-if="this.formControl.completeBlock && this.formControl.completeBlock.title">{{ this.formControl.completeBlock.title }}</span>
+          <span v-if="this.formControl.completeBlock && this.formControl.completeBlock.title">
+            <a v-if="this.formControl.completeBlock.value" class="b-complete-link" ref="link" href="" @click.prevent="clickLink">
+              {{ this.formControl.completeBlock.value }}
+              <span class="icon" style="background-image: url( '/template/images/copy.svg' );"></span>
+            </a>
+            <span v-else class="text-muted">Пусто.</span>
+          </span>
+          <div v-if="this.formControl.completeBlock && this.formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ this.formControl.completeBlock.comment }}</div>
+        </div>
+      </div>
+      <hr>
     </div>`,
     data() {
       return {
@@ -439,6 +613,12 @@ window.onload = function () {
     },
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
     methods: {
+      clickLink() {
+        this.date = this.formControl.completeBlock.value;
+        this.isActive = true;
+        //fieldAutosaveRequest(this.$refs.input);
+        //restartFormAutosaveTimeout();
+      },
       openInput() {
         this.isActive = true;
       },
@@ -460,13 +640,12 @@ window.onload = function () {
         if (this.date) {
           this.isInvalid = false;
         }
-        store.commit('changeDate', {
-          fieldsetBlockIndex: this.fieldsetBlockIndex,
-          controlIndex: this.controlIndex,
-          value: this.date,
+        store.commit('changeControl', {
+          property: this.formControl.property,
+          value: this.controlValue,
         });
         //autosave
-        this.autosave();
+        //this.autosave();
       },
       autosave() {
         (async () => {
@@ -508,70 +687,16 @@ window.onload = function () {
         </div>
         <hr class="hr--lg">
         <div class="b-appeal-new-change-form__submit">
-          <input type="submit" name="iblock_submit" class="btn btn-secondary btn-lg" value="Сдать отчет" :disabled="isDisabled">
-          <small class="text-muted" v-if="isDisabled">Вы не закончили заполнение обязательных полей. <a href="#" @click.prevent="clickContinue()">Продолжить</a></small>
+          <input type="submit" name="iblock_submit" class="btn btn-secondary btn-lg" value="Отправить" :disabled="isDisabled">
         </div>
       </div>
     `,
     computed: {
       isDisabled() {
-        let requireds = true;
-        if (store.state.formBlocks[1].controls[0].checked === true) {
-          requireds = store.state.audiOZOList.companies.every((company) => {
-            return company.controls.every((control) => !!control.value);
-          });
-        }
-
         return !(
-          store.state.formBlocks[0].controls.some(
-            (control) => control.checked === true
-          ) &&
-          store.state.formBlocks[1].controls.some(
-            (control) => control.checked === true
-          ) &&
-          requireds &&
+          store.state.controls.every((control) => !!control.value) &&
           this.checked
         );
-      },
-    },
-    methods: {
-      clickContinue() {
-        let elem;
-        if (
-          !store.state.formBlocks[0].controls.some(
-            (control) => control.checked === true
-          )
-        ) {
-          elem = '#collapse1';
-        } else if (
-          !store.state.formBlocks[1].controls.some(
-            (control) => control.checked === true
-          )
-        ) {
-          elem = '#collapse2';
-        } else {
-          store.state.audiOZOList.companies.forEach((company, index) => {
-            company.controls.forEach((control) => {
-              if (!control.value && !elem) {
-                elem = `#company${index}`;
-              }
-            });
-          });
-        }
-
-        if (!elem && !store.state.agreement.checked) {
-          elem = '#agreement';
-        }
-
-        //scroll to
-        if (elem && document.querySelector(elem)) {
-          this.$scrollTo(elem, 500, {
-            offset: -180,
-          });
-
-          //highlight invalid
-          store.commit('setInvalid', elem);
-        }
       },
     },
   });
