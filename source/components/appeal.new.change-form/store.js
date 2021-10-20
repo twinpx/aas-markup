@@ -136,6 +136,50 @@ window.appealNewChangeFormStore = {
       },
     },
   ],
+  confirmDocsBlock: {
+    title: 'Подтверждающие документы',
+    text: 'Выберите подходящий для вас пакет подтверждающих документов.',
+    items: [
+      {
+        id: '7845',
+        title: 'Пакет документов 1',
+        text: '<ul><li>Приказ об увольнении или соглашение о расторжении трудового договора,</li><li>Справка-подтверждение (Приложение № 8а)</li></ul>',
+        name: 'confirm-docs',
+        value: 'block1',
+        checked: false,
+        controls: [
+          {
+            property: '179',
+            label: 'Краткое наименование*',
+            type: 'text',
+            required: true,
+            value: '',
+            completeBlock: {
+              comment: 'Комментарий который поясняет ограничения.',
+            },
+          },
+          {
+            property: '180',
+            label: 'Полное наименование*',
+            type: 'text',
+            required: true,
+            value: '',
+            completeBlock: {
+              comment: 'Другой комментарий который поясняет ограничения.',
+            },
+          },
+        ],
+      },
+      {
+        id: '8956',
+        title: 'Пакет документов 2',
+        text: '<ul><li>Приказ об увольнении или соглашение о расторжении трудового договора,</li><li>Справка-подтверждение (Приложение № 9а)</li></ul>',
+        name: 'confirm-docs',
+        value: 'block2',
+        checked: false,
+      },
+    ],
+  },
   autosaveTimeoutId: null,
   agreement: {
     name: 'FORM_AGREEMENT',

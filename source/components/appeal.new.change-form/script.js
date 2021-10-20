@@ -100,21 +100,27 @@ window.onload = function () {
   });
 
   //radio
-  Vue.component('formControlRadio', {
+  Vue.component('formControlRadioWithControls', {
     data() {
       return {
         checked: this.control.checked,
       };
     },
     props: ['index', 'control'],
-    template: `<label class="b-form-control-vc" :class="{'i-active': checked}">
+    template: `<div class="b-form-control-vc" :class="{'i-active': checked}">
       <div class="b-form-control-vc__content">
-        <div class="b-form-control-vc__text"><b v-html="control.title"></b><span v-html="control.text"></span></div>
+        <div class="b-form-control-vc__text"><b v-html="control.title"></b><span v-html="control.text"></span>
+
+        <form-control-file v-for="(formControl, controlIndex) in control.controls" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control-file>
+
+        </div>
       </div>
-      <div class="b-radio-vc"><input type="radio" :name="control.name" :checked="checked" :value="control.value" class="with-gap" @change="change"><span></span></div>
-    </label>
+      <label :class="{'i-active': checked}">
+      <div class="b-radio-vc"><input type="radio" :name="control.name" :checked="checked" :value="control.value" class="with-gap" @change="change"><span></span></div></label>
+    </div>
     `,
     methods: {
+      autosave() {},
       change(e) {
         //highlight
         if (e.target.checked) {
@@ -315,6 +321,77 @@ window.onload = function () {
         } else {
           this.isActive = false;
         }
+        this.validate();
+        //autosave
+        /*(async () => {
+          try {
+            let response = await fetch(
+              `${window.appealNewChangeFormPaths.autosave}?name=PROPERTY[${
+                this.formControl.name
+              }][${this.fieldsetBlockIndex}]&value=${
+                this.formControl.value
+              }&company_id=${
+                store.state.audiOZOList.companies[this.fieldsetBlockIndex].id
+              }`
+            );
+            let result = await response.json();
+            if (result.STATUS !== 'Y') {
+              throw new Error('Ошибка автосохранения');
+            }
+          } catch (err) {
+            throw err;
+          }
+        })();
+        //autosave whole form
+        this.$emit('autosave');*/
+      },
+      validate() {
+        if (this.required && !this.controlValue) {
+          this.isInvalid = true;
+        } else {
+          this.isInvalid = false;
+        }
+      },
+    },
+  });
+
+  //form control
+  Vue.component('formControlFile', {
+    data() {
+      return {
+        controlValue: this.formControl.value,
+        isActive: true,
+        isInvalid: false,
+      };
+    },
+    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
+    template: `
+    <div>
+      <div class="row align-items-center">
+        <div class="col-lg-6 col-12">
+          <div class="b-float-label" :class="{invalid: isInvalid}">
+            <input ref="input" :id="'PROPERTY_'+formControl.property+'_'+fieldsetBlockIndex" type="text" :name="'PROPERTY['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" :required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue">
+            <label ref="label" :for="'PROPERTY_'+formControl.property+'_'+fieldsetBlockIndex" class="active">{{formControl.label}}</label>
+          </div>
+        </div>
+        <hr class="hr--xs d-block d-lg-none w-100">
+        <div class="col-lg-6 col-12 small">
+          <div v-if="this.formControl.completeBlock && this.formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ this.formControl.completeBlock.comment }}</div>
+        </div>
+      </div>
+      <hr>
+    </div>
+    `,
+
+    methods: {
+      inputControl() {
+        //set value
+        store.commit('changeControl', {
+          property: this.formControl.property,
+          value: this.controlValue,
+        });
+      },
+      blurControl() {
         this.validate();
         //autosave
         /*(async () => {
@@ -723,6 +800,19 @@ window.onload = function () {
     </div>`,
   });
 
+  //confirm document block
+  Vue.component('confirmDocsBlock', {
+    template: `
+    <div>
+      <h2>{{$store.state.confirmDocsBlock.title}}</h2>
+      <p>{{ $store.state.confirmDocsBlock.text }}</p>
+      <div v-for="(doc, index) in $store.state.confirmDocsBlock.items">
+        <form-control-radio-with-controls :index="index" :control="doc"></form-control-radio-with-controls>
+        <hr>
+      </div>
+    </div>`,
+  });
+
   const App = {
     el: '#appealNewChangeForm',
     store,
@@ -734,6 +824,10 @@ window.onload = function () {
         <hr class="hr--lg">
         
         <data-to-change @autosave="timeoutAutosave"></data-to-change>
+
+        <hr class="hr--lg">
+        
+        <confirm-docs-block></confirm-docs-block>
 
         <hr class="hr--lg">
 

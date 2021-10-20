@@ -264,7 +264,7 @@ window.addEventListener('load', () => {
 
     methods: {
       changeInput() {
-        if (this.inputText.length >= 5) {
+        if (this.inputText.length >= 1) {
           this.getTableData();
         } else if (store.state[this.code]) {
           store.commit('changeProp', { prop: this.code, value: undefined });
@@ -429,10 +429,10 @@ window.addEventListener('load', () => {
             requestObj.id = store.state.id;
           }
           if (store.state.type) {
-            requestObj.type = store.state.type;
+            requestObj[window.selectTypeData.name] = store.state.type;
           }
           if (store.state.status) {
-            requestObj.status = store.state.status;
+            requestObj[window.selectStatusData.name] = store.state.status;
           }
           if (store.state.start) {
             requestObj.start = store.state.start;
@@ -466,12 +466,14 @@ window.addEventListener('load', () => {
             //table data
             store.commit('changeProp', { prop: 'tableHtml', value: result });
             //scroll
-            $.scrollTo(
-              document.querySelector('#appealMy').getBoundingClientRect().top +
-                pageYOffset -
+            window.scrollTo({
+              top:
+                document.querySelector('#appealMy').getBoundingClientRect()
+                  .top +
+                window.scrollY -
                 190,
-              500
-            );
+              behavior: 'smooth',
+            });
           }
         })();
       },
@@ -481,10 +483,10 @@ window.addEventListener('load', () => {
           queryObj.id = store.state.id;
         }
         if (store.state.type) {
-          queryObj.type = store.state.type;
+          queryObj[window.selectTypeData.name] = store.state.type;
         }
         if (store.state.status) {
-          queryObj.status = store.state.status;
+          queryObj[window.selectStatusData.name] = store.state.status;
         }
         if (store.state.start) {
           queryObj.start = store.state.start;
@@ -505,6 +507,7 @@ window.addEventListener('load', () => {
         window.history.pushState('', '', getQuery(queryObj));
       },
     },
+
     beforeMount() {
       //set store variables
       const queryObject = parseQuery(window.location.search);
@@ -516,13 +519,13 @@ window.addEventListener('load', () => {
               value: queryObject[key] || undefined,
             });
             break;
-          case 'type':
+          case window.selectTypeData.name:
             store.commit('changeProp', {
               prop: 'type',
               value: queryObject[key] || '',
             });
             break;
-          case 'status':
+          case window.selectStatusData.name:
             store.commit('changeProp', {
               prop: 'status',
               value: queryObject[key] || '',
