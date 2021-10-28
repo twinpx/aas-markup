@@ -1,0 +1,139 @@
+// start /components/appeal.detail/
+
+//- push style and script file to the end of the page
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'appeal.detail'
+else
+  - var componentsArray = [ 'appeal.detail' ]
+  
+.b-appeal-detail.ph-block
+
+  .ph
+  
+    div
+    div
+    div
+    div
+
+  .ph-content 
+
+    h3 Изменение сведений об учредителях (Участниках, акционерах) аудиторской организации, а также сведения о держателях реестров акционеров аудиторской организации, созданной в форме акционерного общества
+
+    hr
+
+    .row 
+      .col-sm-6 
+        table.table
+          tbody
+            tr
+              th Дата заявки
+              td 13.01.2021 13:08
+            tr
+              th Номер заявки
+              td N3456
+            tr
+              th Заявитель
+              td
+                a( href="/pages/profile/" ) Абросимова Наталия Александровна
+            tr
+              th ОРНЗ
+              td
+                a( href="" ) 11782631892674
+      .col-sm-6 
+        table.table
+          tbody
+            tr
+              th Статус
+              td
+                span.text-danger Отклонено
+            tr
+              th Комментарий
+              td Причина откленения, неправильные документы приложенные к заявке не действительны.
+
+    hr
+
+    .b-appeal-detail__data
+      h3 Данные для обработки
+      p maxim@twinpx.ru
+        br
+        | vt@twinpx.ru
+
+      h3 Документы, прикрепленные к обращению
+
+      .row 
+        .col-sm-6
+          .b-appeal-detail__file-card
+            .b-appeal-detail__file-card__title Справка-подтверждение (Приложение № 8а)
+
+            .b-docs-block__item( href="/pages/news/" )
+      
+              .b-docs-block__body
+              
+                a.b-docs-block__icon( href="/pages/news/" style="background-image: url( '/template/images/zip.svg' );" )
+                
+                span.b-docs-block__text
+                
+                  a( href="/pages/news/" ) Sparavka-moi
+                  
+                  span.b-docs-block__data
+                    span.text-muted 654 Кб .doc
+        .col-sm-6
+          .b-appeal-detail__file-card
+            .b-appeal-detail__file-card__title Документ, подтверждающий прекращение членства реорганизованной аудиторской организации в СРО
+
+            .b-docs-block__item( href="/pages/news/" )
+      
+              .b-docs-block__body
+              
+                a.b-docs-block__icon( href="/pages/news/" style="background-image: url( '/template/images/zip.svg' );" )
+                
+                span.b-docs-block__text
+                
+                  a( href="/pages/news/" ) Очень длинное название файла
+                  
+                  span.b-docs-block__data
+                    span.text-muted 654 Кб .doc
+      hr
+      .row 
+        .col-sm-6
+          .b-appeal-detail__file-card
+            .b-appeal-detail__file-card__title Готовый комплект документов в СРО ААС
+
+            .b-docs-block__item( href="/pages/news/" )
+      
+              .b-docs-block__body
+              
+                a.b-docs-block__icon( href="/pages/news/" style="background-image: url( '/template/images/zip.svg' );" )
+                
+                span.b-docs-block__text
+                
+                  a( href="/pages/news/" ) Zayvka_3456
+                  
+                  span.b-docs-block__data
+                    span.text-muted 654 Кб .doc
+
+    hr
+
+    script( src="https://cdn.jsdelivr.net/npm/vue@2" )
+    script( src="https://unpkg.com/vuex" )
+
+    script( src="https://unpkg.com/vue-select@latest")
+    link( rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css")
+
+    script( src="/components/appeal.detail/store.js" )
+
+    .row 
+      .col-sm-6 
+        h3 Изменение статуса
+        #changeStatusForm
+      .col-sm-6 
+        h3 История изменения обращения
+        p 13.01.2011 13:01 Обращение создано. Ожидает рассмотрения.
+          br
+          |13.01.2011 14:37 Изменен статус «В работе».
+          br
+          | 13.01.2011 14:37 Добавлен комментарий.
+          br
+          | 13.01.2011 15:37 Изменен статус «Исполнено».
+
+// end /components/appeal.detail/

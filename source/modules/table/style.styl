@@ -6,10 +6,6 @@
   thead th
     border-bottom 1px solid $line-color
     border-top 1px solid $line-color
-    font-family $roboto
-    font-weight 600
-    font-size 0.8rem
-    line-height 1rem
 
     &.asc,
     &.desc
@@ -46,6 +42,15 @@
       &:after
         transform( rotate( -135deg ))
         margin-top -1px
+
+  th
+    font-family $roboto
+    font-weight 600
+    font-size 0.8rem
+    line-height 1rem
+
+  tbody th
+    padding-top 1.5rem
 
   th,
   td
