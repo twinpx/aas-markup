@@ -40,6 +40,7 @@ window.appealNewChangeFormStore = {
   controls: [
     {
       property: '179',
+      sort: '',
       label: 'Краткое наименование*',
       type: 'text',
       required: true,
@@ -86,7 +87,7 @@ window.appealNewChangeFormStore = {
     },
     {
       multy: true,
-      value: '',
+      value: [''],
       property: '183',
       type: 'url',
       label: 'Сайт*',
@@ -95,20 +96,9 @@ window.appealNewChangeFormStore = {
       },
     },
     {
-      value: '',
-      property: '184',
-      type: 'textarea',
-      label: 'Комментарий для сотрудников СРО ААС',
-      completeBlock: {
-        title: 'Текущие данные из реестра:',
-        value: '+75647891231',
-        comment: 'Заполните это поле для того, чтобы…',
-      },
-    },
-    {
       multy: true,
-      value: '',
-      property: '185',
+      value: [''],
+      property: '184',
       type: 'textarea',
       label: 'Сообщение*',
       completeBlock: {
@@ -117,22 +107,12 @@ window.appealNewChangeFormStore = {
     },
     {
       multy: true,
-      value: '',
-      property: '186',
+      value: [''],
+      property: '185',
       type: 'date',
       label: 'Дата*',
       completeBlock: {
         comment: 'Вы можете добавить несколько дат.',
-      },
-    },
-    {
-      value: '',
-      property: '186',
-      type: 'date',
-      label: 'Дата*',
-      completeBlock: {
-        title: 'Текущие данные из реестра:',
-        value: '15.02.2021',
       },
     },
   ],
@@ -142,6 +122,7 @@ window.appealNewChangeFormStore = {
     items: [
       {
         id: '7845',
+        checked: false,
         title: 'Пакет документов 1',
         text: '<ul><li>Приказ об увольнении или соглашение о расторжении трудового договора,</li><li>Справка-подтверждение (Приложение № 8а)</li></ul>',
         name: 'confirm-docs',
@@ -149,8 +130,9 @@ window.appealNewChangeFormStore = {
         checked: false,
         controls: [
           {
-            property: '179',
-            label: 'Краткое наименование*',
+            property: '187',
+            label:
+              'Устав в новой редакции или изменения к Уставу (в случае внесения изменений в Устав)*',
             type: 'text',
             required: true,
             value: '',
@@ -159,8 +141,8 @@ window.appealNewChangeFormStore = {
             },
           },
           {
-            property: '180',
-            label: 'Полное наименование*',
+            property: '188',
+            label: 'Актуальная выписка из ЕГРЮЛ*',
             type: 'text',
             required: true,
             value: '',
@@ -172,11 +154,35 @@ window.appealNewChangeFormStore = {
       },
       {
         id: '8956',
+        checked: false,
         title: 'Пакет документов 2',
         text: '<ul><li>Приказ об увольнении или соглашение о расторжении трудового договора,</li><li>Справка-подтверждение (Приложение № 9а)</li></ul>',
         name: 'confirm-docs',
         value: 'block2',
         checked: false,
+        controls: [
+          {
+            property: '189',
+            label:
+              'Устав в новой редакции или изменения к Уставу (в случае внесения изменений в Устав)*',
+            type: 'text',
+            required: true,
+            value: '',
+            completeBlock: {
+              comment: 'Комментарий который поясняет ограничения.',
+            },
+          },
+          {
+            property: '190',
+            label: 'Актуальная выписка из ЕГРЮЛ*',
+            type: 'text',
+            required: true,
+            value: '',
+            completeBlock: {
+              comment: 'Другой комментарий который поясняет ограничения.',
+            },
+          },
+        ],
       },
     ],
   },
