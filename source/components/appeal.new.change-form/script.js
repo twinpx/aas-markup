@@ -368,6 +368,7 @@ window.onload = function () {
         controlValue: this.formControl.value,
         isActive: true,
         isInvalid: false,
+        isFilled: false,
       };
     },
     props: [
@@ -390,7 +391,7 @@ window.onload = function () {
       <hr>
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
-          <div class="b-float-label--file" ref="controlFile" >
+          <div class="b-float-label--file" :class="{'filled': isFilled, 'invalid': isInvalid}" ref="controlFile" >
             <svg xmlns="http://www.w3.org/2000/svg" width="12.297" height="12.43" viewBox="0 0 12.297 12.43" >
               <g transform="translate(0.501 0.5)">
                 <path class="a" d="M-22097.062,1042.255v4.312h11.3v-4.312" transform="translate(22097.063 -1035.136)" />
@@ -430,8 +431,37 @@ window.onload = function () {
       },
       uploadFile() {
         this.files = this.$refs.inputFile.files;
-        this.$refs.controlFile.classList.add('filled');
+
+        //if size is acceptable
+        if (this.files[0].size >= 1e7) {
+          this.isInvalid = true;
+          this.$refs.dropzone.innerHTML = 'Размер файла превышает 10 Мбайт.';
+          return;
+        } else {
+          this.isInvalid = true;
+          this.$refs.dropzone.innerHTML = '';
+        }
+
+        //if the file extention is not pdf
+        const filename = this.files[0].name;
+        const lastIndex = filename.lastIndexOf('.');
+
+        if (
+          filename.substring(lastIndex + 1).toLowerCase() !==
+          ('pdf' || 'jpg' || 'jpeg' || 'png' || 'doc' || 'docx')
+        ) {
+          this.isInvalid = true;
+          this.$refs.dropzone.innerHTML =
+            'Прикладывайте файлы JPG, JPEG, PNG, PDF, DOC, DOCX.';
+          return;
+        } else {
+          this.isInvalid = true;
+          this.$refs.dropzone.innerHTML = '';
+        }
+
+        this.isFilled = true;
         this.$refs.dropzone.innerHTML = this.files[0].name;
+
         //set value
         store.commit('setFile', {
           id: this.controlId,
@@ -441,7 +471,7 @@ window.onload = function () {
       },
       clearInputFile() {
         this.files = [];
-        this.$refs.controlFile.classList.remove('filled');
+        this.isFilled = false;
         this.$refs.dropzone.innerHTML =
           '<a href>Выберите файл</a> или перетащите в поле';
       },
@@ -909,8 +939,9 @@ window.onload = function () {
   Vue.component('docsBlock', {
     template: `
     <div>
-      <h2>{{$store.state.docsBlock.title}}</h2>
-      <div class="b-docs-block">
+      <h2 v-if="$store.state.docsBlock.title">{{$store.state.docsBlock.title}}</h2>
+      <p v-if="$store.state.docsBlock.text" v-html="$store.state.docsBlock.text"></p>
+      <div class="b-docs-block" v-if="$store.state.docsBlock.items.length">
         <div class="b-docs-block__item" href="/pages/news/" v-for="(item, index) in $store.state.docsBlock.items" :key="item.id">
           <hr v-if="index !== 0">
           <div class="b-docs-block__body">
@@ -931,8 +962,8 @@ window.onload = function () {
   Vue.component('confirmDocsBlock', {
     template: `
     <div>
-      <h2>{{$store.state.confirmDocsBlock.title}}</h2>
-      <p>{{ $store.state.confirmDocsBlock.text }}</p>
+      <h2 v-if="$store.state.confirmDocsBlock.title">{{ $store.state.confirmDocsBlock.title }}</h2>
+      <p v-if="$store.state.confirmDocsBlock.text" v-html="$store.state.confirmDocsBlock.text"></p>
       <div v-for="(doc, index) in $store.state.confirmDocsBlock.items">
         <form-control-radio-with-controls :index="index" :control="doc"></form-control-radio-with-controls>
         <hr>
@@ -945,18 +976,26 @@ window.onload = function () {
     store,
     template: `
       <div>
-        <docs-block></docs-block>
-        <hidden-fields></hidden-fields>
 
-        <hr class="hr--lg">
-        
+        <hidden-fields v-if="$store.state.hidden"></hidden-fields>
+
+        <div v-if="$store.state.docsBlock">
+          <div>
+            <docs-block></docs-block>
+          </div>
+
+          <hr class="hr--lg">
+        </div>
+
         <data-to-change @autosave="timeoutAutosave"></data-to-change>
 
         <hr class="hr--lg">
-        
-        <confirm-docs-block></confirm-docs-block>
 
-        <hr class="hr--lg">
+        <div v-if="$store.state.confirmDocsBlock">
+          <confirm-docs-block></confirm-docs-block>
+
+          <hr class="hr--lg">
+        </div>
 
         <submit-button @autosave="timeoutAutosave"></submit-button>
 

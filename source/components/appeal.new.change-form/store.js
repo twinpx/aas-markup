@@ -1,6 +1,7 @@
 window.appealNewChangeFormStore = {
   docsBlock: {
-    title: '',
+    title: 'Документы необходимые для внесения изменения',
+    text: 'Some text',
     items: [
       {
         id: '1234',
