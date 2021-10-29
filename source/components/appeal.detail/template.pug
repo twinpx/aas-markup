@@ -22,7 +22,7 @@ else
     hr
 
     .row 
-      .col-sm-6 
+      .col-lg-6 
         table.table
           tbody
             tr
@@ -39,7 +39,7 @@ else
               th ОРНЗ
               td
                 a( href="" ) 11782631892674
-      .col-sm-6 
+      .col-lg-6 
         table.table
           tbody
             tr
@@ -61,7 +61,7 @@ else
       h3 Документы, прикрепленные к обращению
 
       .row 
-        .col-sm-6
+        .col-lg-6
           .b-appeal-detail__file-card
             .b-appeal-detail__file-card__title Справка-подтверждение (Приложение № 8а)
 
@@ -77,7 +77,8 @@ else
                   
                   span.b-docs-block__data
                     span.text-muted 654 Кб .doc
-        .col-sm-6
+        hr.d-block.d-lg-none.w-100
+        .col-lg-6
           .b-appeal-detail__file-card
             .b-appeal-detail__file-card__title Документ, подтверждающий прекращение членства реорганизованной аудиторской организации в СРО
 
@@ -95,7 +96,7 @@ else
                     span.text-muted 654 Кб .doc
       hr
       .row 
-        .col-sm-6
+        .col-lg-6
           .b-appeal-detail__file-card
             .b-appeal-detail__file-card__title Готовый комплект документов в СРО ААС
 
@@ -115,7 +116,6 @@ else
     hr
 
     script( src="https://cdn.jsdelivr.net/npm/vue@2" )
-    script( src="https://unpkg.com/vuex" )
 
     script( src="https://unpkg.com/vue-select@latest")
     link( rel="stylesheet" href="https://unpkg.com/vue-select@latest/dist/vue-select.css")
@@ -125,15 +125,15 @@ else
     .row 
       .col-sm-6 
         h3 Изменение статуса
+        hr
         #changeStatusForm
+      hr.d-block.d-sm-none.w-100
       .col-sm-6 
         h3 История изменения обращения
+        hr
         p 13.01.2011 13:01 Обращение создано. Ожидает рассмотрения.
-          br
-          |13.01.2011 14:37 Изменен статус «В работе».
-          br
-          | 13.01.2011 14:37 Добавлен комментарий.
-          br
-          | 13.01.2011 15:37 Изменен статус «Исполнено».
+        p 13.01.2011 14:37 Изменен статус «В работе».
+        p 13.01.2011 14:37 Добавлен комментарий.
+        p 13.01.2011 15:37 Изменен статус «Исполнено».
 
 // end /components/appeal.detail/
