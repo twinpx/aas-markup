@@ -18,33 +18,10 @@ window.onload = function () {
         });
         state.confirmDocsBlock.items[payload.index].checked = true;
       },
-      addCompany(state, payload) {
-        //add fields
-        let newCompany = {};
-        newCompany.id = payload.companyId;
-        newCompany.hidden = payload.hidden.map((elem) => {
-          return { name: elem.name, value: elem.value };
-        });
-        newCompany.controls = [];
-        state.audiOZOList.template.controls.forEach((control) => {
-          if (control.type === 'text' || control.type === 'date') {
-            newCompany.controls.push({
-              name: control.name,
-              label: control.label,
-              value: '',
-              type: control.type,
-            });
-          }
-        });
-        state.audiOZOList.companies.push(newCompany);
-      },
-      removeCompany(state, payload) {
-        state.audiOZOList.companies.splice(payload.index, 1);
-      },
       changeControl(state, payload) {
-        const control = state.controls.filter(
+        const control = state.controlsBlock.controls.find(
           (control) => control.property === payload.property
-        )[0];
+        );
         //multy
         if (control.multy && payload.index !== undefined) {
           if (!control.value) {
@@ -58,12 +35,12 @@ window.onload = function () {
         }
       },
       setFile(state, payload) {
-        const item = state.confirmDocsBlock.items.filter(
+        const item = state.confirmDocsBlock.items.find(
           (item) => item.id === payload.id
-        )[0];
-        const control = item.controls.filter(
+        );
+        const control = item.controls.find(
           (control) => control.property === payload.property
-        )[0];
+        );
         control.value = payload.value;
       },
       changeAutosaveTimeoutId(state, payload) {
@@ -98,16 +75,16 @@ window.onload = function () {
         checked: this.control.checked,
       };
     },
-    props: ['index', 'control'],
-    template: `<div class="b-form-control-vc" :class="{'i-active': $store.state.confirmDocsBlock.items[index].checked}">
+    props: ['index', 'control', 'blockFlag'],
+    template: `<div class="b-form-control-vc" :class="{'i-active': $store.state.confirmDocsBlock.items[index].checked, 'i-block': blockFlag}">
       <label :class="{'i-active': checked}" class="b-form-control-vc__top">
         <div class="b-form-control-vc__content">
-          <div class="b-form-control-vc__text"><b v-html="control.title"></b><span v-html="control.text"></span></div>
+          <div class="b-form-control-vc__text"><b v-if="!blockFlag" v-html="control.title"></b><span v-html="control.text"></span></div>
         </div>
         
         <div class="b-radio-vc"><input type="radio" :name="control.name" :checked="checked" :value="control.value" class="with-gap" @change="change"><span></span></div>
       </label>
-      <div class="b-form-control-vc__fields" v-show="$store.state.confirmDocsBlock.items[index].checked">
+      <div class="b-form-control-vc__fields" v-show="blockFlag || $store.state.confirmDocsBlock.items[index].checked">
         <hr class="hr--line">
         <form-control-file v-for="(formControl, controlIndex) in control.controls" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" :controlId="control.id" required="required" @autosave="autosave"></form-control-file>
       </div>
@@ -139,11 +116,6 @@ window.onload = function () {
         //show the form if it is the first radio
         this.$emit('set-form-active', this.index);
 
-        //show empty form if there are no companies yet
-        if (this.index === 0 && !store.state.audiOZOList.companies.length) {
-          this.$emit('addFieldsetBlock');
-        }
-
         //autosave
         (async () => {
           try {
@@ -171,9 +143,10 @@ window.onload = function () {
     },
     template: `
     <div>
-      <h2>Данные для изменения</h2>
-      <p>Подробное описание заполнения формы с пояснением о том, какие поля надо заполнять и как они должны выглядеть. Описанием может быть довольно большим.</p>
-      <div v-for="(formControl, controlIndex) in $store.state.controls" :key="formControl.id">
+      <h2>{{ $store.state.controlsBlock.title }}</h2>
+      <p v-html="$store.state.controlsBlock.text"></p>
+      <hr class="hr--sl">
+      <div v-for="(formControl, controlIndex) in $store.state.controlsBlock.controls" :key="formControl.id">
         <form-control-multy v-if="formControl.multy" :formControl="formControl" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control-multy>
         <form-control-date v-else-if="formControl.type==='date'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control-date>
         <form-control-textarea v-else-if="formControl.type==='textarea'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control-textarea>
@@ -201,48 +174,6 @@ window.onload = function () {
         this.slide = !this.slide;
         //slide body
         this.open = !this.open;
-      },
-      addFieldsetBlock() {
-        //send request
-        (async () => {
-          try {
-            let response = await fetch(
-              `${window.appealNewChangeFormPaths.addCompany}?blockId=${store.state.reportId}`
-            );
-            let result = await response.json();
-            if (result.STATUS === 'Y') {
-              //add company
-              store.commit('addCompany', {
-                companyId: result.DATA.companyId,
-                hidden: result.DATA.hidden,
-              });
-            } else {
-              throw new Error('Ошибка при добавлении организации.');
-            }
-          } catch (err) {
-            throw err;
-          }
-        })();
-      },
-      deleteFieldsetBlock(index, company) {
-        //remove company
-        store.commit('removeCompany', { index: index });
-        //send info
-        if (company.id) {
-          (async () => {
-            try {
-              let response = await fetch(
-                `${window.appealNewChangeFormPaths.removeCompany}?blockId=${store.state.reportId}&companyId=${company.id}`
-              );
-              let result = await response.json();
-              if (result.STATUS !== 'Y') {
-                throw new Error('Ошибка при удалении организации.');
-              }
-            } catch (err) {
-              throw err;
-            }
-          })();
-        }
       },
       generateKey(index) {
         return Date.now() * Math.random() + index;
@@ -276,8 +207,8 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" :class="{invalid: isInvalid}">
-            <input ref="input" :id="'PROPERTY_'+formControl.property+'_'+fieldsetBlockIndex" type="text" :name="'PROPERTY['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" :required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue">
-            <label ref="label" :for="'PROPERTY_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
+            <input ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" type="text" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" :required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue">
+            <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
           </div>
         </div>
         <hr class="hr--xs d-block d-lg-none w-100" v-if="!formControl.multy || !controlIndex">
@@ -293,7 +224,7 @@ window.onload = function () {
           <div v-if="this.formControl.completeBlock && this.formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ this.formControl.completeBlock.comment }}</div>
         </div>
       </div>
-      <hr>
+      <hr class="hr--sl">
     </div>
     `,
 
@@ -332,7 +263,7 @@ window.onload = function () {
         /*(async () => {
           try {
             let response = await fetch(
-              `${window.appealNewChangeFormPaths.autosave}?name=PROPERTY[${
+              `${window.appealNewChangeFormPaths.autosave}?name=${this.formControl.word}[${
                 this.formControl.name
               }][${this.fieldsetBlockIndex}]&value=${
                 this.formControl.value
@@ -388,10 +319,11 @@ window.onload = function () {
     },*/
     template: `
     <div>
-      <hr>
+      <hr class="hr--sl">
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label--file" :class="{'filled': isFilled, 'invalid': isInvalid}" ref="controlFile" >
+            <span class="b-float-label-file__label">{{ formControl.label }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="12.297" height="12.43" viewBox="0 0 12.297 12.43" >
               <g transform="translate(0.501 0.5)">
                 <path class="a" d="M-22097.062,1042.255v4.312h11.3v-4.312" transform="translate(22097.063 -1035.136)" />
@@ -399,8 +331,8 @@ window.onload = function () {
                 <path class="b" d="M0,0V8.273" transform="translate(5.565 8.376) rotate(180)" />
               </g>
             </svg>
-            <input type="file" :name="'PROPERTY['+formControl.property+']['+fieldsetBlockIndex+']'" :id="'PROPERTY_'+formControl.property+'_'+fieldsetBlockIndex" @change="uploadFile()" ref="inputFile" />
-            <label :for="'PROPERTY_'+formControl.property+'_'+fieldsetBlockIndex" class="active" v-html="'<a href>Выберите файл</a> или перетащите в поле'" ref="dropzone" ></label>
+            <input type="file" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" @change="uploadFile()" ref="inputFile" />
+            <label :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" class="active" v-html="formControl.default" ref="dropzone" ></label>
           </div>
         </div>
         <hr class="hr--xs d-block d-lg-none w-100">
@@ -438,25 +370,22 @@ window.onload = function () {
           this.$refs.dropzone.innerHTML = 'Размер файла превышает 10 Мбайт.';
           return;
         } else {
-          this.isInvalid = true;
-          this.$refs.dropzone.innerHTML = '';
+          this.isInvalid = false;
         }
 
         //if the file extention is not pdf
         const filename = this.files[0].name;
         const lastIndex = filename.lastIndexOf('.');
+        const regExp = new RegExp(this.formControl.ext.join('|'));
 
-        if (
-          filename.substring(lastIndex + 1).toLowerCase() !==
-          ('pdf' || 'jpg' || 'jpeg' || 'png' || 'doc' || 'docx')
-        ) {
+        if (!regExp.test(filename.substring(lastIndex + 1).toLowerCase())) {
           this.isInvalid = true;
-          this.$refs.dropzone.innerHTML =
-            'Прикладывайте файлы JPG, JPEG, PNG, PDF, DOC, DOCX.';
+          this.$refs.dropzone.innerHTML = `Прикладывайте файлы ${this.formControl.ext
+            .map((w) => w.toUpperCase())
+            .join(', ')}.`;
           return;
         } else {
-          this.isInvalid = true;
-          this.$refs.dropzone.innerHTML = '';
+          this.isInvalid = false;
         }
 
         this.isFilled = true;
@@ -472,8 +401,7 @@ window.onload = function () {
       clearInputFile() {
         this.files = [];
         this.isFilled = false;
-        this.$refs.dropzone.innerHTML =
-          '<a href>Выберите файл</a> или перетащите в поле';
+        this.$refs.dropzone.innerHTML = this.formControl.default;
       },
       cancelEvent(e) {
         e.preventDefault();
@@ -559,8 +487,8 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" :class="{invalid: isInvalid}">
-            <textarea ref="input" :id="'PROPERTY_'+formControl.property+'_'+fieldsetBlockIndex" :name="'PROPERTY['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" :required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue"></textarea>
-            <label ref="label" :for="'PROPERTY_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
+            <textarea ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" :required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue"></textarea>
+            <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
           </div>
         </div>
         <hr class="hr--xs d-block d-lg-none w-100" v-if="!formControl.multy || !controlIndex">
@@ -576,7 +504,7 @@ window.onload = function () {
           <div v-if="this.formControl.completeBlock && this.formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ this.formControl.completeBlock.comment }}</div>
         </div>
       </div>
-      <hr>
+      <hr class="hr--sl">
     </div>
     `,
 
@@ -615,7 +543,7 @@ window.onload = function () {
         /*(async () => {
           try {
             let response = await fetch(
-              `${window.appealNewChangeFormPaths.autosave}?name=PROPERTY[${
+              `${window.appealNewChangeFormPaths.autosave}?name=${this.formControl.word}[${
                 this.formControl.name
               }][${this.fieldsetBlockIndex}]&value=${
                 this.formControl.value
@@ -652,7 +580,7 @@ window.onload = function () {
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
     template: `
       <div>
-        <hr class="hr--line hr--xl" style="margin-top: 0;">
+        <hr class="hr--line hr--xxl" style="margin-top: 0;">
         <div v-if="formControl.type==='date'">
           <form-control-date v-for="(control, idx) in formControl.value.length" :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" required="required" @autosave="autosave"></form-control-date>
         </div>
@@ -664,7 +592,7 @@ window.onload = function () {
         </div>
         
         <button class="btn btn-success btn-md" @click.prevent="add">Добавить</button>
-        <hr class="hr--line hr--xl">
+        <hr class="hr--line hr--xxl">
       </div>
     `,
     methods: {
@@ -699,7 +627,7 @@ window.onload = function () {
         <div class="col-lg-6 col-12">
         <div class="b-float-label" data-src="${window.moderationSrcPath}calendar.svg" :class="{invalid: isInvalid}">
           <date-picker :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @blur="blurInput"></date-picker>
-          <label :for="'PROPERTY_'+formControl.name+'_'+fieldsetBlockIndex" :class="{ active: isActive }">{{formControl.label}}</label>
+          <label :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{ active: isActive }">{{formControl.label}}</label>
         </div>
         </div>
         <hr class="hr--xs d-block d-lg-none w-100" v-if="!formControl.multy || !controlIndex">
@@ -715,13 +643,13 @@ window.onload = function () {
           <div v-if="this.formControl.completeBlock && this.formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ this.formControl.completeBlock.comment }}</div>
         </div>
       </div>
-      <hr>
+      <hr class="hr--sl">
     </div>`,
     data() {
       return {
         inputAttr: {
-          id: `PROPERTY_${this.formControl.name}_${this.fieldsetBlockIndex}`,
-          name: `PROPERTY[${this.formControl.name}][${this.fieldsetBlockIndex}]`,
+          id: `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`,
+          name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
         },
         isActive: this.formControl.multy
           ? this.formControl.value[this.controlIndex] === ''
@@ -911,21 +839,42 @@ window.onload = function () {
     computed: {
       isDisabled() {
         //controls
-        const controlsFlag = this.$store.state.controls.every((control) => {
-          if (control.multy) {
-            return control.value.every((value) => !!value);
-          } else {
-            return !!control.value;
-          }
-        });
+        let controlsFlag = true;
+        if (
+          this.$store.state.controlsBlock &&
+          this.$store.state.controlsBlock.controls
+        ) {
+          const requiredControls =
+            this.$store.state.controlsBlock.controls.filter(
+              (control) => control.required
+            );
+          controlsFlag = requiredControls.every((control) => {
+            if (control.multy) {
+              return control.value.every((value) => !!value);
+            } else {
+              return !!control.value;
+            }
+          });
+        }
 
         //confirm docs
-        const checked = this.$store.state.confirmDocsBlock.items.filter(
-          (item) => item.checked === true
-        );
-        const confirmDocsFlag = checked.length
-          ? checked[0].controls.every((control) => !!control.value)
-          : false;
+        let confirmDocsFlag = true;
+        if (
+          this.$store.state.confirmDocsBlock &&
+          this.$store.state.confirmDocsBlock.items
+        ) {
+          const checked = this.$store.state.confirmDocsBlock.items.find(
+            (item) => item.checked === true
+          );
+
+          const requiredConfirm = checked
+            ? checked.controls.filter((control) => control.required)
+            : undefined;
+
+          confirmDocsFlag = requiredConfirm
+            ? requiredConfirm.every((control) => !!control.value)
+            : false;
+        }
 
         //checkbox
         const checkboxFlag = this.checked;
@@ -963,9 +912,9 @@ window.onload = function () {
     template: `
     <div>
       <h2 v-if="$store.state.confirmDocsBlock.title">{{ $store.state.confirmDocsBlock.title }}</h2>
-      <p v-if="$store.state.confirmDocsBlock.text" v-html="$store.state.confirmDocsBlock.text"></p>
+      <p v-if="$store.state.confirmDocsBlock.items.length !== 1 && $store.state.confirmDocsBlock.text" v-html="$store.state.confirmDocsBlock.text"></p>
       <div v-for="(doc, index) in $store.state.confirmDocsBlock.items">
-        <form-control-radio-with-controls :index="index" :control="doc"></form-control-radio-with-controls>
+        <form-control-radio-with-controls :index="index" :control="doc" :blockFlag="$store.state.confirmDocsBlock.items.length === 1"></form-control-radio-with-controls>
         <hr>
       </div>
     </div>`,
@@ -979,21 +928,18 @@ window.onload = function () {
 
         <hidden-fields v-if="$store.state.hidden"></hidden-fields>
 
-        <div v-if="$store.state.docsBlock">
-          <div>
-            <docs-block></docs-block>
-          </div>
-
+        <div v-if="$store.state.docsBlock && $store.state.docsBlock.items.length">
+          <docs-block></docs-block>
           <hr class="hr--lg">
         </div>
 
-        <data-to-change @autosave="timeoutAutosave"></data-to-change>
+        <div v-if="$store.state.controlsBlock && $store.state.controlsBlock.controls.length">
+          <data-to-change @autosave="timeoutAutosave"></data-to-change>
+          <hr class="hr--lg">
+        </div>
 
-        <hr class="hr--lg">
-
-        <div v-if="$store.state.confirmDocsBlock">
+        <div v-if="$store.state.confirmDocsBlock && $store.state.confirmDocsBlock.items.length">
           <confirm-docs-block></confirm-docs-block>
-
           <hr class="hr--lg">
         </div>
 

@@ -38,92 +38,104 @@ window.appealNewChangeFormStore = {
       value: 'Поддержка Twin px Support',
     },
   ],
-  controls: [
-    {
-      property: '179',
-      sort: '',
-      label: 'Краткое наименование*',
-      type: 'text',
-      required: true,
-      value: '',
-      completeBlock: {
-        title: 'Текущие данные из реестра:',
-        value: 'ООО «Компания»',
-        comment:
-          'Заполните это поле для того, чтобы Заполните это поле для того, чтобы Заполните это поле для того, чтобы…',
+  controlsBlock: {
+    title: 'Данные для изменения',
+    text: 'Подробное описание заполнения формы с <a href="">пояснением</a> о том, какие поля надо заполнять и как они должны выглядеть. Описанием может быть довольно большим.',
+    controls: [
+      {
+        property: '179',
+        word: 'PROPERTY',
+        sort: '',
+        label: 'Краткое наименование*',
+        type: 'text',
+        required: true,
+        value: '',
+        completeBlock: {
+          title: 'Текущие данные из реестра:',
+          value: 'ООО «Компания»',
+          comment:
+            'Заполните это поле для того, чтобы Заполните это поле для того, чтобы Заполните это поле для того, чтобы…',
+        },
       },
-    },
-    {
-      property: '180',
-      label: 'Полное наименование*',
-      type: 'text',
-      required: true,
-      value: '',
-      completeBlock: {
-        title: 'Текущие данные из реестра:',
-        value: 'ООО «Компания + Я»',
+      {
+        property: '180',
+        word: 'WORD',
+        label: 'Полное наименование*',
+        type: 'text',
+        required: true,
+        value: '',
+        completeBlock: {
+          title: 'Текущие данные из реестра:',
+          value: 'ООО «Компания + Я»',
+        },
       },
-    },
-    {
-      property: '181',
-      label: 'Телефон*',
-      type: 'tel',
-      required: true,
-      value: '',
-      completeBlock: {
-        title: 'Текущие данные из реестра:',
-        value: '+75647891231',
+      {
+        property: '181',
+        word: 'WORD',
+        label: 'Телефон*',
+        type: 'tel',
+        required: true,
+        value: '',
+        completeBlock: {
+          title: 'Текущие данные из реестра:',
+          value: '+75647891231',
+        },
       },
-    },
-    {
-      property: '182',
-      label: 'Наименование на иностранном языке*',
-      type: 'tel',
-      required: true,
-      value: '',
-      completeBlock: {
-        title: 'Текущие данные из реестра:',
-        value: null,
+      {
+        property: '182',
+        word: 'WORD',
+        label: 'Наименование на иностранном языке*',
+        type: 'tel',
+        required: true,
+        value: '',
+        completeBlock: {
+          title: 'Текущие данные из реестра:',
+          value: null,
+        },
       },
-    },
-    {
-      multy: true,
-      value: [''],
-      property: '183',
-      type: 'url',
-      label: 'Сайт*',
-      completeBlock: {
-        comment: 'Вы можете добавить несколько сайтов.',
+      {
+        multy: true,
+        value: [''],
+        property: '183',
+        word: 'WORD',
+        type: 'url',
+        label: 'Сайт*',
+        completeBlock: {
+          comment: 'Вы можете добавить несколько сайтов.',
+        },
       },
-    },
-    {
-      multy: true,
-      value: [''],
-      property: '184',
-      type: 'textarea',
-      label: 'Сообщение*',
-      completeBlock: {
-        comment: 'Вы можете добавить несколько сообщений.',
+      {
+        multy: true,
+        value: [''],
+        property: '184',
+        word: 'QUALITY',
+        type: 'textarea',
+        required: true,
+        label: 'Сообщение*',
+        completeBlock: {
+          comment: 'Вы можете добавить несколько сообщений.',
+        },
       },
-    },
-    {
-      multy: true,
-      value: [''],
-      property: '185',
-      type: 'date',
-      label: 'Дата*',
-      completeBlock: {
-        comment: 'Вы можете добавить несколько дат.',
+      {
+        multy: true,
+        value: [''],
+        property: '185',
+        word: 'QUANTITY',
+        type: 'date',
+        label: 'Дата*',
+        completeBlock: {
+          comment: 'Вы можете добавить несколько дат.',
+        },
       },
-    },
-  ],
+    ],
+  },
   confirmDocsBlock: {
     title: 'Подтверждающие документы',
     text: 'Выберите подходящий для вас пакет подтверждающих документов.',
     items: [
       {
         id: '7845',
-        checked: false,
+        checked: true,
         title: 'Пакет документов 1',
         text: '<ul><li>Приказ об увольнении или соглашение о расторжении трудового договора,</li><li>Справка-подтверждение (Приложение № 8а)</li></ul>',
         name: 'confirm-docs',
@@ -132,21 +144,25 @@ window.appealNewChangeFormStore = {
         controls: [
           {
             property: '187',
-            label:
-              'Устав в новой редакции или изменения к Уставу (в случае внесения изменений в Устав)*',
+            word: 'FILE',
+            label: 'Устав в новой редакции или изменения к Уставу*',
             type: 'text',
             required: true,
             value: '',
+            default: '<a href>Выберите файл</a> или перетащите в поле',
+            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
               comment: 'Комментарий который поясняет ограничения.',
             },
           },
           {
             property: '188',
+            word: 'FILE',
             label: 'Актуальная выписка из ЕГРЮЛ*',
             type: 'text',
-            required: true,
             value: '',
+            default: '<a href>Выберите файл</a> или перетащите в поле',
+            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
               comment: 'Другой комментарий который поясняет ограничения.',
             },
@@ -154,31 +170,35 @@ window.appealNewChangeFormStore = {
         ],
       },
       {
-        id: '8956',
-        checked: false,
-        title: 'Пакет документов 2',
-        text: '<ul><li>Приказ об увольнении или соглашение о расторжении трудового договора,</li><li>Справка-подтверждение (Приложение № 9а)</li></ul>',
+        id: '7845',
+        checked: true,
+        title: 'Пакет документов 1',
+        text: '<ul><li>Приказ об увольнении или соглашение о расторжении трудового договора,</li><li>Справка-подтверждение (Приложение № 8а)</li></ul>',
         name: 'confirm-docs',
-        value: 'block2',
+        value: 'block1',
         checked: false,
         controls: [
           {
-            property: '189',
-            label:
-              'Устав в новой редакции или изменения к Уставу (в случае внесения изменений в Устав)*',
+            property: '187',
+            word: 'FILE',
+            label: 'Устав в новой редакции или изменения к Уставу*',
             type: 'text',
             required: true,
             value: '',
+            default: '<a href>Выберите файл</a> или перетащите в поле',
+            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
               comment: 'Комментарий который поясняет ограничения.',
             },
           },
           {
-            property: '190',
+            property: '188',
+            word: 'FILE',
             label: 'Актуальная выписка из ЕГРЮЛ*',
             type: 'text',
-            required: true,
             value: '',
+            default: '<a href>Выберите файл</a> или перетащите в поле',
+            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
               comment: 'Другой комментарий который поясняет ограничения.',
             },
