@@ -38,11 +38,34 @@ else
 
   .ph-content
 
+    h3 Изменение сведений об учредителях (Участниках, акционерах) аудиторской организации, а также сведения о держателях реестров акционеров аудиторской организации, созданной в форме акционерного общества
+
+    p Подробное описание заполнения формы с <a href="">пояснением</a> о том, какие поля надо заполнять и как они должны выглядеть. Описанием может быть довольно большим.
+
     form(action="" method="GET")
 
       .b-appeal-new-change-form__hidden 
         input(type="hidden", name="SOME" value="") 
 
       #appealNewChangeForm
+
+      #submitConfirmModal.modal--text.modal.fade(tabindex="-1" aria-labelledby="submitConfirmModalLabel" aria-hidden="true")
+        .modal-dialog
+          .modal-content
+            button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
+            .modal-body
+              h3.text-center Вы хотите отредактировать отчет?
+
+              hr
+
+              p Вы переходите в режим редактирования отчета. После внесения изменений в отчет вам необходимо сдать его, нажав на кнопку «Сдать отчет».
+              
+              p До тех пор, пока вы повторно не отправите отчет, он будет находиться в статусе «Необходимо сдать».
+
+              hr
+
+              .text-center.modal-buttons
+                input.btn.btn-secondary.btn-lg( type="submit" name="iblock_submit" value="Отправить" )
+                button.btn.btn-light( data-dismiss="modal" ) Отменить
 
 // end /components/appeal.new.change-form/

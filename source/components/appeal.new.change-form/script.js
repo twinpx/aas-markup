@@ -86,7 +86,7 @@ window.onload = function () {
       </label>
       <div class="b-form-control-vc__fields" v-show="blockFlag || $store.state.confirmDocsBlock.items[index].checked">
         <hr class="hr--line">
-        <form-control-file v-for="(formControl, controlIndex) in control.controls" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" :controlId="control.id" required="required" @autosave="autosave"></form-control-file>
+        <form-control-file v-for="(formControl, controlIndex) in control.controls" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" :controlId="control.id" @autosave="autosave"></form-control-file>
       </div>
     </div>
     `,
@@ -147,10 +147,10 @@ window.onload = function () {
       <p v-html="$store.state.controlsBlock.text"></p>
       <hr class="hr--sl">
       <div v-for="(formControl, controlIndex) in $store.state.controlsBlock.controls" :key="formControl.id">
-        <form-control-multy v-if="formControl.multy" :formControl="formControl" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control-multy>
-        <form-control-date v-else-if="formControl.type==='date'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control-date>
-        <form-control-textarea v-else-if="formControl.type==='textarea'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control-textarea>
-        <form-control v-else :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" required="required" @autosave="autosave"></form-control>
+        <form-control-multy v-if="formControl.multy" :formControl="formControl" :controlIndex="controlIndex" @autosave="autosave"></form-control-multy>
+        <form-control-date v-else-if="formControl.type==='date'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex"  @autosave="autosave"></form-control-date>
+        <form-control-textarea v-else-if="formControl.type==='textarea'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" @autosave="autosave"></form-control-textarea>
+        <form-control v-else :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" @autosave="autosave"></form-control>
       </div>
     </div>
     `,
@@ -207,7 +207,7 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" :class="{invalid: isInvalid}">
-            <input ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" type="text" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" :required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue">
+            <input ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" type="text" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @blur="blurControl()" @input="inputControl()" v-model="controlValue">
             <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
           </div>
         </div>
@@ -487,7 +487,7 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" :class="{invalid: isInvalid}">
-            <textarea ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" :required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue"></textarea>
+            <textarea ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @blur="blurControl()" @input="inputControl()" v-model="controlValue"></textarea>
             <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
           </div>
         </div>
@@ -832,7 +832,7 @@ window.onload = function () {
         </div>
         <hr class="hr--lg">
         <div class="b-appeal-new-change-form__submit">
-          <input type="submit" name="iblock_submit" class="btn btn-secondary btn-lg" value="Отправить" :disabled="isDisabled">
+          <a href="#" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#submitConfirmModal" :disabled="isDisabled">Отправить</a>
         </div>
       </div>
     `,
