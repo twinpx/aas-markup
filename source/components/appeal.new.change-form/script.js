@@ -41,7 +41,7 @@ window.onload = function () {
         const control = item.controls.find(
           (control) => control.property === payload.property
         );
-        control.value = payload.value;
+        control.filename = payload.filename;
       },
       changeAutosaveTimeoutId(state, payload) {
         state.autosaveTimeoutId = payload;
@@ -147,13 +147,14 @@ window.onload = function () {
       <p v-html="$store.state.controlsBlock.text"></p>
       <hr class="hr--sl">
       <div v-for="(formControl, controlIndex) in $store.state.controlsBlock.controls" :key="formControl.id">
-        <form-control-multy v-if="formControl.multy" :formControl="formControl" :controlIndex="controlIndex" @autosave="autosave"></form-control-multy>
-        <form-control-date v-else-if="formControl.type==='date'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex"  @autosave="autosave"></form-control-date>
-        <form-control-textarea v-else-if="formControl.type==='textarea'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" @autosave="autosave"></form-control-textarea>
-        <form-control v-else :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" @autosave="autosave"></form-control>
+        <form-control-multy v-if="formControl.multy" :formControl="formControl" :controlIndex="controlIndex" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-multy>
+        <form-control-date v-else-if="formControl.type==='date'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex"  @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-date>
+        <form-control-textarea v-else-if="formControl.type==='textarea'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-textarea>
+        <form-control v-else :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control>
       </div>
     </div>
     `,
+    emits: ['autosave', 'timeoutAutosave'],
     methods: {
       //transition
       enter: function (el, done) {
@@ -181,6 +182,9 @@ window.onload = function () {
       autosave() {
         this.$emit('autosave');
       },
+      timeoutAutosave() {
+        this.$emit('timeoutAutosave');
+      },
     },
   });
 
@@ -202,6 +206,7 @@ window.onload = function () {
       };
     },
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
+    emits: ['autosave', 'timeoutAutosave'],
     template: `
     <div>
       <div class="row align-items-center">
@@ -227,14 +232,14 @@ window.onload = function () {
       <hr class="hr--sl">
     </div>
     `,
-
     methods: {
       clickLink() {
         this.controlValue = this.formControl.completeBlock.value;
         this.isActive = true;
         this.validate();
         //if tel
-        //fieldAutosaveRequest(this.$refs.input);
+        //autosave
+        this.$emit('autosave');
         //restartFormAutosaveTimeout();
       },
       inputControl() {
@@ -251,6 +256,9 @@ window.onload = function () {
           payload.index = this.controlIndex;
         }
         store.commit('changeControl', payload);
+        //autosave
+        this.$emit('timeoutAutosave');
+        //restartFormAutosaveTimeout();
       },
       blurControl() {
         if (this.controlValue !== '') {
@@ -260,27 +268,7 @@ window.onload = function () {
         }
         this.validate();
         //autosave
-        /*(async () => {
-          try {
-            let response = await fetch(
-              `${window.appealNewChangeFormPaths.autosave}?name=${this.formControl.word}[${
-                this.formControl.name
-              }][${this.fieldsetBlockIndex}]&value=${
-                this.formControl.value
-              }&company_id=${
-                store.state.audiOZOList.companies[this.fieldsetBlockIndex].id
-              }`
-            );
-            let result = await response.json();
-            if (result.STATUS !== 'Y') {
-              throw new Error('Ошибка автосохранения');
-            }
-          } catch (err) {
-            throw err;
-          }
-        })();
-        //autosave whole form
-        this.$emit('autosave');*/
+        this.$emit('autosave');
       },
       validate() {
         if (this.required && !this.controlValue) {
@@ -296,33 +284,17 @@ window.onload = function () {
   Vue.component('formControlFile', {
     data() {
       return {
-        controlValue: this.formControl.value,
         isActive: true,
-        isInvalid: false,
-        isFilled: false,
+        files: [],
       };
     },
-    props: [
-      'formControl',
-      'fieldsetBlockIndex',
-      'controlIndex',
-      'controlId',
-      'required',
-    ],
-    /*props: {
-      required: {
-        type: Boolean,
-        default() {
-          return false;
-        },
-      },
-    },*/
     template: `
     <div>
       <hr class="hr--sl">
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
-          <div class="b-float-label--file" :class="{'filled': isFilled, 'invalid': isInvalid}" ref="controlFile" >
+          <span class="b-float-label-file__close" @click.prevent="clearInputFile" v-if="formControl.filename"></span>
+          <div class="b-float-label--file" :class="{'filled': isFilled, 'invalid': !!invalid}" ref="controlFile" >
             <span class="b-float-label-file__label">{{ formControl.label }}</span>
             <svg xmlns="http://www.w3.org/2000/svg" width="12.297" height="12.43" viewBox="0 0 12.297 12.43" >
               <g transform="translate(0.501 0.5)">
@@ -332,7 +304,8 @@ window.onload = function () {
               </g>
             </svg>
             <input type="file" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" @change="uploadFile()" ref="inputFile" />
-            <label :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" class="active" v-html="formControl.default" ref="dropzone" ></label>
+            <label :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" class="active" v-html="label" ref="dropzone" ></label>
+            <input type="hidden" :name="formControl.word+'-FILENAME['+formControl.property+']['+fieldsetBlockIndex+']'" :value="filename" />
           </div>
         </div>
         <hr class="hr--xs d-block d-lg-none w-100">
@@ -342,66 +315,77 @@ window.onload = function () {
       </div>
     </div>
     `,
+    props: [
+      'formControl',
+      'fieldsetBlockIndex',
+      'controlIndex',
+      'controlId',
+      'required',
+    ],
+    computed: {
+      isFilled() {
+        return !!this.formControl.filename;
+      },
+      invalid() {
+        if (this.files[0] && this.files[0].size && this.files[0].name) {
+          if (this.files[0].size >= 1e7) {
+            this.files = [];
+            return 'Размер файла превышает 10 Мбайт.';
+          }
 
-    methods: {
-      setInvalid(value) {
-        this.isInvalid = value;
-      },
-      focus() {
-        //label
-        this.isFocused = true;
-        //reset invalid
-        this.isInvalid = false;
-      },
-      blur() {
-        //label
-        this.isFocused = false;
-        //form control validation
-        if (this.required && this.value.trim() === '') {
-          this.isInvalid = true;
+          const filename = this.files[0].name;
+          const lastIndex = filename.lastIndexOf('.');
+          const regExp = new RegExp(this.formControl.ext.join('|'));
+
+          if (!regExp.test(filename.substring(lastIndex + 1).toLowerCase())) {
+            this.files = [];
+            return `Прикладывайте файлы ${this.formControl.ext
+              .map((w) => w.toUpperCase())
+              .join(', ')}.`;
+          }
         }
+        return '';
       },
+      label() {
+        if (this.invalid) {
+          return this.invalid;
+        }
+        if (this.files[0] && this.files[0].name) {
+          return this.files[0].name;
+        }
+        if (this.formControl.filename) {
+          return this.formControl.filename;
+        }
+        return this.formControl.default;
+      },
+      filename() {
+        return this.formControl.filename;
+      },
+    },
+    methods: {
       uploadFile() {
         this.files = this.$refs.inputFile.files;
+        //invalid and label change
+        setTimeout(() => {
+          if (this.invalid) {
+            this.$refs.inputFile.value = '';
+          }
 
-        //if size is acceptable
-        if (this.files[0].size >= 1e7) {
-          this.isInvalid = true;
-          this.$refs.dropzone.innerHTML = 'Размер файла превышает 10 Мбайт.';
-          return;
-        } else {
-          this.isInvalid = false;
-        }
-
-        //if the file extention is not pdf
-        const filename = this.files[0].name;
-        const lastIndex = filename.lastIndexOf('.');
-        const regExp = new RegExp(this.formControl.ext.join('|'));
-
-        if (!regExp.test(filename.substring(lastIndex + 1).toLowerCase())) {
-          this.isInvalid = true;
-          this.$refs.dropzone.innerHTML = `Прикладывайте файлы ${this.formControl.ext
-            .map((w) => w.toUpperCase())
-            .join(', ')}.`;
-          return;
-        } else {
-          this.isInvalid = false;
-        }
-
-        this.isFilled = true;
-        this.$refs.dropzone.innerHTML = this.files[0].name;
-
-        //set value
-        store.commit('setFile', {
-          id: this.controlId,
-          property: this.formControl.property,
-          value: this.files[0].name,
-        });
+          //set value
+          store.commit('setFile', {
+            id: this.controlId,
+            property: this.formControl.property,
+            filename: this.invalid ? '' : this.files[0].name,
+          });
+        }, 0);
       },
       clearInputFile() {
         this.files = [];
-        this.isFilled = false;
-        this.$refs.dropzone.innerHTML = this.formControl.default;
+        store.commit('setFile', {
+          id: this.controlId,
+          property: this.formControl.property,
+          filename: '',
+        });
       },
       cancelEvent(e) {
         e.preventDefault();
@@ -415,9 +399,6 @@ window.onload = function () {
           top: box.top + scrollY,
           left: box.left + scrollX,
         };
-      },
-      getValue() {
-        return this.files[0];
       },
     },
 
@@ -482,6 +463,7 @@ window.onload = function () {
       };
     },
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
+    emits: ['autosave', 'timeoutAutosave'],
     template: `
     <div>
       <div class="row align-items-center">
@@ -514,8 +496,8 @@ window.onload = function () {
         this.isActive = true;
         this.validate();
         //if tel
-        //fieldAutosaveRequest(this.$refs.input);
-        //restartFormAutosaveTimeout();
+        //autosave
+        this.$emit('autosave');
       },
       inputControl() {
         //validate
@@ -531,6 +513,8 @@ window.onload = function () {
           payload.index = this.controlIndex;
         }
         store.commit('changeControl', payload);
+        //autosave
+        this.$emit('timeoutAutosave');
       },
       blurControl() {
         if (this.controlValue !== '') {
@@ -540,27 +524,7 @@ window.onload = function () {
         }
         this.validate();
         //autosave
-        /*(async () => {
-          try {
-            let response = await fetch(
-              `${window.appealNewChangeFormPaths.autosave}?name=${this.formControl.word}[${
-                this.formControl.name
-              }][${this.fieldsetBlockIndex}]&value=${
-                this.formControl.value
-              }&company_id=${
-                store.state.audiOZOList.companies[this.fieldsetBlockIndex].id
-              }`
-            );
-            let result = await response.json();
-            if (result.STATUS !== 'Y') {
-              throw new Error('Ошибка автосохранения');
-            }
-          } catch (err) {
-            throw err;
-          }
-        })();
-        //autosave whole form
-        this.$emit('autosave');*/
+        this.$emit('autosave');
       },
       validate() {
         if (this.required && !this.controlValue) {
@@ -578,17 +542,27 @@ window.onload = function () {
       return {};
     },
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
+    emits: ['autosave', 'timeoutAutosave'],
     template: `
       <div>
         <hr class="hr--line hr--xxl" style="margin-top: 0;">
         <div v-if="formControl.type==='date'">
-          <form-control-date v-for="(control, idx) in formControl.value.length" :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" required="required" @autosave="autosave"></form-control-date>
+          <div v-for="(control, idx) in formControl.value.length" :key="generateKey(idx)" class="multy-control-wrapper">
+            <form-control-date :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" required="required" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-date>
+            <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
+          </div>
         </div>
         <div v-else-if="formControl.type==='textarea'">
-          <form-control-textarea v-for="(control, idx) in formControl.value.length" :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" required="required" @autosave="autosave"></form-control-textarea>
+          <div v-for="(control, idx) in formControl.value.length" :key="generateKey(idx)" class="multy-control-wrapper">
+            <form-control-textarea :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" required="required" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-textarea>
+            <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
+          </div>
         </div>
         <div v-else>
-          <form-control v-for="(control, idx) in formControl.value.length" :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" required="required" @autosave="autosave"></form-control>
+          <div v-for="(control, idx) in formControl.value.length" :key="generateKey(idx)" class="multy-control-wrapper">
+            <form-control :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" required="required" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control>
+            <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
+          </div>
         </div>
         
         <button class="btn btn-success btn-md" @click.prevent="add">Добавить</button>
@@ -601,6 +575,9 @@ window.onload = function () {
       },
       autosave() {
         this.$emit('autosave');
+      },
+      timeoutAutosave() {
+        this.$emit('timeoutAutosave');
       },
       validate() {
         if (this.required && !this.controlValue) {
@@ -615,6 +592,10 @@ window.onload = function () {
           index: this.formControl.value.length,
           value: '',
         });
+        this.autosave();
+      },
+      remove(idx) {
+        this.formControl.value.splice(idx, 1);
       },
     },
   });
@@ -752,12 +733,13 @@ window.onload = function () {
       };
     },
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
+    emits: ['autosave'],
     methods: {
       clickLink() {
         this.date = this.formControl.completeBlock.value;
         this.isActive = true;
-        //fieldAutosaveRequest(this.$refs.input);
-        //restartFormAutosaveTimeout();
+        //autosave
+        this.autosave();
       },
       openInput() {
         this.isActive = true;
@@ -790,27 +772,9 @@ window.onload = function () {
         }
         store.commit('changeControl', payload);
         //autosave
-        //this.autosave();
+        this.autosave();
       },
       autosave() {
-        (async () => {
-          try {
-            let response = await fetch(
-              `${window.appealNewChangeFormPaths.autosave}?name=${
-                this.inputAttr.name
-              }&value=${this.date}&company_id=${
-                store.state.audiOZOList.companies[this.fieldsetBlockIndex].id
-              }`
-            );
-            let result = await response.json();
-            if (result.STATUS !== 'Y') {
-              throw new Error('Ошибка автосохранения');
-            }
-          } catch (err) {
-            throw err;
-          }
-        })();
-        //autosave whole form
         this.$emit('autosave');
       },
     },
@@ -929,26 +893,27 @@ window.onload = function () {
         <hidden-fields v-if="$store.state.hidden"></hidden-fields>
 
         <div v-if="$store.state.docsBlock && $store.state.docsBlock.items.length">
-          <docs-block></docs-block>
+          <docs-block @timeoutAutosave="timeoutAutosave" @autosave="autosave"></docs-block>
           <hr class="hr--lg">
         </div>
 
         <div v-if="$store.state.controlsBlock && $store.state.controlsBlock.controls.length">
-          <data-to-change @autosave="timeoutAutosave"></data-to-change>
+          <data-to-change @timeoutAutosave="timeoutAutosave" @autosave="autosave"></data-to-change>
           <hr class="hr--lg">
         </div>
 
         <div v-if="$store.state.confirmDocsBlock && $store.state.confirmDocsBlock.items.length">
-          <confirm-docs-block></confirm-docs-block>
+          <confirm-docs-block @timeoutAutosave="timeoutAutosave" @autosave="autosave"></confirm-docs-block>
           <hr class="hr--lg">
         </div>
 
-        <submit-button @autosave="timeoutAutosave"></submit-button>
+        <submit-button @timeoutAutosave="timeoutAutosave" @autosave="autosave"></submit-button>
 
       </div>
     `,
     methods: {
       timeoutAutosave() {
+        console.log('timeoutAutosave');
         //autosave whole form
         clearTimeout(store.state.autosaveTimeoutId);
         store.commit(
@@ -959,9 +924,8 @@ window.onload = function () {
         );
       },
       autosave(form, cnt) {
-        var form =
-          form || document.querySelector('.b-appeal-new-change-form form');
-        var counter = cnt || 0;
+        form = form || document.querySelector('.b-appeal-new-change-form form');
+        let counter = cnt || 0;
 
         //send request
         (async () => {
@@ -974,6 +938,7 @@ window.onload = function () {
             if (result.STATUS !== 'Y' && counter < 3) {
               this.autosave(form, ++counter);
             }
+            console.log('sent', result.STATUS);
           } catch (err) {
             throw err;
           }

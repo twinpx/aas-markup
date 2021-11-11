@@ -64,6 +64,17 @@ h1
       margin 0 0 1rem
       width 100%
 
+.multy-control-wrapper
+  position relative
+
+  &__remove.btn-delete
+    position absolute
+    top -12px
+    right calc(50% + 15px - 12px)
+    width 24px
+    height 24px
+    cursor pointer
+
 @import './style/collapse-vue-component.styl'
 @import './style/checkbox-vue-component.styl'
 @import './style/file-vue-component.styl'

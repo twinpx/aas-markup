@@ -43,6 +43,21 @@ window.appealNewChangeFormStore = {
     text: 'Подробное описание заполнения формы с <a href="">пояснением</a> о том, какие поля надо заполнять и как они должны выглядеть. Описанием может быть довольно большим.',
     controls: [
       {
+        property: '178',
+        word: 'PROPERTY',
+        sort: '',
+        label: 'Текст*',
+        type: 'textarea',
+        required: true,
+        value: 'Text',
+        completeBlock: {
+          title: 'Текущие данные из реестра:',
+          value: 'Текущие данные',
+          comment:
+            'Заполните это поле для того, чтобы Заполните это поле для того, чтобы Заполните это поле для того, чтобы…',
+        },
+      },
+      {
         property: '179',
         word: 'PROPERTY',
         sort: '',
@@ -135,20 +150,19 @@ window.appealNewChangeFormStore = {
     items: [
       {
         id: '7845',
-        checked: true,
+        checked: false,
         title: 'Пакет документов 1',
         text: '<ul><li>Приказ об увольнении или соглашение о расторжении трудового договора,</li><li>Справка-подтверждение (Приложение № 8а)</li></ul>',
         name: 'confirm-docs',
         value: 'block1',
-        checked: false,
         controls: [
           {
             property: '187',
             word: 'FILE',
             label: 'Устав в новой редакции или изменения к Уставу*',
-            type: 'text',
+            type: 'file',
             required: true,
-            value: '',
+            filename: '',
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
@@ -159,8 +173,8 @@ window.appealNewChangeFormStore = {
             property: '188',
             word: 'FILE',
             label: 'Актуальная выписка из ЕГРЮЛ*',
-            type: 'text',
-            value: '',
+            type: 'file',
+            filename: '',
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
@@ -170,21 +184,20 @@ window.appealNewChangeFormStore = {
         ],
       },
       {
-        id: '7845',
-        checked: true,
+        id: '7846',
+        checked: false,
         title: 'Пакет документов 1',
         text: '<ul><li>Приказ об увольнении или соглашение о расторжении трудового договора,</li><li>Справка-подтверждение (Приложение № 8а)</li></ul>',
         name: 'confirm-docs',
         value: 'block1',
-        checked: false,
         controls: [
           {
-            property: '187',
+            property: '189',
             word: 'FILE',
             label: 'Устав в новой редакции или изменения к Уставу*',
-            type: 'text',
+            type: 'file',
             required: true,
-            value: '',
+            filename: 'Программа БЧ-2021.pdf',
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
@@ -192,11 +205,11 @@ window.appealNewChangeFormStore = {
             },
           },
           {
-            property: '188',
+            property: '190',
             word: 'FILE',
             label: 'Актуальная выписка из ЕГРЮЛ*',
-            type: 'text',
-            value: '',
+            type: 'file',
+            filename: '',
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
