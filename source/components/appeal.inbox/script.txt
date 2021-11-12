@@ -8,7 +8,7 @@ window.addEventListener('load', () => {
       const digitNode = document.querySelector('.b-num-block__b');
       const currentNum = digitNode.textContent;
       //make request
-      let response = await fetch(window.inboxScriptURL.getNewNum);
+      let response = await fetch(window.appealIndexStore.paths.getNewNum);
       if (response.ok) {
         let json = await response.json();
         if (json.STATUS === 'Y' && json.DATA) {
@@ -40,7 +40,7 @@ window.addEventListener('load', () => {
           });
         }
       }
-      await new Promise((r) => setTimeout(r, 2 * 1000));
+      await new Promise((r) => setTimeout(r, window.appealIndexStore.timeout));
     } while (true);
   })();
 
@@ -120,7 +120,7 @@ window.addEventListener('load', () => {
   Vue.component('date-picker', DatePicker);
 
   Vue.component('form-control-date', {
-    template: `<div class="b-float-label" data-src="${window.inboxSrcPath}calendar.svg">
+    template: `<div class="b-float-label" data-src="${window.appealIndexStore.paths.src}calendar.svg">
       <date-picker :lang="lang" v-model="dateRange" value-type="X" range format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDateRange"></date-picker>
       <label for="DATE" :class="{ active: isActive }">Дата</label>
     </div>`,
@@ -293,6 +293,13 @@ window.addEventListener('load', () => {
     props: {
       code: String,
       label: String,
+      count: {
+        type: Number,
+        required: false,
+        default() {
+          return 1;
+        },
+      },
     },
 
     computed: {
@@ -309,7 +316,7 @@ window.addEventListener('load', () => {
 
     methods: {
       changeInput() {
-        if (this.inputText.length >= 5) {
+        if (this.inputText.length >= this.count) {
           this.getTableData();
         } else if (store.state[this.code]) {
           store.commit('changeQuery', { name: this.code, value: undefined });
@@ -360,9 +367,9 @@ window.addEventListener('load', () => {
   Vue.component('inbox-filter', {
     template: `
       <div id="inbox-filter">
-        <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="id" code="id" label="Номер (ID)"></form-control-fio>
-        <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="object" code="object" label="Объект изменений"></form-control-fio>
-        <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="author" code="author" label="Автор (ФИО, ОРНЗ)"></form-control-fio>
+        <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="id" code="id" label="Номер (ID)" :count="1"></form-control-fio>
+        <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="object" code="object" label="Объект изменений" :count="3"></form-control-fio>
+        <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="author" code="author" label="Автор (ФИО, ОРНЗ)" :count="3"></form-control-fio>
         <form-control-status @rendertable="renderTable" @seturl="seturl" :status="$store.state.status" ref="status"></form-control-status>
         <form-control-date @rendertable="renderTable" @seturl="seturl" ref="date"></form-control-date>
       </div>`,
@@ -478,7 +485,7 @@ window.addEventListener('load', () => {
             requestObj.author = store.state.author;
           }
           if (store.state.status) {
-            requestObj.status = store.state.status;
+            requestObj[window.selectData.name] = store.state.status;
           }
           if (store.state.start) {
             requestObj.start = store.state.start;
@@ -497,7 +504,7 @@ window.addEventListener('load', () => {
           }
 
           const response = await fetch(
-            `${window.inboxScriptURL.getTable}${getQuery(requestObj)}`,
+            `${window.appealIndexStore.paths.getTable}${getQuery(requestObj)}`,
             {
               headers: {
                 Authentication: 'secret',
@@ -534,7 +541,7 @@ window.addEventListener('load', () => {
           queryObj.author = store.state.author;
         }
         if (store.state.status) {
-          queryObj.status = store.state.status;
+          queryObj[window.selectData.name] = store.state.status;
         }
         if (store.state.start) {
           queryObj.start = store.state.start;
@@ -578,7 +585,7 @@ window.addEventListener('load', () => {
               value: queryObject[key] || undefined,
             });
             break;
-          case 'status':
+          case window.selectData.name:
             store.commit('changeStatus', queryObject[key] || '');
             break;
           case 'start':
