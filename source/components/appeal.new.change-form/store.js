@@ -49,7 +49,7 @@ window.appealNewChangeFormStore = {
         label: 'Текст*',
         type: 'textarea',
         required: true,
-        value: 'Text',
+        value: '',
         completeBlock: {
           title: 'Текущие данные из реестра:',
           value: 'Текущие данные',
@@ -63,7 +63,7 @@ window.appealNewChangeFormStore = {
         sort: '',
         label: 'Краткое наименование*',
         type: 'text',
-        required: true,
+        required: false,
         value: '',
         completeBlock: {
           title: 'Текущие данные из реестра:',
@@ -137,6 +137,7 @@ window.appealNewChangeFormStore = {
         property: '185',
         word: 'QUANTITY',
         type: 'date',
+        required: true,
         label: 'Дата*',
         completeBlock: {
           comment: 'Вы можете добавить несколько дат.',

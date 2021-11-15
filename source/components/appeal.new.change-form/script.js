@@ -205,14 +205,14 @@ window.onload = function () {
         isInvalid: false,
       };
     },
-    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
+    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
     emits: ['autosave', 'timeoutAutosave'],
     template: `
     <div>
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" :class="{invalid: isInvalid}">
-            <input ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" type="text" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @blur="blurControl()" @input="inputControl()" v-model="controlValue">
+            <input :data-required="formControl.required" ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" type="text" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @blur="blurControl()" @input="inputControl()" v-model="controlValue">
             <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
           </div>
         </div>
@@ -271,7 +271,7 @@ window.onload = function () {
         this.$emit('autosave');
       },
       validate() {
-        if (this.required && !this.controlValue) {
+        if (this.formControl.required && !this.controlValue) {
           this.isInvalid = true;
         } else {
           this.isInvalid = false;
@@ -303,7 +303,7 @@ window.onload = function () {
                 <path class="b" d="M0,0V8.273" transform="translate(5.565 8.376) rotate(180)" />
               </g>
             </svg>
-            <input type="file" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" @change="uploadFile()" ref="inputFile" />
+            <input type="file" :data-required="formControl.required" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" @change="uploadFile()" ref="inputFile" />
             <label :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" class="active" v-html="label" ref="dropzone" ></label>
             <input type="hidden" :name="formControl.word+'-FILENAME['+formControl.property+']['+fieldsetBlockIndex+']'" :value="filename" />
           </div>
@@ -315,13 +315,7 @@ window.onload = function () {
       </div>
     </div>
     `,
-    props: [
-      'formControl',
-      'fieldsetBlockIndex',
-      'controlIndex',
-      'controlId',
-      'required',
-    ],
+    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'controlId'],
     computed: {
       isFilled() {
         return !!this.formControl.filename;
@@ -462,28 +456,29 @@ window.onload = function () {
         isInvalid: false,
       };
     },
-    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
+    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
     emits: ['autosave', 'timeoutAutosave'],
     template: `
+    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
     <div>
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" :class="{invalid: isInvalid}">
-            <textarea ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @blur="blurControl()" @input="inputControl()" v-model="controlValue"></textarea>
+            <textarea :data-required="formControl.required" ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @blur="blurControl()" @input="inputControl()" v-model="controlValue"></textarea>
             <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
           </div>
         </div>
         <hr class="hr--xs d-block d-lg-none w-100" v-if="!formControl.multy || !controlIndex">
         <div class="col-lg-6 col-12 small" v-if="!formControl.multy || !controlIndex">
-          <span class="text-muted" v-if="this.formControl.completeBlock && this.formControl.completeBlock.title">{{ this.formControl.completeBlock.title }}</span>
-          <span v-if="this.formControl.completeBlock && this.formControl.completeBlock.title">
-            <a v-if="this.formControl.completeBlock.value" class="b-complete-link" ref="link" href="" @click.prevent="clickLink">
-              {{ this.formControl.completeBlock.value }}
+          <span class="text-muted" v-if="formControl.completeBlock && formControl.completeBlock.title">{{ formControl.completeBlock.title }}</span>
+          <span v-if="formControl.completeBlock && formControl.completeBlock.title">
+            <a v-if="formControl.completeBlock.value" class="b-complete-link" ref="link" href="" @click.prevent="clickLink">
+              {{ formControl.completeBlock.value }}
               <span class="icon" style="background-image: url( '/template/images/copy.svg' );"></span>
             </a>
             <span v-else class="text-muted">Пусто.</span>
           </span>
-          <div v-if="this.formControl.completeBlock && this.formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ this.formControl.completeBlock.comment }}</div>
+          <div v-if="formControl.completeBlock && formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ formControl.completeBlock.comment }}</div>
         </div>
       </div>
       <hr class="hr--sl">
@@ -527,7 +522,7 @@ window.onload = function () {
         this.$emit('autosave');
       },
       validate() {
-        if (this.required && !this.controlValue) {
+        if (this.formControl.required && !this.controlValue) {
           this.isInvalid = true;
         } else {
           this.isInvalid = false;
@@ -541,26 +536,26 @@ window.onload = function () {
     data() {
       return {};
     },
-    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
+    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
     emits: ['autosave', 'timeoutAutosave'],
     template: `
       <div>
         <hr class="hr--line hr--xxl" style="margin-top: 0;">
         <div v-if="formControl.type==='date'">
           <div v-for="(control, idx) in formControl.value.length" :key="generateKey(idx)" class="multy-control-wrapper">
-            <form-control-date :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" required="required" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-date>
+            <form-control-date :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-date>
             <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
           </div>
         </div>
         <div v-else-if="formControl.type==='textarea'">
           <div v-for="(control, idx) in formControl.value.length" :key="generateKey(idx)" class="multy-control-wrapper">
-            <form-control-textarea :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" required="required" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-textarea>
+            <form-control-textarea :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-textarea>
             <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
           </div>
         </div>
         <div v-else>
           <div v-for="(control, idx) in formControl.value.length" :key="generateKey(idx)" class="multy-control-wrapper">
-            <form-control :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" required="required" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control>
+            <form-control :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" :required="formControl.required" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control>
             <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
           </div>
         </div>
@@ -580,7 +575,7 @@ window.onload = function () {
         this.$emit('timeoutAutosave');
       },
       validate() {
-        if (this.required && !this.controlValue) {
+        if (this.formControl.required && !this.controlValue) {
           this.isInvalid = true;
         } else {
           this.isInvalid = false;
@@ -607,7 +602,7 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
         <div class="b-float-label" data-src="${window.moderationSrcPath}calendar.svg" :class="{invalid: isInvalid}">
-          <date-picker :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @blur="blurInput"></date-picker>
+          <date-picker :data-required="formControl.required" :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @blur="blurInput"></date-picker>
           <label :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{ active: isActive }">{{formControl.label}}</label>
         </div>
         </div>
@@ -732,7 +727,7 @@ window.onload = function () {
         },
       };
     },
-    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'required'],
+    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
     emits: ['autosave'],
     methods: {
       clickLink() {
@@ -752,7 +747,7 @@ window.onload = function () {
       },
       blurInput() {
         //validate
-        if (this.required && !this.date) {
+        if (this.formControl.required && !this.date) {
           this.isInvalid = true;
         } else {
           this.isInvalid = false;
@@ -797,6 +792,7 @@ window.onload = function () {
         <hr class="hr--lg">
         <div class="b-appeal-new-change-form__submit">
           <a href="#" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#submitConfirmModal" :disabled="isDisabled">Отправить</a>
+          <small class="text-muted">Вы не закончили заполнение обязательных полей. <a href="#" @click.prevent="clickContinue">Продолжить</a></small>
         </div>
       </div>
     `,
@@ -844,6 +840,45 @@ window.onload = function () {
         const checkboxFlag = this.checked;
 
         return !(controlsFlag && confirmDocsFlag && checkboxFlag);
+      },
+    },
+    methods: {
+      clickContinue() {
+        const control = Array.from(
+          document.querySelector('.b-appeal-new-change-form form').elements
+        ).find((elem) => {
+          const isRequired = elem.classList.contains('mx-input')
+            ? elem.closest('.mx-datepicker').getAttribute('data-required')
+            : elem.getAttribute('data-required');
+
+          if (
+            elem.getAttribute('type') === 'file' &&
+            !elem.parentNode.querySelector('input[type=radio]').checked
+          ) {
+            isRequired = false;
+          }
+
+          const value =
+            elem.getAttribute('type') === 'file'
+              ? elem.parentNode.querySelector('input[type=hidden]').value
+              : elem.value;
+
+          return (
+            isRequired &&
+            elem.tagName.toLowerCase() !== 'button' &&
+            elem.getAttribute('type') !== 'hidden' &&
+            value === ''
+          );
+        });
+
+        window.scrollTo({
+          top: control.getBoundingClientRect().top + window.scrollY - 120,
+          behavior: 'smooth',
+        });
+
+        setTimeout(() => {
+          control.focus();
+        }, 1000);
       },
     },
   });
