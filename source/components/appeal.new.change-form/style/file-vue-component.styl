@@ -10,7 +10,7 @@
 }
 .b-float-label--file svg {
   position: absolute;
-  top: 16px;
+  top: 12px;
   left: 20px;
   z-index: 10;
 }
@@ -35,7 +35,51 @@
   -webkit-transition: none;
   transition: none;
 }
-.b-float-label--file .a,
+.b-float-label--file .a {
+  fill: #c3cfdd;
+}
+.b-float-label--file .b {
+  fill: #a3b2c1;
+}
+.b-float-label--file .c {
+  fill: #d3e0ea;
+}
+.b-float-label--file .d {
+  fill: #fff;
+}
+.b-float-label--file:hover .a {
+  fill: #c335de;
+}
+.b-float-label--file:hover .b {
+  fill: #a3b57e;
+}
+.b-float-label--file:hover .c {
+  fill: #d3deee;
+}
+.b-float-label--file:hover .d {
+  fill: #12daec;
+}
+.b-float-label--file:active .a,
+.b-float-label--file.dragover .a,
+.b-float-label--file.filled .a {
+  fill: #fff;
+}
+.b-float-label--file:active .b,
+.b-float-label--file.dragover .b,
+.b-float-label--file.filled .b {
+  fill: #a7bde8;
+}
+.b-float-label--file:active .c,
+.b-float-label--file.dragover .c,
+.b-float-label--file.filled .c {
+  fill: #d0e0ff;
+}
+.b-float-label--file:active .d,
+.b-float-label--file.dragover .d,
+.b-float-label--file.filled .d {
+  fill: #4375d8;
+}
+/*.b-float-label--file .a,
 .b-float-label--file .b {
   fill: none;
   stroke: #707070;
@@ -57,7 +101,7 @@
 .b-float-label--file.filled .a,
 .b-float-label--file.filled .b {
   stroke: #fff;
-}
+}*/
 .b-float-label--file:active label,
 .b-float-label--file.dragover label,
 .b-float-label--file.filled label {
@@ -71,11 +115,27 @@
 }
 /*invalid*/
 .b-float-label--file.invalid .a,
+.b-float-label--file:active.invalid .a {
+  fill: #ff8080;
+}
+.b-float-label--file.invalid .b,
+.b-float-label--file:active.invalid .b {
+  fill: #db6a6a;
+}
+.b-float-label--file.invalid .c,
+.b-float-label--file:active.invalid .c {
+  fill: #f9bbbb;
+}
+.b-float-label--file.invalid .d,
+.b-float-label--file:active.invalid .d {
+  fill: #fff;
+}
+/*.b-float-label--file.invalid .a,
 .b-float-label--file.invalid .b,
 .b-float-label--file:active.invalid .a,
 .b-float-label--file:active.invalid .b {
   stroke: #ff0000;
-}
+}*/
 .b-float-label--file.invalid label,
 .b-float-label--file:active.invalid label {
   background-color: #ffeaea;

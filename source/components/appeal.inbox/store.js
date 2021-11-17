@@ -10,25 +10,32 @@ window.appealIndexStore = {
       {
         code: 'id',
         count: 1,
-        type: 'fio',
+        type: 'text',
         label: 'Номер (ID)',
+        name: 'ID',
+        value: '',
       },
       {
         code: 'object',
         count: 3,
-        type: 'fio',
+        type: 'text',
         label: 'Объект изменений',
+        name: 'OBJECT',
+        value: '',
       },
       {
         code: 'author',
         count: 3,
-        type: 'fio',
+        type: 'text',
         label: 'Автор (ФИО, ОРНЗ)',
+        name: 'AUTHOR',
+        value: '',
       },
       {
         code: 'status',
         type: 'select',
         label: 'Статус обращения',
+        name: 'STATUS',
         options: [
           {
             label: 'Все',
@@ -56,7 +63,56 @@ window.appealIndexStore = {
           code: '',
         },
       },
+      {
+        code: 'type',
+        type: 'select',
+        label: 'Тип обращения',
+        name: 'TYPE',
+        options: [
+          {
+            label: 'Все',
+            code: '',
+          },
+          {
+            label: 'Изменение в реестре',
+            code: 'prop5',
+          },
+          {
+            label: 'Жалоба',
+            code: 'prop6',
+          },
+          {
+            label: 'Заявка',
+            code: 'prop7',
+          },
+        ],
+        selected: {
+          label: 'Все',
+          code: '',
+        },
+      },
+      {
+        code: 'date',
+        type: 'date',
+        label: 'Дата',
+        name: 'DATE',
+        value: {
+          start: '',
+          end: '',
+        },
+      },
     ],
+  },
+  table: {
+    html: '',
+    PAGEN_1: 1,
+    sortField: '',
+    sortType: '',
+  },
+  query: {
+    sortField: '',
+    sortType: '',
+    PAGEN_1: '',
   },
 };
 

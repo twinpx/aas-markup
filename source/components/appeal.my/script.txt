@@ -25,7 +25,6 @@ window.addEventListener('load', () => {
       },
       changeSelectedOption(state, payload) {
         state[`selectedOption${payload.type}`] = { label: payload.label };
-        console.log(state[`selectedOption${payload.type}`]);
       },
     },
   });

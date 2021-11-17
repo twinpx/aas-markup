@@ -48,7 +48,7 @@ window.appealNewChangeFormStore = {
         sort: '',
         label: 'Текст*',
         type: 'textarea',
-        required: true,
+        required: false,
         value: '',
         completeBlock: {
           title: 'Текущие данные из реестра:',
@@ -77,7 +77,7 @@ window.appealNewChangeFormStore = {
         word: 'WORD',
         label: 'Полное наименование*',
         type: 'text',
-        required: true,
+        required: false,
         value: '',
         completeBlock: {
           title: 'Текущие данные из реестра:',
@@ -89,7 +89,7 @@ window.appealNewChangeFormStore = {
         word: 'WORD',
         label: 'Телефон*',
         type: 'tel',
-        required: true,
+        required: false,
         value: '',
         completeBlock: {
           title: 'Текущие данные из реестра:',
@@ -101,7 +101,7 @@ window.appealNewChangeFormStore = {
         word: 'WORD',
         label: 'Наименование на иностранном языке*',
         type: 'tel',
-        required: true,
+        required: false,
         value: '',
         completeBlock: {
           title: 'Текущие данные из реестра:',
@@ -125,7 +125,7 @@ window.appealNewChangeFormStore = {
         property: '184',
         word: 'QUALITY',
         type: 'textarea',
-        required: true,
+        required: false,
         label: 'Сообщение*',
         completeBlock: {
           comment: 'Вы можете добавить несколько сообщений.',
@@ -137,7 +137,7 @@ window.appealNewChangeFormStore = {
         property: '185',
         word: 'QUANTITY',
         type: 'date',
-        required: true,
+        required: false,
         label: 'Дата*',
         completeBlock: {
           comment: 'Вы можете добавить несколько дат.',

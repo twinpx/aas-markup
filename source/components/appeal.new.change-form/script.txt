@@ -27,9 +27,7 @@ window.onload = function () {
           if (!control.value) {
             control.value = [];
           }
-          const value = control.value.map((el) => el);
-          value[payload.index] = payload.value;
-          control.value = value;
+          control.value[payload.index] = payload.value;
         } else {
           control.value = payload.value;
         }
@@ -296,13 +294,20 @@ window.onload = function () {
           <span class="b-float-label-file__close" @click.prevent="clearInputFile" v-if="formControl.filename"></span>
           <div class="b-float-label--file" :class="{'filled': isFilled, 'invalid': !!invalid}" ref="controlFile" >
             <span class="b-float-label-file__label">{{ formControl.label }}</span>
-            <svg xmlns="http://www.w3.org/2000/svg" width="12.297" height="12.43" viewBox="0 0 12.297 12.43" >
-              <g transform="translate(0.501 0.5)">
-                <path class="a" d="M-22097.062,1042.255v4.312h11.3v-4.312" transform="translate(22097.063 -1035.136)" />
-                <path class="a" d="M0,0,3.144,3.163,6.19,0" transform="translate(8.623 3.163) rotate(180)" />
-                <path class="b" d="M0,0V8.273" transform="translate(5.565 8.376) rotate(180)" />
+
+            <svg xmlns="http://www.w3.org/2000/svg" width="17.383" height="24" viewBox="0 0 17.383 24">
+              <g transform="translate(-4.461)">
+                <g transform="translate(4.461)">
+                  <g>
+                    <path d="M21.844,6.573v15.88A1.547,1.547,0,0,1,20.3,24H6.008a1.546,1.546,0,0,1-1.547-1.547V1.547A1.546,1.546,0,0,1,6.008,0H15.27Z" transform="translate(-4.461)" class="a"/>
+                  </g>
+                  <path d="M20.036,8.289l5.677,2.339v-2.2l-3.218-.951Z" transform="translate(-8.33 -1.858)" class="b"/>
+                  <path d="M25.416,6.573H20.389a1.546,1.546,0,0,1-1.547-1.547V0Z" transform="translate(-8.033)" class="c"/>
+                </g>
+                <path d="M18.117,19.012l-2.85-2.85a.555.555,0,0,0-.785,0l-2.85,2.85a.555.555,0,0,0,.785.784l1.9-1.9v5.024a.555.555,0,1,0,1.109,0V17.894l1.9,1.9a.555.555,0,0,0,.785-.784Z" transform="translate(-1.741 -3.974)" class="d"/>
               </g>
             </svg>
+
             <input type="file" :data-required="formControl.required" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" @change="uploadFile()" ref="inputFile" />
             <label :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" class="active" v-html="label" ref="dropzone" ></label>
             <input type="hidden" :name="formControl.word+'-FILENAME['+formControl.property+']['+fieldsetBlockIndex+']'" :value="filename" />
@@ -534,12 +539,15 @@ window.onload = function () {
   //form control multy
   Vue.component('formControlMulty', {
     data() {
-      return {};
+      return {
+        newClass: false,
+        animClass: false,
+      };
     },
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
     emits: ['autosave', 'timeoutAutosave'],
     template: `
-      <div>
+      <div :class="{new: newClass, anim: animClass}">
         <hr class="hr--line hr--xxl" style="margin-top: 0;">
         <div v-if="formControl.type==='date'">
           <div v-for="(control, idx) in formControl.value.length" :key="generateKey(idx)" class="multy-control-wrapper">
@@ -588,6 +596,20 @@ window.onload = function () {
           value: '',
         });
         this.autosave();
+        this.$forceUpdate();
+        //new animation
+        setTimeout(() => {
+          this.newClass = true;
+          setTimeout(() => {
+            this.animClass = true;
+            setTimeout(() => {
+              this.newClass = false;
+              setTimeout(() => {
+                this.animClass = false;
+              }, 1000);
+            }, 100);
+          }, 100);
+        }, 0);
       },
       remove(idx) {
         this.formControl.value.splice(idx, 1);
@@ -847,13 +869,15 @@ window.onload = function () {
         const control = Array.from(
           document.querySelector('.b-appeal-new-change-form form').elements
         ).find((elem) => {
-          const isRequired = elem.classList.contains('mx-input')
+          let isRequired = elem.classList.contains('mx-input')
             ? elem.closest('.mx-datepicker').getAttribute('data-required')
             : elem.getAttribute('data-required');
 
           if (
             elem.getAttribute('type') === 'file' &&
-            !elem.parentNode.querySelector('input[type=radio]').checked
+            !elem
+              .closest('.b-form-control-vc')
+              .querySelector('input[type=radio]').checked
           ) {
             isRequired = false;
           }
@@ -870,6 +894,8 @@ window.onload = function () {
             value === ''
           );
         });
+
+        if (!control) return;
 
         window.scrollTo({
           top: control.getBoundingClientRect().top + window.scrollY - 120,
@@ -948,7 +974,6 @@ window.onload = function () {
     `,
     methods: {
       timeoutAutosave() {
-        console.log('timeoutAutosave');
         //autosave whole form
         clearTimeout(store.state.autosaveTimeoutId);
         store.commit(
@@ -973,7 +998,6 @@ window.onload = function () {
             if (result.STATUS !== 'Y' && counter < 3) {
               this.autosave(form, ++counter);
             }
-            console.log('sent', result.STATUS);
           } catch (err) {
             throw err;
           }

@@ -73,7 +73,10 @@ window.addEventListener('load', () => {
   Vue.use(Vuex);
 
   const store = new Vuex.Store({
-    state: {
+    state() {
+      return window.appealIndexStore;
+    },
+    /*state: {
       tableHtml: '',
       id: undefined,
       object: undefined,
@@ -87,31 +90,36 @@ window.addEventListener('load', () => {
         field: '',
         sortType: '',
       },
-    },
+    },*/
     mutations: {
       changeTableHtml(state, payload) {
-        state.tableHtml = payload;
+        state.table.html = payload;
+      },
+      changeControlValue(state, payload) {
+        //payload = {controlCode, controlValue}
+        const control = state.filter.controls.find(
+          (control) => control.code === payload.controlCode
+        );
+        switch (control.type) {
+          case 'text':
+            control.value = payload.controlValue;
+            break;
+          case 'select':
+            control.selected = payload.controlValue;
+            break;
+          case 'date':
+            control.value = payload.controlValue;
+            break;
+        }
       },
       changeStatus(state, payload) {
         state.status = payload;
       },
-      changeQuery(state, payload) {
-        state[payload.name] = payload.value;
-      },
-      changeStart(state, payload) {
-        state.start = payload;
-      },
-      changeEnd(state, payload) {
-        state.end = payload;
-      },
-      changeSelectedOption(state, payload) {
-        state.selectedOption = { label: payload };
-      },
       changePage(state, payload) {
-        state.page = payload;
+        state.table.page = payload;
       },
       changeSorting(state, payload) {
-        state.sorting = payload;
+        state.table.sorting = payload;
       },
     },
   });
@@ -121,13 +129,13 @@ window.addEventListener('load', () => {
 
   Vue.component('form-control-date', {
     template: `<div class="b-float-label" data-src="${window.appealIndexStore.paths.src}calendar.svg">
-      <date-picker :lang="lang" v-model="dateRange" value-type="X" range format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDateRange"></date-picker>
-      <label for="DATE" :class="{ active: isActive }">Дата</label>
+      <date-picker :input-attr="{name: control.name}" :lang="lang" v-model="dateRange" value-type="X" range format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDateRange"></date-picker>
+      <label for="DATE" :class="{ active: isActive }">{{ control.label }}</label>
     </div>`,
     data() {
       return {
-        isActive: !!store.state.start,
-        dateRange: [`${store.state.start}`, `${store.state.end}`],
+        isActive: !!this.control.value.start,
+        dateRange: [`${this.control.value.start}`, `${this.control.value.end}`],
         lang: {
           // the locale of formatting and parsing function
           formatLocale: {
@@ -217,6 +225,9 @@ window.addEventListener('load', () => {
         },
       };
     },
+    props: {
+      control: Object,
+    },
     methods: {
       openInput() {
         this.isActive = true;
@@ -229,15 +240,19 @@ window.addEventListener('load', () => {
       reset() {
         this.dateRange = [];
         this.closeInput();
-        store.commit('changeStart', this.dateRange[0]);
-        store.commit('changeEnd', this.dateRange[1]);
+        store.commit('changeControlValue', {
+          controlCode: this.control.code,
+          controlValue: { start: this.dateRange[0], end: this.dateRange[1] },
+        });
       },
       inputDateRange() {
         //reset page
         store.commit('changePage', 1);
         //set start&end
-        store.commit('changeStart', this.dateRange[0]);
-        store.commit('changeEnd', this.dateRange[1]);
+        store.commit('changeControlValue', {
+          controlCode: this.control.code,
+          controlValue: { start: this.dateRange[0], end: this.dateRange[1] },
+        });
         //render table
         this.$emit('rendertable');
         //set URL
@@ -246,33 +261,29 @@ window.addEventListener('load', () => {
     },
   });
 
-  Vue.component('form-control-status', {
+  Vue.component('form-control-select', {
     data() {
       return {
-        options: window.selectData.options || [
-          {
-            label: 'Все',
-            code: '',
-          },
-        ],
-        selectedOption: store.state.selectedOption ||
-          window.selectData.selected || {
-            label: 'Все',
-            code: '',
-          },
+        options: this.control.options,
+        selectedOption: this.control.selected,
       };
     },
     template: `<div class="form-control-wrapper">
       <v-select :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="selectedOption"></v-select>
-      <label>Статус обращения</label>
+      <label>{{ control.label }}</label>
     </div>`,
-    props: ['status'],
+    props: {
+      control: Object,
+    },
     methods: {
       onSelect() {
         //reset page
         store.commit('changePage', 1);
         //set status
-        store.commit('changeStatus', this.selectedOption.code);
+        store.commit('changeControlValue', {
+          controlCode: this.control.code,
+          controlValue: this.selectedOption,
+        });
         //render table
         this.$emit('rendertable');
         //set URL
@@ -281,45 +292,42 @@ window.addEventListener('load', () => {
     },
   });
 
-  Vue.component('form-control-fio', {
+  Vue.component('form-control-text', {
     data() {
       return {
-        inputText: '',
+        inputText: this.control.value,
         hover: false,
-        isActive: false,
       };
     },
 
     props: {
-      code: String,
-      label: String,
-      count: {
-        type: Number,
-        required: false,
-        default() {
-          return 1;
-        },
-      },
+      control: Object,
     },
 
     computed: {
       isClearable() {
         return this.inputText !== '' && this.hover ? true : false;
       },
+      isActive() {
+        return !!this.inputText;
+      },
     },
 
     template: `<div class="b-float-label" @mouseover="hover=true;" @mouseout="hover=false;">
-      <input :id="'inbox-filter-' + code" type="text" name="FIO" required="" autocomplete="off" v-model="inputText" @input="changeInput" @blur="blurInput($event)">
-      <label :for="'inbox-filter-' + code" :class="{active: isActive}">{{label}}</label>
+      <input :id="'inbox-filter-' + control.code" type="text" :name="control.name" required="" autocomplete="off" v-model="inputText" @input="changeInput" @blur="blurInput($event)">
+      <label :for="'inbox-filter-' + control.code" :class="{active: isActive}">{{control.label}}</label>
       <div class="b-input-clear" @click="clearInput($event)" v-show="isClearable"></div>
     </div>`,
 
     methods: {
       changeInput() {
-        if (this.inputText.length >= this.count) {
+        store.commit('changeControlValue', {
+          controlCode: this.control.code,
+          controlValue: this.inputText,
+        });
+        if (this.inputText.length >= this.control.count) {
           this.getTableData();
-        } else if (store.state[this.code]) {
-          store.commit('changeQuery', { name: this.code, value: undefined });
+        } else {
           this.getTableData(false);
         }
       },
@@ -341,9 +349,9 @@ window.addEventListener('load', () => {
       reset() {
         this.inputText = '';
         this.isActive = false;
-        store.commit('changeQuery', {
-          name: this.code,
-          value: undefined,
+        store.commit('changeControlValue', {
+          controlCode: this.control.code,
+          controlValue: '',
         });
       },
       getTableData(setQueryFlag) {
@@ -351,9 +359,9 @@ window.addEventListener('load', () => {
         store.commit('changePage', 1);
         //set query
         if (setQueryFlag !== false) {
-          store.commit('changeQuery', {
-            name: this.code,
-            value: this.inputText || undefined,
+          store.commit('changeControlValue', {
+            controlCode: this.control.code,
+            controlValue: this.inputText || '',
           });
         }
         //render Table
@@ -367,11 +375,9 @@ window.addEventListener('load', () => {
   Vue.component('inbox-filter', {
     template: `
       <div id="inbox-filter">
-        <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="id" code="id" label="Номер (ID)" :count="1"></form-control-fio>
-        <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="object" code="object" label="Объект изменений" :count="3"></form-control-fio>
-        <form-control-fio @rendertable="renderTable" @seturl="seturl" ref="author" code="author" label="Автор (ФИО, ОРНЗ)" :count="3"></form-control-fio>
-        <form-control-status @rendertable="renderTable" @seturl="seturl" :status="$store.state.status" ref="status"></form-control-status>
-        <form-control-date @rendertable="renderTable" @seturl="seturl" ref="date"></form-control-date>
+        <div v-for="control in $store.state.filter.controls">
+          <component :is="'form-control-'+control.type" :control="control" @rendertable="renderTable" @seturl="seturl"></component>
+        </div>
       </div>`,
     methods: {
       renderTable() {
@@ -394,7 +400,7 @@ window.addEventListener('load', () => {
       };
     },
     template: `<div id="inbox-table" class="b-registry-report">
-      <div v-if="$store.state.tableHtml.rows">
+      <div v-if="$store.state.table.html.rows">
         <table class="table">
           <thead>
             <tr>
@@ -419,7 +425,7 @@ window.addEventListener('load', () => {
     </div>`,
     computed: {
       tableHtml() {
-        const tableHtml = store.state.tableHtml;
+        const tableHtml = store.state.table.html;
         if (typeof tableHtml === 'object') {
           const sortedCol = tableHtml.cols.filter((col) => col.sortType);
           if (sortedCol.length) {
@@ -475,36 +481,41 @@ window.addEventListener('load', () => {
       renderTable() {
         (async () => {
           const requestObj = {};
-          if (store.state.id) {
-            requestObj.id = store.state.id;
-          }
-          if (store.state.object) {
-            requestObj.object = store.state.object;
-          }
-          if (store.state.author) {
-            requestObj.author = store.state.author;
-          }
-          if (store.state.status) {
-            requestObj[window.selectData.name] = store.state.status;
-          }
-          if (store.state.start) {
-            requestObj.start = store.state.start;
-          }
-          if (store.state.end) {
-            requestObj.end = store.state.end;
-          }
-          if (store.state.sorting.field) {
-            requestObj.sortField = store.state.sorting.field;
-          }
-          if (store.state.sorting.sortType) {
-            requestObj.sortType = store.state.sorting.sortType;
-          }
-          if (store.state.page) {
-            requestObj.PAGEN_1 = store.state.page;
-          }
+
+          store.state.filter.controls.forEach((control) => {
+            switch (control.type) {
+              case 'text':
+                if (
+                  control.value &&
+                  control.count &&
+                  control.value.length >= control.count
+                ) {
+                  requestObj[control.code] = control.value;
+                }
+                break;
+              case 'select':
+                if (control.selected.code) {
+                  requestObj[control.code] = control.selected.code;
+                }
+                break;
+              case 'date':
+                if (control.value.start) {
+                  requestObj.start = control.value.start;
+                }
+                if (control.value.end) {
+                  requestObj.start = control.value.end;
+                }
+            }
+          });
+
+          Object.keys(store.state.query).forEach((q) => {
+            if (store.state.table[q]) {
+              requestObj[q] = store.state.table[q];
+            }
+          });
 
           const response = await fetch(
-            `${window.appealIndexStore.paths.getTable}${getQuery(requestObj)}`,
+            `${this.$store.state.paths.getTable}${getQuery(requestObj)}`,
             {
               headers: {
                 Authentication: 'secret',
@@ -522,7 +533,7 @@ window.addEventListener('load', () => {
             $.scrollTo(
               document.querySelector('#appealInbox').getBoundingClientRect()
                 .top +
-                pageYOffset -
+                scrollY -
                 190,
               500
             );
@@ -531,33 +542,37 @@ window.addEventListener('load', () => {
       },
       seturl() {
         const queryObj = {};
-        if (store.state.id) {
-          queryObj.id = store.state.id;
-        }
-        if (store.state.object) {
-          queryObj.object = store.state.object;
-        }
-        if (store.state.author) {
-          queryObj.author = store.state.author;
-        }
-        if (store.state.status) {
-          queryObj[window.selectData.name] = store.state.status;
-        }
-        if (store.state.start) {
-          queryObj.start = store.state.start;
-        }
-        if (store.state.end) {
-          queryObj.end = store.state.end;
-        }
-        if (store.state.sorting.field) {
-          queryObj.sortField = store.state.sorting.field;
-        }
-        if (store.state.sorting.sortType) {
-          queryObj.sortType = store.state.sorting.sortType;
-        }
-        if (store.state.page) {
-          queryObj.PAGEN_1 = store.state.page;
-        }
+        store.state.filter.controls.forEach((control) => {
+          switch (control.type) {
+            case 'text':
+              if (
+                control.value &&
+                control.count &&
+                control.value.length >= control.count
+              ) {
+                queryObj[control.code] = control.value;
+              }
+              break;
+            case 'select':
+              if (control.selected.code) {
+                queryObj[control.code] = control.selected.code;
+              }
+              break;
+            case 'date':
+              if (control.value.start) {
+                queryObj.start = control.value.start;
+              }
+              if (control.value.end) {
+                queryObj.end = control.value.end;
+              }
+          }
+
+          Object.keys(store.state.query).forEach((q) => {
+            if (store.state.table[q]) {
+              queryObj[q] = store.state.table[q];
+            }
+          });
+        });
 
         window.history.pushState('', '', getQuery(queryObj));
       },
@@ -565,58 +580,50 @@ window.addEventListener('load', () => {
     beforeMount() {
       //set store variables
       const queryObject = parseQuery(window.location.search);
-      for (let key in queryObject) {
-        switch (key) {
-          case 'id':
-            store.commit('changeQuery', {
-              name: key,
-              value: queryObject[key] || undefined,
-            });
-            break;
-          case 'object':
-            store.commit('changeQuery', {
-              name: key,
-              value: queryObject[key] || undefined,
-            });
-            break;
-          case 'author':
-            store.commit('changeQuery', {
-              name: key,
-              value: queryObject[key] || undefined,
-            });
-            break;
-          case window.selectData.name:
-            store.commit('changeStatus', queryObject[key] || '');
-            break;
-          case 'start':
-            store.commit('changeStart', queryObject[key] || '');
-            break;
-          case 'end':
-            store.commit('changeEnd', queryObject[key] || '');
-            break;
-          case 'sortField':
-            store.commit('changeSorting', {
-              field: queryObject.sortField || '',
-              sortType: queryObject.sortType || '',
-            });
-            break;
-          case 'sortType':
-            store.commit('changeSorting', {
-              field: queryObject.sortField || '',
-              sortType: queryObject.sortType || '',
-            });
-            break;
-          case 'PAGEN_1':
-            store.commit('changePage', queryObject[key] || '');
-            break;
-        }
-      }
 
-      //set status to the select
-      const selected = window.selectData.options.filter(
-        (optionObj) => optionObj.code === store.state.status
-      );
-      store.commit('changeSelectedOption', selected[0].label);
+      Object.keys(queryObject).forEach((key) => {
+        let control = store.state.filter.controls.find((c) => c.code === key);
+
+        if (control) {
+          switch (control.type) {
+            case 'text':
+              store.commit('changeControlValue', {
+                controlCode: control.code,
+                controlValue: queryObject[key] || '',
+              });
+              break;
+            case 'select':
+              store.commit('changeControlValue', {
+                controlCode: control.code,
+                controlValue: control.options.find(
+                  (option) => option.code === queryObject[key]
+                ) || { label: '', code: '' },
+              });
+              break;
+          }
+        } else {
+          switch (key) {
+            case 'start':
+              store.commit('changeControlValue', {
+                controlCode: 'date',
+                controlValue: {
+                  start: queryObject.start || '',
+                  end: queryObject.end || '',
+                },
+              });
+              break;
+            case 'sortField' || 'sortType':
+              store.commit('changeSorting', {
+                field: queryObject.sortField || '',
+                sortType: queryObject.sortType || '',
+              });
+              break;
+            case 'PAGEN_1':
+              store.commit('changePage', queryObject[key] || '');
+              break;
+          }
+        }
+      });
     },
     mounted() {
       const textInputs = ['id', 'object', 'author'];
