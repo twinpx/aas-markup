@@ -222,6 +222,7 @@ window.appealNewChangeFormStore = {
     ],
   },
   autosaveTimeoutId: null,
+  autosave: 5000,
   agreement: {
     name: 'FORM_AGREEMENT',
     value: 'Y',

@@ -1,0 +1,98 @@
+extends ../../layouts/main
+
+block vars
+  - var page = 'blocks-preappeal-popup'
+  - var authorized = 'true'
+
+block title
+  title Обращение Popup | AAS
+
+block content
+
+  hr
+
+  .container-fluid
+  
+    include ../../modules/breadcrumbs/registry
+
+  hr
+
+  .container-fluid
+  
+    h1 Обращение Popup
+  
+    .row.justify-content-md-between
+      
+      aside.col-3.d-none.d-md-block
+        
+        include ../../components/left-menu/news
+          
+      article.col-12.col-md-9
+        
+        p Lorem ipsum dolor, sit amet consectetur adipisicing elit. Sapiente aperiam facere ad blanditiis tenetur voluptatem nemo quidem magni minus? At libero, consectetur possimus reiciendis, mollitia illum veritatis nisi, voluptatum eveniet accusamus fugiat quas obcaecati culpa consequuntur ex aspernatur qui quibusdam earum vero. Magni, corporis voluptatem? Ratione sunt debitis nesciunt repellat sequi, aliquam maxime tempore quibusdam vero incidunt accusamus molestiae consequuntur amet in neque dicta totam reprehenderit quod odit repudiandae odio vitae! Delectus, ratione cum! Ratione, facere accusantium pariatur rem laborum vel totam, cum eum itaque ipsa quasi corporis repudiandae explicabo dolores molestias eaque ipsum voluptates aliquid tenetur ea voluptate ducimus tempora quis illum? Eveniet molestiae impedit omnis, expedita vel exercitationem adipisci natus nesciunt placeat magnam voluptatem iste autem, dolorum illo hic quo quisquam ratione, dignissimos odio? Dolore consectetur, in sint, porro odit iste aperiam, aliquid sapiente sequi iusto nulla tempore. Repellendus, doloremque quisquam numquam blanditiis, error, non beatae molestias fugiat ad ipsa odio esse possimus totam labore nulla placeat? Illo cum vel labore modi ratione porro vitae placeat, tenetur quaerat quo quas eius id velit deserunt accusantium eum earum sequi fugit suscipit dolorum amet dolores deleniti aut. Velit architecto deleniti nisi voluptas, quas, ratione, iste quam fuga impedit eius eos?
+
+        hr
+
+        button.btn.btn-primary.btn-lg( data-toggle="modal" data-target="#preappealModal" ) Открыть Popup
+
+        #preappealModal.modal--text.modal.fade(tabindex="-1" aria-labelledby="preappealModalLabel" aria-hidden="true")
+          .modal-dialog
+            .modal-content
+              button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
+              .modal-body
+
+                .modal-frame.modal-frame--1.modal-frame--active
+                  h3.text-center Условия подачи жалобы
+                  hr
+                  p.text-center Если вы <b>являетесь</b> действующим членом СРО ААС (аудитором), вам необходимо авторизоваться на сайте и подать жалобу используя личный кабинет.
+                  p.text-center Если вы не <b>являетесь</b> членом СРО ААС, введите ваш Email и получите на него инструкцию.
+                  hr.hr--sl
+                  .text-center.modal-buttons
+                    a.btn.btn-secondary.btn-lg( href="/pages/profile/" ) Я аудитор
+                    a.btn.btn-primary.btn-lg( data-to-frame="2" ) Отправить инструкцию
+
+                .modal-frame.modal-frame--2
+                  h3.text-center Введите ваш контактный Email
+                  hr
+                  p.text-center Ваш Email адрес потребуется на протяжении всего рассмотрения жалобы, вы будете получать на него уведомления и запросы.
+                  hr
+
+                  form(action="/" mathod="GET")
+
+                    .b-float-label
+                      input#name( type="text" value="" )
+                      label( for="name" ) Как вас зовут
+
+                    hr.hr--sl
+
+                    .b-float-label
+                      input#email( type="email" value="" )
+                      label( for="email" ) Email
+
+                    hr.hr--sl
+
+                    .text-center.modal-buttons
+                      a.btn.btn-secondary.btn-lg Отправить
+
+                .modal-frame.modal-frame--3
+                  h3.text-center Ваш email найден в реестре аудиторов!
+                  hr
+                  p.text-center Вы указали email аудитора, который присутствует в нашем реестре. Пожалуйста авторизуйтесь на сайте и заполните жалобы в личном кабинете!
+
+                  hr.hr--sl
+
+                  .text-center.modal-buttons
+                    a.btn.btn-secondary.btn-lg( href="/pages/profile/" ) Войти
+
+                .modal-frame.modal-frame--4
+                  h3.text-center Инструкция отправлена
+                  hr
+                  p.text-center На указанный вами Email (maxim@twinpx.ru) отправлена инструкция. Следуйте ей для подачи жалобы.
+                  p.text-center Если вы не нашли инструкцию, прежде всего проверьте раздел Спам.
+
+                  hr.hr--sl
+
+                  .text-center.modal-buttons
+                    a.btn.btn-secondary.btn-lg( data-dismiss="modal" ) Понятно
+  
+    
