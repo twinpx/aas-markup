@@ -409,9 +409,9 @@ window.addEventListener('load', () => {
       },
     },
     methods: {
-      sortTable(e, field, sortType) {
+      sortTable(e, sortField, sortType) {
         sortType = sortType === 'asc' ? 'desc' : 'asc';
-        store.commit('changeSorting', { field, sortType });
+        store.commit('changeSorting', { sortField, sortType });
 
         //render table
         this.$emit('rendertable');

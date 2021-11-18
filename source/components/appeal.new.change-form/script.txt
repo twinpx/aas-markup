@@ -980,7 +980,7 @@ window.onload = function () {
           'changeAutosaveTimeoutId',
           setTimeout(() => {
             this.autosave();
-          }, 5000)
+          }, this.$store.state.autosave)
         );
       },
       autosave(form, cnt) {
@@ -991,8 +991,8 @@ window.onload = function () {
         (async () => {
           try {
             let response = await fetch(
-              `${window.appealNewChangeFormPaths.autosave}`
-              //{ method: 'POST', body: new FormData(form) }
+              `${window.appealNewChangeFormPaths.autosave}`/*,
+              { method: 'POST', body: new FormData(form) }*/
             );
             let result = await response.json();
             if (result.STATUS !== 'Y' && counter < 3) {
