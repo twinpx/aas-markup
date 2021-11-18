@@ -1,73 +1,4 @@
 window.addEventListener('load', () => {
-  const spaceStep = $.animateNumber.numberStepFactories.separator(' ');
-
-  //get new number
-  (async () => {
-    do {
-      //hide digit
-      const digitNode = document.querySelector('.b-num-block__b');
-      const currentNum = digitNode.textContent;
-      //make request
-      let response = await fetch(window.appealIndexStore.paths.getNewNum);
-      if (response.ok) {
-        let json = await response.json();
-        if (json.STATUS === 'Y' && json.DATA) {
-          //if the filter is not applied
-          let filterFlag = false;
-          for (let key in store.state) {
-            if (
-              (key ===
-                ('id' ||
-                  'object' ||
-                  'author' ||
-                  'status' ||
-                  'start' ||
-                  'end') &&
-                !!store.state[key]) ||
-              (key === 'page' && store.state[key] !== '1') ||
-              (key === 'sorting' && !!store.state[key].field)
-            ) {
-              filterFlag = true;
-            }
-          }
-
-          if (!filterFlag && Number(json.DATA.num) !== Number(currentNum)) {
-            app.renderTable();
-          }
-          $(digitNode).animateNumber({
-            number: json.DATA.num,
-            numberStep: spaceStep,
-          });
-        }
-      }
-      await new Promise((r) => setTimeout(r, window.appealIndexStore.timeout));
-    } while (true);
-  })();
-
-  //num blocks
-  document
-    .querySelector('.b-num-blocks .b-num-block:not(.inactive)')
-    .addEventListener('click', () => {
-      //reset fields
-      app.$refs.filter.$refs.id.reset();
-      app.$refs.filter.$refs.object.reset();
-      app.$refs.filter.$refs.author.reset();
-      app.$refs.filter.$refs.date.reset();
-      //Новые
-      app.$refs.filter.$refs.status.selectedOption =
-        window.selectData.options.filter((obj) => {
-          return obj.label === 'Новые';
-        })[0];
-      store.commit(
-        'changeStatus',
-        app.$refs.filter.$refs.status.selectedOption.code
-      );
-      //set url, render table
-      store.commit('changePage', 1);
-      app.renderTable();
-      app.seturl();
-    });
-
   if (!window.Vue && !window.Vuex) return;
 
   Vue.use(Vuex);
@@ -76,21 +7,6 @@ window.addEventListener('load', () => {
     state() {
       return window.appealIndexStore;
     },
-    /*state: {
-      tableHtml: '',
-      id: undefined,
-      object: undefined,
-      author: undefined,
-      status: '',
-      start: '',
-      end: '',
-      selectedOption: { label: 'Все' },
-      page: '1',
-      sorting: {
-        field: '',
-        sortType: '',
-      },
-    },*/
     mutations: {
       changeTableHtml(state, payload) {
         state.table.html = payload;
@@ -112,20 +28,74 @@ window.addEventListener('load', () => {
             break;
         }
       },
-      changeStatus(state, payload) {
-        state.status = payload;
-      },
       changePage(state, payload) {
-        state.table.page = payload;
+        state.table.PAGEN_1 = payload;
       },
       changeSorting(state, payload) {
-        state.table.sorting = payload;
+        state.table.sortField = payload.sortField;
+        state.table.sortType = payload.sortType;
+        state.query.sortField = payload.sortField;
+        state.query.sortType = payload.sortType;
       },
     },
   });
 
   Vue.component('v-select', VueSelect.VueSelect);
   Vue.component('date-picker', DatePicker);
+
+  Vue.component('num-blocks', {
+    template: `<div class="b-num-blocks" v-if="$store.state.numBlocks">
+      <div class="b-num-block"
+        v-for="block in $store.state.numBlocks"
+        :class="{'inactive': !block.new, 'b-num-block--counter': block.new}"
+        @click="getNew(block.new)">
+        <i>{{ block.title }}</i>
+        <b :class="{'b-num-block__b': block.new}">{{ block.num }}</b>
+      </div>
+    </div>`,
+    data() {
+      return {};
+    },
+    emits: ['rendertable', 'seturl'],
+    methods: {
+      getNew(newFlag) {
+        if (!newFlag) return;
+        //reset values
+        this.$store.state.filter.controls.forEach((control) => {
+          if (control.code === 'status') return;
+          //control value
+          let controlValue = '';
+          if (control.type === 'select' && control.options) {
+            controlValue = control.options[0];
+          }
+          //commit reset
+          this.$store.commit('changeControlValue', {
+            controlCode: control.code,
+            controlValue: controlValue,
+          });
+        });
+
+        //New
+        const statusControl = this.$store.state.filter.controls.find(
+          (control) => control.code === 'status'
+        );
+        const newOption = statusControl.options.find(
+          (option) => option.code === statusControl.newOptionCode
+        );
+        this.$store.commit('changeControlValue', {
+          controlCode: 'status',
+          controlValue: newOption,
+        });
+
+        //set url, render table
+        this.$store.commit('changePage', 1);
+        //render table
+        this.$emit('rendertable');
+        //set URL
+        this.$emit('seturl');
+      },
+    },
+  });
 
   Vue.component('form-control-date', {
     template: `<div class="b-float-label" data-src="${window.appealIndexStore.paths.src}calendar.svg">
@@ -376,7 +346,7 @@ window.addEventListener('load', () => {
     template: `
       <div id="inbox-filter">
         <div v-for="control in $store.state.filter.controls">
-          <component :is="'form-control-'+control.type" :control="control" @rendertable="renderTable" @seturl="seturl"></component>
+          <component :is="'form-control-'+control.type" :control="control" @rendertable="renderTable" @seturl="seturl" :ref="control.code"></component>
         </div>
       </div>`,
     methods: {
@@ -401,7 +371,7 @@ window.addEventListener('load', () => {
     },
     template: `<div id="inbox-table" class="b-registry-report">
       <div v-if="$store.state.table.html.rows">
-        <table class="table">
+        <table class="table table-responsive">
           <thead>
             <tr>
               <th v-for="col in tableHtml.cols" :class="col.sortType" @click="sortTable($event, col.field, col.sortType)">{{col.title}}</th>
@@ -626,13 +596,51 @@ window.addEventListener('load', () => {
       });
     },
     mounted() {
-      const textInputs = ['id', 'object', 'author'];
-      textInputs.forEach((code) => {
-        if (store.state[code]) {
-          this.$refs.filter.$refs[code].inputText = store.state[code];
-          this.$refs.filter.$refs[code].isActive = true;
-        }
-      });
+      const spaceStep = $.animateNumber.numberStepFactories.separator(' ');
+      //get new number
+      (async () => {
+        do {
+          //hide digit
+          const digitNode = document.querySelector('.b-num-block__b');
+          const currentNum = this.$store.state.numBlocks.find(
+            (block) => block.new
+          ).num;
+
+          //make request
+          let response = await fetch(this.$store.state.paths.getNewNum);
+          if (response.ok) {
+            let json = await response.json();
+            if (json.STATUS === 'Y' && json.DATA) {
+              //if the filter is not applied
+              let filterFlag = false;
+              filterFlag = this.$store.state.filter.controls.some((control) => {
+                if (control.type === 'select') {
+                  return control.selected.code;
+                }
+                if (control.type === 'date') {
+                  return control.value.start || control.value.end;
+                }
+                return control.value;
+              });
+              filterFlag =
+                filterFlag ||
+                Object.keys(this.$store.state.query).some(
+                  (q) => this.$store.state.query[q]
+                );
+
+              if (!filterFlag && Number(json.DATA.num) !== Number(currentNum)) {
+                this.renderTable();
+              }
+              $(digitNode).animateNumber({
+                number: json.DATA.num,
+                numberStep: spaceStep,
+              });
+            }
+          }
+          await new Promise((r) => setTimeout(r, this.$store.state.timeout));
+        } while (true);
+      })();
+
       //render the table
       this.renderTable();
     },

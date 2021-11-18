@@ -5,6 +5,21 @@ window.appealIndexStore = {
     getNewNum: '/components/appeal.inbox/newNum.json',
     src: '/template/images/',
   },
+  numBlocks: [
+    {
+      new: true,
+      title: 'Новые',
+      num: 78,
+    },
+    {
+      title: 'Завершены сегодня',
+      num: 15,
+    },
+    {
+      title: 'Завершены за месяц',
+      num: 254,
+    },
+  ],
   filter: {
     controls: [
       {
@@ -36,6 +51,7 @@ window.appealIndexStore = {
         type: 'select',
         label: 'Статус обращения',
         name: 'STATUS',
+        newOptionCode: 'prop1',
         options: [
           {
             label: 'Все',

@@ -32,9 +32,9 @@ script( src="/components/appeal.inbox/store.js" )
 
     h3 Заявки на изменения в реестре
 
-    include ../../modules/num-blocks/appeal-inbox
-
     #appealInbox.b-registry-report
+      num-blocks( @rendertable="renderTable" @seturl="seturl")
+      hr
       inbox-filter( @rendertable="renderTable" @seturl="seturl" ref="filter")
       hr
       inbox-table( @rendertable="renderTable" @seturl="seturl" )
