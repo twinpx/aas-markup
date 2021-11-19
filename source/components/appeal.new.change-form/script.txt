@@ -40,6 +40,7 @@ window.onload = function () {
           (control) => control.property === payload.property
         );
         control.filename = payload.filename;
+        control.fileId = payload.fileId;
       },
       changeAutosaveTimeoutId(state, payload) {
         state.autosaveTimeoutId = payload;
@@ -310,12 +311,12 @@ window.onload = function () {
 
             <input type="file" :data-required="formControl.required" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" @change="uploadFile()" ref="inputFile" />
             <label :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" class="active" v-html="label" ref="dropzone" ></label>
-            <input type="hidden" :name="formControl.word+'-FILENAME['+formControl.property+']['+fieldsetBlockIndex+']'" :value="filename" />
+            <input type="hidden" :name="formControl.word+'-FILENAME['+formControl.property+']['+fieldsetBlockIndex+']'" :value="formControl.fileId" />
           </div>
         </div>
         <hr class="hr--xs d-block d-lg-none w-100">
         <div class="col-lg-6 col-12 small">
-          <div v-if="this.formControl.completeBlock && this.formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ this.formControl.completeBlock.comment }}</div>
+          <div v-if="formControl.completeBlock && formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ formControl.completeBlock.comment }}</div>
         </div>
       </div>
     </div>
@@ -375,6 +376,7 @@ window.onload = function () {
             id: this.controlId,
             property: this.formControl.property,
             filename: this.invalid ? '' : this.files[0].name,
+            fileId: 'Y',
           });
         }, 0);
       },
@@ -384,6 +386,7 @@ window.onload = function () {
           id: this.controlId,
           property: this.formControl.property,
           filename: '',
+          fileId: '',
         });
       },
       cancelEvent(e) {
@@ -854,7 +857,7 @@ window.onload = function () {
             : undefined;
 
           confirmDocsFlag = requiredConfirm
-            ? requiredConfirm.every((control) => !!control.value)
+            ? requiredConfirm.every((control) => !!control.fileId)
             : false;
         }
 
@@ -991,7 +994,7 @@ window.onload = function () {
         (async () => {
           try {
             let response = await fetch(
-              `${window.appealNewChangeFormPaths.autosave}`/*,
+              `${window.appealNewChangeFormPaths.autosave}` /*,
               { method: 'POST', body: new FormData(form) }*/
             );
             let result = await response.json();

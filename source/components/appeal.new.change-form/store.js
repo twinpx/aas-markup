@@ -1,4 +1,122 @@
 window.appealNewChangeFormStore = {
+  hidden: [
+    {
+      name: 'APPEAL_ID',
+      value: 110402,
+    },
+    {
+      name: 'FORM_ID',
+      value: 107168,
+    },
+  ],
+  docsBlock: {
+    title: 'Документы необходимые для внесения изменения',
+    text: '',
+    items: [
+      {
+        id: 5983,
+        title:
+          'Актуальный список учредителей (участников, акционеров). Приложение № 6а.',
+        url: '/upload/iblock/f7c/Prilozhenie-_-6a.docx',
+        icon: '/local/templates/aas/images/doc.svg',
+        data: ['90.78 Кб .docx'],
+      },
+    ],
+  },
+  controlsBlock: {
+    title: 'Данные для изменения',
+    text: '',
+    controls: [
+      {
+        property: 64,
+        word: 'PROPERTY',
+        sort: 0,
+        label: 'Наименование юридического лица *',
+        type: 'text',
+        required: true,
+        value: '',
+        multy: false,
+        completeBlock: {
+          title: '',
+          value: '',
+          comment:
+            'Наименование юридического лица — учредителя (участника, акционера).',
+        },
+      },
+      {
+        property: 65,
+        word: 'PROPERTY',
+        sort: 1,
+        label: 'Юридический адрес *',
+        type: 'text',
+        required: true,
+        value: '',
+        multy: false,
+        completeBlock: {
+          title: '',
+          value: '',
+          comment:
+            'Юридический адрес организации: индекс, субъект РФ, район, город, улица, дом, корпус, офис',
+        },
+      },
+    ],
+  },
+  confirmDocsBlock: {
+    title: 'Подтверждающие документы',
+    text: '',
+    items: [
+      {
+        id: 0,
+        checked: true,
+        title: 'Пакет документов 1',
+        text: '<ul><li>Актуальный список учредителей (участников, акционеров). Заполненное Приложение № 6а.</li><li>Актуальная выписка из реестра акционеров</li></ul>',
+        name: 'FIELDS_ATTACHE',
+        value: 0,
+        controls: [
+          {
+            property: 4,
+            word: 'FILES[0]',
+            label: 'Заполненное Приложение № 6а *',
+            type: 'file',
+            required: true,
+            filename: '',
+            fileId: '',
+            default: '<a href>Выберите файл</a> или перетащите в поле',
+            ext: [''],
+            completeBlock: {
+              comment:
+                'Актуальный список учредителей (участников, акционеров). Заполненное Приложение № 6а.',
+            },
+          },
+          {
+            property: 5,
+            word: 'FILES[0]',
+            label: 'Актуальная выписка из реестра акционеров *',
+            type: 'file',
+            required: true,
+            filename: '',
+            fileId: '',
+            default: '<a href>Выберите файл</a> или перетащите в поле',
+            ext: [''],
+            completeBlock: {
+              comment: 'Актуальная выписка из реестра акционеров',
+            },
+          },
+        ],
+      },
+    ],
+  },
+  autosaveTimeoutId: 1666,
+  autosave: 5000,
+  agreement: {
+    name: 'FORM_AGREEMENT',
+    value: 'Y',
+    checked: false,
+    text: 'Я принимаю <a href="/privacy/" target="_blank">условия Пользовательского соглашения</a> и даю своё согласие СРО ААС на обработку моей персональной информации на условиях, определенных Политикой конфиденциальности.',
+    invalid: false,
+  },
+};
+/*{
   docsBlock: {
     title: 'Документы необходимые для внесения изменения',
     text: 'Some text',
@@ -164,6 +282,7 @@ window.appealNewChangeFormStore = {
             type: 'file',
             required: true,
             filename: '',
+            fileId: '',
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
@@ -176,6 +295,7 @@ window.appealNewChangeFormStore = {
             label: 'Актуальная выписка из ЕГРЮЛ*',
             type: 'file',
             filename: '',
+            fileId: '',
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
@@ -199,6 +319,7 @@ window.appealNewChangeFormStore = {
             type: 'file',
             required: true,
             filename: 'Программа БЧ-2021.pdf',
+            fileId: '123',
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
@@ -211,6 +332,7 @@ window.appealNewChangeFormStore = {
             label: 'Актуальная выписка из ЕГРЮЛ*',
             type: 'file',
             filename: '',
+            fileId: '',
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
@@ -231,3 +353,4 @@ window.appealNewChangeFormStore = {
     invalid: false,
   },
 };
+*/

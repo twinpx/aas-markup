@@ -76,6 +76,13 @@ document.querySelectorAll('.table').forEach(function (table) {
   });
 });
 
+document.querySelectorAll('textarea').forEach(function (textarea) {
+  textarea.addEventListener('input', function () {
+    //this.style.height = 'auto';
+    this.style.height = this.scrollHeight + 'px';
+  });
+});
+
 //dropdown columns
 /*if (window.matchMedia('(min-width: 768px)').matches) {
   //desktop
