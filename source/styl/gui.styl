@@ -575,6 +575,35 @@ h2,.h2
     &:active
       color #9b9b9b
 
+.btn--load-circle
+  position relative
+
+  &,
+  &:hover,
+  &:focus,
+  &:active,
+  &:not(:disabled):not(.disabled).active,
+  &:not(:disabled):not(.disabled):active
+    color transparent !important
+
+  &:after
+    content ""
+    position absolute
+    height 30px
+    width 30px
+    top calc(50% - 15px)
+    right calc(50% - 15px)
+    animation circle 1.3s infinite linear 
+    border 2px solid #fff
+    border-radius 50%
+    border-right-color transparent
+
+@keyframes circle
+  0%
+    transform( rotate(0))
+  100%
+    transform( rotate(360deg))
+
 .btn-delete
   display inline-block
   width 32px

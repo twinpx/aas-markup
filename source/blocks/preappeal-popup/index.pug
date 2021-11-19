@@ -35,64 +35,6 @@ block content
 
         button.btn.btn-primary.btn-lg( data-toggle="modal" data-target="#preappealModal" ) Открыть Popup
 
-        #preappealModal.modal--text.modal.fade(tabindex="-1" aria-labelledby="preappealModalLabel" aria-hidden="true")
-          .modal-dialog
-            .modal-content
-              button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
-              .modal-body
-
-                .modal-frame.modal-frame--1.modal-frame--active
-                  h3.text-center Условия подачи жалобы
-                  hr
-                  p.text-center Если вы <b>являетесь</b> действующим членом СРО ААС (аудитором), вам необходимо авторизоваться на сайте и подать жалобу используя личный кабинет.
-                  p.text-center Если вы не <b>являетесь</b> членом СРО ААС, введите ваш Email и получите на него инструкцию.
-                  hr.hr--sl
-                  .text-center.modal-buttons
-                    a.btn.btn-secondary.btn-lg( href="/pages/profile/" ) Я аудитор
-                    a.btn.btn-primary.btn-lg( data-to-frame="2" ) Отправить инструкцию
-
-                .modal-frame.modal-frame--2
-                  h3.text-center Введите ваш контактный Email
-                  hr
-                  p.text-center Ваш Email адрес потребуется на протяжении всего рассмотрения жалобы, вы будете получать на него уведомления и запросы.
-                  hr
-
-                  form(action="/" mathod="GET")
-
-                    .b-float-label
-                      input#name( type="text" value="" )
-                      label( for="name" ) Как вас зовут
-
-                    hr.hr--sl
-
-                    .b-float-label
-                      input#email( type="email" value="" )
-                      label( for="email" ) Email
-
-                    hr.hr--sl
-
-                    .text-center.modal-buttons
-                      a.btn.btn-secondary.btn-lg Отправить
-
-                .modal-frame.modal-frame--3
-                  h3.text-center Ваш email найден в реестре аудиторов!
-                  hr
-                  p.text-center Вы указали email аудитора, который присутствует в нашем реестре. Пожалуйста авторизуйтесь на сайте и заполните жалобы в личном кабинете!
-
-                  hr.hr--sl
-
-                  .text-center.modal-buttons
-                    a.btn.btn-secondary.btn-lg( href="/pages/profile/" ) Войти
-
-                .modal-frame.modal-frame--4
-                  h3.text-center Инструкция отправлена
-                  hr
-                  p.text-center На указанный вами Email (maxim@twinpx.ru) отправлена инструкция. Следуйте ей для подачи жалобы.
-                  p.text-center Если вы не нашли инструкцию, прежде всего проверьте раздел Спам.
-
-                  hr.hr--sl
-
-                  .text-center.modal-buttons
-                    a.btn.btn-secondary.btn-lg( data-dismiss="modal" ) Понятно
+        include ../../components/preappeal-popup/template
   
     
