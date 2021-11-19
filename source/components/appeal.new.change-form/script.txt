@@ -311,7 +311,7 @@ window.onload = function () {
 
             <input type="file" :data-required="formControl.required" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" @change="uploadFile()" ref="inputFile" />
             <label :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" class="active" v-html="label" ref="dropzone" ></label>
-            <input type="hidden" :name="formControl.word+'-FILENAME['+formControl.property+']['+fieldsetBlockIndex+']'" :value="formControl.fileId" />
+            <input type="hidden" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" :value="formControl.fileId" />
           </div>
         </div>
         <hr class="hr--xs d-block d-lg-none w-100">

@@ -62,7 +62,7 @@ window.addEventListener('load', () => {
         if (!newFlag) return;
         //reset values
         this.$store.state.filter.controls.forEach((control) => {
-          if (control.code === 'status') return;
+          if (control.newOptionCode) return;
           //control value
           let controlValue = '';
           if (control.type === 'select' && control.options) {
@@ -77,13 +77,13 @@ window.addEventListener('load', () => {
 
         //New
         const statusControl = this.$store.state.filter.controls.find(
-          (control) => control.code === 'status'
+          (control) => control.newOptionCode
         );
         const newOption = statusControl.options.find(
           (option) => option.code === statusControl.newOptionCode
         );
         this.$store.commit('changeControlValue', {
-          controlCode: 'status',
+          controlCode: statusControl.code,
           controlValue: newOption,
         });
 
@@ -433,7 +433,9 @@ window.addEventListener('load', () => {
         e.preventDefault();
         if (e.target.getAttribute('href')) {
           //reset page
-          let page = parseQuery(e.target.getAttribute('href')).PAGEN_1;
+          let page = parseQuery(
+            e.target.getAttribute('href').split('?')[1]
+          ).PAGEN_1;
           store.commit('changePage', 1 * page);
           //render Table
           this.$emit('rendertable');
@@ -473,7 +475,7 @@ window.addEventListener('load', () => {
                   requestObj.start = control.value.start;
                 }
                 if (control.value.end) {
-                  requestObj.start = control.value.end;
+                  requestObj.end = control.value.end;
                 }
             }
           });
@@ -575,7 +577,9 @@ window.addEventListener('load', () => {
           switch (key) {
             case 'start':
               store.commit('changeControlValue', {
-                controlCode: 'date',
+                controlCode: this.$store.state.filter.controls.find(
+                  (control) => control.type === 'date'
+                ).code,
                 controlValue: {
                   start: queryObject.start || '',
                   end: queryObject.end || '',
