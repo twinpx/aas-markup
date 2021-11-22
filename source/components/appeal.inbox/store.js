@@ -58,7 +58,7 @@ window.appealIndexStore = {
             code: '',
           },
           {
-            label: 'Новые',
+            label: 'Ожидает рассмотрения',
             code: 'prop1',
           },
           {
@@ -129,35 +129,5 @@ window.appealIndexStore = {
     sortField: '',
     sortType: '',
     PAGEN_1: '',
-  },
-};
-
-window.selectData = {
-  name: 'status',
-  options: [
-    {
-      label: 'Все',
-      code: '',
-    },
-    {
-      label: 'Новые',
-      code: 'prop1',
-    },
-    {
-      label: 'Отклоненные',
-      code: 'prop2',
-    },
-    {
-      label: 'В работе',
-      code: 'prop3',
-    },
-    {
-      label: 'Выполненые',
-      code: 'prop4',
-    },
-  ],
-  selected: {
-    label: 'Все',
-    code: '',
   },
 };
