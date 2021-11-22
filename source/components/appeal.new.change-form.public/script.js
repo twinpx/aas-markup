@@ -1000,6 +1000,19 @@ window.onload = function () {
             let result = await response.json();
             if (result.STATUS !== 'Y' && counter < 3) {
               this.autosave(form, ++counter);
+            } else if (result.CONTROLS && result.CONTROLS.length) {
+              let cont;
+              result.CONTROLS.forEach((control) => {
+                this.$store.state.confirmDocsBlock.items.forEach((item) => {
+                  cont =
+                    item.controls.find(
+                      (contr) => contr.property === control.property
+                    ) || cont;
+                });
+                if (cont) {
+                  cont.fileId = control.fileId;
+                }
+              });
             }
           } catch (err) {
             throw err;
