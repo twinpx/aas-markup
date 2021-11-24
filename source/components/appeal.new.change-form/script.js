@@ -85,7 +85,11 @@ window.onload = function () {
       </label>
       <div class="b-form-control-vc__fields" v-show="blockFlag || $store.state.confirmDocsBlock.items[index].checked">
         <hr class="hr--line">
-        <form-control-file v-for="(formControl, controlIndex) in control.controls" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" :controlId="control.id" @autosave="autosave"></form-control-file>
+        <div v-for="(formControl, controlIndex) in control.controls">
+          <form-control-multy v-if="formControl.multy" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" :controlId="control.id" @autosave="autosave"></form-control-multy>
+          <form-control-file v-else :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" :controlId="control.id" @autosave="autosave"></form-control-file>
+        </div>
+        
       </div>
     </div>
     `,
@@ -547,11 +551,17 @@ window.onload = function () {
         animClass: false,
       };
     },
-    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
+    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'controlId'],
     emits: ['autosave', 'timeoutAutosave'],
     template: `
       <div :class="{new: newClass, anim: animClass}">
         <hr class="hr--line hr--xxl" style="margin-top: 0;">
+        <div v-if="formControl.type==='file'">
+          <div v-for="(control, idx) in formControl.value.length" :key="generateKey(idx)" class="multy-control-wrapper">
+            <form-control-file :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" :controlId="controlId" @autosave="autosave"></form-control-file>
+            <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
+          </div>
+        </div>
         <div v-if="formControl.type==='date'">
           <div v-for="(control, idx) in formControl.value.length" :key="generateKey(idx)" class="multy-control-wrapper">
             <form-control-date :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-date>

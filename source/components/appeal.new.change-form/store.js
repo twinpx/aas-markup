@@ -81,6 +81,8 @@ window.appealNewChangeFormStore = {
             required: true,
             filename: '',
             fileId: '',
+            multy: true,
+            value: [''],
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: [''],
             completeBlock: {
