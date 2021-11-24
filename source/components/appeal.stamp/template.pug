@@ -29,85 +29,93 @@ else
     hr
 
     .b-appeal-stamp__form
-      form( action="" method="" enctype="multipart/form-data" )
+      form( action="/pages/appeal-stamp/response.json" method="" enctype="multipart/form-data" data-redirect="/pages/appeal-stamp/" )
 
         .b-appeal-stamp__block
 
-          input( type="file" name="SIGN" id="signInput" )
-          label.b-appeal-stamp__item.default( for="signInput" )
+          .b-appeal-stamp__item.default
 
-            b
-              span.default.filled.error Изображение подписи
-              span.hover Перетащите подпись
+            input( type="file" name="SIGN" id="signInput" )
+            label( for="signInput" )
 
-            .b-appeal-stamp__item__img( style="background-image: url('/components/appeal.stamp/images/sign.svg');" data-default="/components/appeal.stamp/images/sign.svg" )
-              
-              svg.hover(xmlns='http://www.w3.org/2000/svg' width='32' height='35.119' viewBox='0 0 32 35.119')
-                path(id='Контур_317' data-name='Контур 317' d='M42.707,30.156,29.314,16.763a2.609,2.609,0,0,0-3.687,0L12.233,30.156A2.606,2.606,0,1,0,15.92,33.84l8.943-8.94V48.512a2.607,2.607,0,1,0,5.213,0V24.9l8.943,8.94a2.606,2.606,0,1,0,3.687-3.684Z' transform='translate(-11.47 -16)' fill='#4375d8')
+              b
+                span.default.filled.error Изображение подписи
+                span.hover Перетащите подпись
 
-              .b-appeal-stamp__item__error.error
+              .b-appeal-stamp__item__img( style="background-image: url('/components/appeal.stamp/images/sign.svg');" data-default="/components/appeal.stamp/images/sign.svg" )
+                
+                svg.hover(xmlns='http://www.w3.org/2000/svg' width='32' height='35.119' viewBox='0 0 32 35.119')
+                  path(id='Контур_317' data-name='Контур 317' d='M42.707,30.156,29.314,16.763a2.609,2.609,0,0,0-3.687,0L12.233,30.156A2.606,2.606,0,1,0,15.92,33.84l8.943-8.94V48.512a2.607,2.607,0,1,0,5.213,0V24.9l8.943,8.94a2.606,2.606,0,1,0,3.687-3.684Z' transform='translate(-11.47 -16)' fill='#4375d8')
 
-            .small
-              span.default.error Загрузить другую
-              span.hover Перетащите в область
-              span.clear.filled( title="Очистить" )
+                .b-appeal-stamp__item__error.error
 
-          input( type="file" name="STAMP" id="stampInput" )
-          label.b-appeal-stamp__item.default( for="stampInput" )
+              .small
+                span.default.error Загрузить другую
+                span.hover Перетащите в область
+                span.clear.filled( title="Очистить" )
 
-            b
-              span.default.filled.error Изображение печати
-              span.hover Перетащите печать
+          .b-appeal-stamp__item.default
 
-            .b-appeal-stamp__item__img( style="background-image: url('/components/appeal.stamp/images/stamp.svg');" data-default="/components/appeal.stamp/images/stamp.svg")
-              
-              svg.hover(xmlns='http://www.w3.org/2000/svg' width='32' height='35.119' viewBox='0 0 32 35.119')
-                path(id='Контур_317' data-name='Контур 317' d='M42.707,30.156,29.314,16.763a2.609,2.609,0,0,0-3.687,0L12.233,30.156A2.606,2.606,0,1,0,15.92,33.84l8.943-8.94V48.512a2.607,2.607,0,1,0,5.213,0V24.9l8.943,8.94a2.606,2.606,0,1,0,3.687-3.684Z' transform='translate(-11.47 -16)' fill='#4375d8')
+            input( type="file" name="STAMP" id="stampInput" )
+            label( for="stampInput" )
 
-              .b-appeal-stamp__item__error.error
+              b
+                span.default.filled.error Изображение печати
+                span.hover Перетащите печать
 
-            .small
-              span.default.error Загрузить другую
-              span.hover Перетащите в область
-              span.clear.filled( title="Очистить" )
+              .b-appeal-stamp__item__img( style="background-image: url('/components/appeal.stamp/images/stamp.svg');" data-default="/components/appeal.stamp/images/stamp.svg")
+                
+                svg.hover(xmlns='http://www.w3.org/2000/svg' width='32' height='35.119' viewBox='0 0 32 35.119')
+                  path(id='Контур_317' data-name='Контур 317' d='M42.707,30.156,29.314,16.763a2.609,2.609,0,0,0-3.687,0L12.233,30.156A2.606,2.606,0,1,0,15.92,33.84l8.943-8.94V48.512a2.607,2.607,0,1,0,5.213,0V24.9l8.943,8.94a2.606,2.606,0,1,0,3.687-3.684Z' transform='translate(-11.47 -16)' fill='#4375d8')
 
-          input( type="file" name="STAMP" id="stampInput2" )
-          label.b-appeal-stamp__item.current( for="stampInput2" )
+                .b-appeal-stamp__item__error.error
 
-            b
-              span.default.filled.error Изображение печати ООО "Твин пикс"
-              span.hover Перетащите печать
+              .small
+                span.default.error Загрузить другую
+                span.hover Перетащите в область
+                span.clear.filled( title="Очистить" )
 
-            .b-appeal-stamp__item__img( style="background-image: url('/components/appeal.stamp/images/1.jpg');" data-default="/components/appeal.stamp/images/stamp.svg")
-              
-              svg.hover(xmlns='http://www.w3.org/2000/svg' width='32' height='35.119' viewBox='0 0 32 35.119')
-                path(id='Контур_317' data-name='Контур 317' d='M42.707,30.156,29.314,16.763a2.609,2.609,0,0,0-3.687,0L12.233,30.156A2.606,2.606,0,1,0,15.92,33.84l8.943-8.94V48.512a2.607,2.607,0,1,0,5.213,0V24.9l8.943,8.94a2.606,2.606,0,1,0,3.687-3.684Z' transform='translate(-11.47 -16)' fill='#4375d8')
+          .b-appeal-stamp__item.current
 
-              .b-appeal-stamp__item__error.error
+            input( type="file" name="STAMP2" id="stampInput2" )
+            label( for="stampInput2" )
 
-            .small
-              span.default.error Загрузить другую
-              span.hover Перетащите в область
-              span.clear.filled( title="Очистить" )
+              b
+                span.default.filled.error Изображение печати ООО "Твин пикс"
+                span.hover Перетащите печать
 
-          input( type="file" name="STAMP" id="stampInput3" )
-          label.b-appeal-stamp__item.default( for="stampInput3" )
+              .b-appeal-stamp__item__img( style="background-image: url('/components/appeal.stamp/images/1.jpg');" data-default="/components/appeal.stamp/images/stamp.svg")
+                
+                svg.hover(xmlns='http://www.w3.org/2000/svg' width='32' height='35.119' viewBox='0 0 32 35.119')
+                  path(id='Контур_317' data-name='Контур 317' d='M42.707,30.156,29.314,16.763a2.609,2.609,0,0,0-3.687,0L12.233,30.156A2.606,2.606,0,1,0,15.92,33.84l8.943-8.94V48.512a2.607,2.607,0,1,0,5.213,0V24.9l8.943,8.94a2.606,2.606,0,1,0,3.687-3.684Z' transform='translate(-11.47 -16)' fill='#4375d8')
 
-            b
-              span.default.filled.error Изображение печати ОАО "Аудитор-про"
-              span.hover Перетащите печать
+                .b-appeal-stamp__item__error.error
 
-            .b-appeal-stamp__item__img( style="background-image: url('/components/appeal.stamp/images/stamp.svg');" data-default="/components/appeal.stamp/images/stamp.svg")
-              
-              svg.hover(xmlns='http://www.w3.org/2000/svg' width='32' height='35.119' viewBox='0 0 32 35.119')
-                path(id='Контур_317' data-name='Контур 317' d='M42.707,30.156,29.314,16.763a2.609,2.609,0,0,0-3.687,0L12.233,30.156A2.606,2.606,0,1,0,15.92,33.84l8.943-8.94V48.512a2.607,2.607,0,1,0,5.213,0V24.9l8.943,8.94a2.606,2.606,0,1,0,3.687-3.684Z' transform='translate(-11.47 -16)' fill='#4375d8')
+              .small
+                span.default.error Загрузить другую
+                span.hover Перетащите в область
+                span.clear.filled( title="Очистить" )
 
-              .b-appeal-stamp__item__error.error
+          .b-appeal-stamp__item.default
+          
+            input( type="file" name="STAMP3" id="stampInput3" )
+            label( for="stampInput3" )
 
-            .small
-              span.default.error Загрузить другую
-              span.hover Перетащите в область
-              span.clear.filled( title="Очистить" )
+              b
+                span.default.filled.error Изображение печати ОАО "Аудитор-про Сыновья и Ко"
+                span.hover Перетащите печать
+
+              .b-appeal-stamp__item__img( style="background-image: url('/components/appeal.stamp/images/stamp.svg');" data-default="/components/appeal.stamp/images/stamp.svg")
+                
+                svg.hover(xmlns='http://www.w3.org/2000/svg' width='32' height='35.119' viewBox='0 0 32 35.119')
+                  path(id='Контур_317' data-name='Контур 317' d='M42.707,30.156,29.314,16.763a2.609,2.609,0,0,0-3.687,0L12.233,30.156A2.606,2.606,0,1,0,15.92,33.84l8.943-8.94V48.512a2.607,2.607,0,1,0,5.213,0V24.9l8.943,8.94a2.606,2.606,0,1,0,3.687-3.684Z' transform='translate(-11.47 -16)' fill='#4375d8')
+
+                .b-appeal-stamp__item__error.error
+
+              .small
+                span.default.error Загрузить другую
+                span.hover Перетащите в область
+                span.clear.filled( title="Очистить" )
 
         button.btn.btn-secondary.btn-lg( type="submit" ) Отправить
 
