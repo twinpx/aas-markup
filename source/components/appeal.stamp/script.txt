@@ -57,7 +57,7 @@ window.addEventListener('load', function () {
             img.style.backgroundImage =
               'url("' + img.getAttribute('data-default') + '")';
 
-            hideButton();
+            //hideButton();
           });
 
           //img preview
@@ -65,7 +65,7 @@ window.addEventListener('load', function () {
             var input = this;
 
             if (!input.files || !input.files[0]) {
-              hideButton();
+              //hideButton();
               return;
             }
 
@@ -80,7 +80,7 @@ window.addEventListener('load', function () {
 
               errorElem.textContent = error;
 
-              hideButton();
+              //hideButton();
               return;
             }
 
@@ -161,7 +161,7 @@ window.addEventListener('load', function () {
 
               errorElem.textContent = error;
 
-              hideButton();
+              //hideButton();
               return;
             }
 
@@ -204,7 +204,7 @@ window.addEventListener('load', function () {
               img.style.backgroundImage = 'url("' + e.target.result + '")';
 
               //show button
-              var showButtonFlag = true;
+              /*var showButtonFlag = true;
               formElem
                 .querySelectorAll('.b-appeal-stamp__item')
                 .forEach(function (i) {
@@ -219,18 +219,18 @@ window.addEventListener('load', function () {
                 });
               if (showButtonFlag) {
                 showButton();
-              }
+              }*/
             };
           }
         });
 
-      function showButton() {
+      /*function showButton() {
         button.style.display = 'inline-block';
       }
 
       function hideButton() {
         button.style.display = 'none';
-      }
+      }*/
 
       function cancelEvent(e) {
         e.preventDefault();
