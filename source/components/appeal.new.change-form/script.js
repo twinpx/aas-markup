@@ -19,9 +19,19 @@ window.onload = function () {
         state.confirmDocsBlock.items[payload.index].checked = true;
       },
       changeControl(state, payload) {
-        const control = state.controlsBlock.controls.find(
+        let control = state.controlsBlock.controls.find(
           (control) => control.property === payload.property
         );
+        if (!control) {
+          control = state.confirmDocsBlock.items
+            .map((item) => {
+              return item.controls.find(
+                (control) => control.property === payload.property
+              );
+            })
+            .find((elem) => elem);
+        }
+
         //multy
         if (control.multy && payload.index !== undefined) {
           if (!control.value) {
@@ -39,8 +49,13 @@ window.onload = function () {
         const control = item.controls.find(
           (control) => control.property === payload.property
         );
-        control.filename = payload.filename;
-        control.fileId = payload.fileId;
+        if (control.multy) {
+          control.filename[payload.controlIndex] = payload.filename;
+          control.value[payload.controlIndex] = payload.fileId;
+        } else {
+          control.filename = payload.filename;
+          control.fileId = payload.fileId;
+        }
       },
       changeAutosaveTimeoutId(state, payload) {
         state.autosaveTimeoutId = payload;
@@ -289,52 +304,78 @@ window.onload = function () {
       return {
         isActive: true,
         files: [],
+        filenameLocal: this.formControl.multy
+          ? this.formControl.filename[this.controlIndex]
+          : this.formControl.filename,
+        required: this.formControl.required,
+        name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
+        id: `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`,
+        icon: `<g transform="translate(-4.461)">
+          <g transform="translate(4.461)">
+            <g>
+              <path d="M21.844,6.573v15.88A1.547,1.547,0,0,1,20.3,24H6.008a1.546,1.546,0,0,1-1.547-1.547V1.547A1.546,1.546,0,0,1,6.008,0H15.27Z" transform="translate(-4.461)" class="a"/>
+            </g>
+            <path d="M20.036,8.289l5.677,2.339v-2.2l-3.218-.951Z" transform="translate(-8.33 -1.858)" class="b"/>
+            <path d="M25.416,6.573H20.389a1.546,1.546,0,0,1-1.547-1.547V0Z" transform="translate(-8.033)" class="c"/>
+          </g>
+          <path d="M18.117,19.012l-2.85-2.85a.555.555,0,0,0-.785,0l-2.85,2.85a.555.555,0,0,0,.785.784l1.9-1.9v5.024a.555.555,0,1,0,1.109,0V17.894l1.9,1.9a.555.555,0,0,0,.785-.784Z" transform="translate(-1.741 -3.974)" class="d"/>
+        </g>`,
       };
     },
     template: `
     <div>
-      <hr class="hr--sl">
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
-          <span class="b-float-label-file__close" @click.prevent="clearInputFile" v-if="formControl.filename"></span>
+          <span class="b-float-label-file__clear" @click.prevent="clearInputFile" v-if="isClearable"></span>
           <div class="b-float-label--file" :class="{'filled': isFilled, 'invalid': !!invalid}" ref="controlFile" >
             <span class="b-float-label-file__label">{{ formControl.label }}</span>
 
-            <svg xmlns="http://www.w3.org/2000/svg" width="17.383" height="24" viewBox="0 0 17.383 24">
-              <g transform="translate(-4.461)">
-                <g transform="translate(4.461)">
-                  <g>
-                    <path d="M21.844,6.573v15.88A1.547,1.547,0,0,1,20.3,24H6.008a1.546,1.546,0,0,1-1.547-1.547V1.547A1.546,1.546,0,0,1,6.008,0H15.27Z" transform="translate(-4.461)" class="a"/>
-                  </g>
-                  <path d="M20.036,8.289l5.677,2.339v-2.2l-3.218-.951Z" transform="translate(-8.33 -1.858)" class="b"/>
-                  <path d="M25.416,6.573H20.389a1.546,1.546,0,0,1-1.547-1.547V0Z" transform="translate(-8.033)" class="c"/>
-                </g>
-                <path d="M18.117,19.012l-2.85-2.85a.555.555,0,0,0-.785,0l-2.85,2.85a.555.555,0,0,0,.785.784l1.9-1.9v5.024a.555.555,0,1,0,1.109,0V17.894l1.9,1.9a.555.555,0,0,0,.785-.784Z" transform="translate(-1.741 -3.974)" class="d"/>
-              </g>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="17.383" height="24" viewBox="0 0 17.383 24" v-html="icon"></svg>
 
-            <input type="file" :data-required="formControl.required" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" @change="uploadFile()" ref="inputFile" />
-            <label :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" class="active" v-html="label" ref="dropzone" ></label>
-            <input type="hidden" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" :value="formControl.fileId" />
+            <input type="file" :data-fileid="fileid" :data-required="required" :name="name" :id="id" @change="uploadFile($refs.inputFile.files)" ref="inputFile" />
+            <label :for="id" class="active" v-html="label" ref="dropzone" ></label>
           </div>
         </div>
         <hr class="hr--xs d-block d-lg-none w-100">
-        <div class="col-lg-6 col-12 small">
+        <div class="col-lg-6 col-12 small" v-if="!formControl.multy || !controlIndex">
           <div v-if="formControl.completeBlock && formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ formControl.completeBlock.comment }}</div>
         </div>
       </div>
+      <hr class="hr--sl">
     </div>
     `,
-    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'controlId'],
+    props: {
+      formControl: Object,
+      fieldsetBlockIndex: [Number, String],
+      controlIndex: {
+        type: [Number, String],
+        required: true,
+        default() {
+          return 0;
+        },
+      },
+      controlId: [Number, String],
+    },
+    emits: ['autosave', 'timeoutAutosave'],
     computed: {
+      isClearable() {
+        return !!this.filenameLocal;
+      },
       isFilled() {
-        return !!this.formControl.filename;
+        return !!this.filenameLocal;
+      },
+      fileid() {
+        return this.formControl.value
+          ? this.formControl.value[this.controlIndex]
+          : this.formControl.fileId;
       },
       invalid() {
         if (this.files[0] && this.files[0].size && this.files[0].name) {
-          if (this.files[0].size >= 1e7) {
+          if (this.files[0].size >= this.formControl.maxSize) {
             this.files = [];
-            return 'Размер файла превышает 10 Мбайт.';
+            return `Размер файла превышает ${this.formatSize(
+              this.formControl.maxSize
+            )}`;
           }
 
           const filename = this.files[0].name;
@@ -357,40 +398,55 @@ window.onload = function () {
         if (this.files[0] && this.files[0].name) {
           return this.files[0].name;
         }
-        if (this.formControl.filename) {
+        if (
+          this.formControl.multy &&
+          this.formControl.filename[this.controlIndex]
+        ) {
+          return this.formControl.filename[this.controlIndex];
+        } else if (!this.formControl.multy && this.formControl.filename) {
           return this.formControl.filename;
         }
         return this.formControl.default;
       },
       filename() {
-        return this.formControl.filename;
+        return this.filenameLocal;
       },
     },
     methods: {
-      uploadFile() {
-        this.files = this.$refs.inputFile.files;
+      uploadFile(files) {
+        this.files = files;
         //invalid and label change
         setTimeout(() => {
           if (this.invalid) {
             this.$refs.inputFile.value = '';
-          }
+            //this.files = [];
 
-          //set value
-          store.commit('setFile', {
-            id: this.controlId,
-            property: this.formControl.property,
-            filename: this.invalid ? '' : this.files[0].name,
-            fileId: 'Y',
-          });
+            //set value
+            store.commit('setFile', {
+              id: this.controlId,
+              property: this.formControl.property,
+              filename: '',
+              controlIndex: this.controlIndex,
+              fileId: '',
+            });
+
+            this.filenameLocal = this.formControl.multy
+              ? this.formControl.filename[this.controlIndex]
+              : this.formControl.filename;
+            console.log(this.filenameLocal);
+          } else {
+            this.sendData({
+              [this.name]: this.files[0],
+              FILEID: this.formControl.value[this.controlIndex],
+            });
+          }
         }, 0);
       },
       clearInputFile() {
         this.files = [];
-        store.commit('setFile', {
-          id: this.controlId,
-          property: this.formControl.property,
-          filename: '',
-          fileId: '',
+        this.sendData({
+          [this.name]: 'DELETE',
+          FILEID: this.formControl.value[this.controlIndex],
         });
       },
       cancelEvent(e) {
@@ -405,6 +461,54 @@ window.onload = function () {
           top: box.top + scrollY,
           left: box.left + scrollX,
         };
+      },
+      formatSize(length) {
+        var i = 0,
+          type = ['б', 'Кб', 'Мб', 'Гб', 'Тб', 'Пб'];
+        while ((length / 1000) | 0 && i < type.length - 1) {
+          length /= 1000;
+          i++;
+        }
+        return parseInt(length) + ' ' + type[i];
+      },
+      async sendData(data) {
+        try {
+          const url = this.$store.state.url.fileUpload;
+          const formData = new FormData();
+          Object.keys(data).forEach((key) => {
+            formData.append(key, data[key]);
+          });
+
+          /*const response = await fetch(url, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                Authentication: 'secret',
+              },
+            });*/
+          const fileObject = {
+            STATUS: 'Y',
+            ID: '123',
+          };
+          //await response.json();
+          if (fileObject && fileObject.STATUS === 'Y') {
+            //set value
+            store.commit('setFile', {
+              id: this.controlId,
+              property: this.formControl.property,
+              filename: this.files[0] ? this.files[0].name : '',
+              controlIndex: this.controlIndex,
+              fileId: this.files[0] ? fileObject.ID : '',
+            });
+
+            this.filenameLocal = this.formControl.multy
+              ? this.formControl.filename[this.controlIndex]
+              : this.formControl.filename;
+          }
+          this.$emit('timeoutAutosave');
+        } catch (err) {
+          throw err;
+        }
       },
     },
 
@@ -445,8 +549,7 @@ window.onload = function () {
       dropZone.addEventListener('drop', (e) => {
         controlFile.classList.remove('dragover');
         controlFile.classList.add('filled');
-        this.files = e.dataTransfer.files;
-        dropZone.innerHTML = this.files[0].name;
+        this.uploadFile(e.dataTransfer.files);
       });
     },
   });
@@ -549,6 +652,7 @@ window.onload = function () {
       return {
         newClass: false,
         animClass: false,
+        length: this.formControl.value.length,
       };
     },
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'controlId'],
@@ -562,7 +666,7 @@ window.onload = function () {
             <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
           </div>
         </div>
-        <div v-if="formControl.type==='date'">
+        <div v-else-if="formControl.type==='date'">
           <div v-for="(control, idx) in formControl.value.length" :key="generateKey(idx)" class="multy-control-wrapper">
             <form-control-date :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-date>
             <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
@@ -576,15 +680,19 @@ window.onload = function () {
         </div>
         <div v-else>
           <div v-for="(control, idx) in formControl.value.length" :key="generateKey(idx)" class="multy-control-wrapper">
-            <form-control :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" :required="formControl.required" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control>
-            <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
+              <form-control :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" :required="formControl.required" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control>
+              <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
           </div>
         </div>
-        
-        <button class="btn btn-success btn-md" @click.prevent="add">Добавить</button>
+        <button class="btn btn-success btn-md" :class="{disabled: isBtnDisabled}" @click.prevent="add">Добавить</button>
         <hr class="hr--line hr--xxl">
       </div>
     `,
+    computed: {
+      isBtnDisabled() {
+        return this.length >= this.formControl.multy;
+      },
+    },
     methods: {
       generateKey(controlIndex) {
         return Math.round(new Date().getTime() * Math.random()) + controlIndex;
@@ -608,10 +716,11 @@ window.onload = function () {
           index: this.formControl.value.length,
           value: '',
         });
+        this.length = this.formControl.value.length;
         this.autosave();
         this.$forceUpdate();
         //new animation
-        setTimeout(() => {
+        /*setTimeout(() => {
           this.newClass = true;
           setTimeout(() => {
             this.animClass = true;
@@ -622,10 +731,14 @@ window.onload = function () {
               }, 1000);
             }, 100);
           }, 100);
-        }, 0);
+        }, 0);*/
       },
       remove(idx) {
+        if (this.formControl.type === 'file') {
+          this.formControl.filename.splice(idx, 1);
+        }
         this.formControl.value.splice(idx, 1);
+        this.length = this.formControl.value.length;
       },
     },
   });
@@ -867,7 +980,11 @@ window.onload = function () {
             : undefined;
 
           confirmDocsFlag = requiredConfirm
-            ? requiredConfirm.every((control) => !!control.fileId)
+            ? requiredConfirm.every((control) =>
+                control.value
+                  ? control.value.find((value) => !!value)
+                  : !!control.fileId
+              )
             : false;
         }
 
@@ -1003,9 +1120,22 @@ window.onload = function () {
         //send request
         (async () => {
           try {
+            const formData = new FormData(form);
+            let files = [];
+            this.$store.state.confirmDocsBlock.items.forEach((item) => {
+              item.controls.forEach((control) => {
+                if (control.value) {
+                  files = files.concat(control.value.filter((el) => !!el));
+                } else if (control.fileId) {
+                  files = files.concat([control.fileId]);
+                }
+              });
+            });
+            formData.append('FILES', files);
+
             let response = await fetch(
               `${window.appealNewChangeFormPaths.autosave}` /*,
-              { method: 'POST', body: new FormData(form) }*/
+              { method: 'POST', body: formData }*/
             );
             let result = await response.json();
             if (result.STATUS !== 'Y' && counter < 3) {

@@ -28,6 +28,17 @@ window.appealNewChangeFormStore = {
     text: '',
     controls: [
       {
+        multy: 3,
+        value: [''],
+        property: '183',
+        word: 'WORD',
+        type: 'url',
+        label: 'Сайт*',
+        completeBlock: {
+          comment: 'Вы можете добавить несколько сайтов.',
+        },
+      },
+      {
         property: 64,
         word: 'PROPERTY',
         sort: 0,
@@ -74,17 +85,38 @@ window.appealNewChangeFormStore = {
         value: 0,
         controls: [
           {
+            multy: 5,
             property: 4,
             word: 'FILES[0]',
             label: 'Заполненное Приложение № 6а *',
             type: 'file',
             required: true,
-            filename: '',
-            fileId: '',
-            multy: true,
-            value: [''],
+            filename: [''],
+            value: [''], //file id
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: [''],
+            maxSize: 1e7,
+            completeBlock: {
+              comment:
+                'Актуальный список учредителей (участников, акционеров). Заполненное Приложение № 6а.',
+            },
+          },
+          {
+            //draft
+            multy: 2,
+            property: 7,
+            word: 'FILES[0]',
+            label: 'Устав компании *',
+            type: 'file',
+            required: true,
+            filename: [
+              'Устав ОАО "Аудит Стрит.pdf',
+              'Устав ОАО "Audit street.pdf',
+            ],
+            value: ['852', '456'], //file id
+            default: '<a href>Выберите файл</a> или перетащите в поле',
+            ext: ['pdf'],
+            maxSize: 10e6,
             completeBlock: {
               comment:
                 'Актуальный список учредителей (участников, акционеров). Заполненное Приложение № 6а.',
@@ -100,6 +132,22 @@ window.appealNewChangeFormStore = {
             fileId: '',
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: [''],
+            maxSize: 1000,
+            completeBlock: {
+              comment: 'Актуальная выписка из реестра акционеров',
+            },
+          },
+          {
+            property: 6,
+            word: 'FILES[0]',
+            label: 'Актуальная выписка 2 из реестра акционеров *',
+            type: 'file',
+            required: true,
+            filename: '',
+            fileId: '',
+            default: '<a href>Выберите файл</a> или перетащите в поле',
+            ext: [''],
+            maxSize: 1e5,
             completeBlock: {
               comment: 'Актуальная выписка из реестра акционеров',
             },
@@ -116,6 +164,9 @@ window.appealNewChangeFormStore = {
     checked: false,
     text: 'Я принимаю <a href="/privacy/" target="_blank">условия Пользовательского соглашения</a> и даю своё согласие СРО ААС на обработку моей персональной информации на условиях, определенных Политикой конфиденциальности.',
     invalid: false,
+  },
+  url: {
+    fileUpload: '/components/appeal.new.change-form/fileupload.json',
   },
 };
 /*{
