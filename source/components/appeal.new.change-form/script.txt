@@ -45,6 +45,12 @@ window.onload = function () {
           Vue.set(control, 'value', payload.value);
         }
       },
+      removeControl(state, payload) {
+        if (payload.control.type === 'file') {
+          payload.control.filename.splice(payload.index, 1);
+        }
+        payload.control.value.splice(payload.index, 1);
+      },
       setFile(state, payload) {
         const item = state.confirmDocsBlock.items.find(
           (item) => item.id === payload.id
@@ -62,6 +68,57 @@ window.onload = function () {
       },
       changeAutosaveTimeoutId(state, payload) {
         state.autosaveTimeoutId = payload;
+      },
+    },
+    actions: {
+      async removeControl({ state, commit }, payload) {
+        //find control
+        let control = state.controlsBlock.controls.find(
+          (control) => control.property === payload.property
+        );
+        if (!control) {
+          control = state.confirmDocsBlock.items
+            .map((item) => {
+              return item.controls.find(
+                (control) => control.property === payload.property
+              );
+            })
+            .find((elem) => elem);
+        }
+
+        //always multy
+        if (control.type === 'file' && control.value[payload.index].val) {
+          //set loading
+          Vue.set(control.value[payload.index], 'loading', true);
+          //send data
+          try {
+            const url = state.url.fileUpload;
+            const formData = new FormData();
+            formData.append(
+              `${control.word}[${control.property}][0]`,
+              'DELETE'
+            );
+            formData.append('FILEID', control.value[payload.index].val);
+
+            const response = await fetch(url, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                Authentication: 'secret',
+              },
+            });
+            const fileObject = await response.json();
+            if (fileObject && fileObject.STATUS === 'Y') {
+              //set value
+              commit('removeControl', { control, index: payload.index });
+            }
+            //autosave
+          } catch (err) {
+            throw err;
+          }
+        } else {
+          commit('removeControl', { control, index: payload.index });
+        }
       },
     },
   });
@@ -197,9 +254,6 @@ window.onload = function () {
         //slide body
         this.open = !this.open;
       },
-      generateKey(index) {
-        return Date.now() * Math.random() + index;
-      },
       autosave() {
         this.$emit('autosave');
       },
@@ -233,7 +287,7 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" :class="{invalid: isInvalid}">
-            <input :data-pattern="formControl.pattern" :data-required="formControl.required" ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" type="text" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @blur="blurControl()" @input="inputControl()" v-model="controlValue">
+            <input :data-pattern="formControl.pattern" :data-required="formControl.required" ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" type="text" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @focus="focusControl" @blur="blurControl" @input="inputControl" v-model="controlValue">
             <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
           </div>
         </div>
@@ -281,6 +335,15 @@ window.onload = function () {
         this.$emit('timeoutAutosave');
         //restartFormAutosaveTimeout();
       },
+      focusControl() {
+        if (
+          this.$refs.input
+            .closest('.b-float-label')
+            .className.includes('invalid')
+        ) {
+          this.isInvalid = true;
+        }
+      },
       blurControl() {
         if (this.controlValue !== '') {
           this.isActive = true;
@@ -310,6 +373,7 @@ window.onload = function () {
   Vue.component('formControlFile', {
     data() {
       return {
+        loading: false,
         isActive: true,
         files: [],
         filenameLocal: this.formControl.multy
@@ -335,7 +399,7 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <span class="b-float-label-file__clear" @click.prevent="clearInputFile" v-if="isClearable"></span>
-          <div class="b-float-label--file" :class="{'filled': isFilled, 'invalid': !!invalid}" ref="controlFile" >
+          <div class="b-float-label--file" :class="{'filled': isFilled, 'invalid': !!invalid, 'btn--load-circle': isLoading }" ref="controlFile" >
             <span class="b-float-label-file__label">{{ formControl.label }}</span>
 
             <svg xmlns="http://www.w3.org/2000/svg" width="17.383" height="24" viewBox="0 0 17.383 24" v-html="icon"></svg>
@@ -366,15 +430,23 @@ window.onload = function () {
     },
     emits: ['autosave', 'timeoutAutosave'],
     computed: {
+      isLoading() {
+        if (this.formControl.multy) {
+          return (
+            this.loading || this.formControl.value[this.controlIndex].loading
+          );
+        }
+        return this.loading;
+      },
       isClearable() {
-        return !!this.filenameLocal;
+        return !!this.filenameLocal && !this.isLoading;
       },
       isFilled() {
         return !!this.filenameLocal;
       },
       fileid() {
         return typeof this.formControl.value === 'object'
-          ? this.formControl.value[this.controlIndex]
+          ? this.formControl.value[this.controlIndex].val
           : this.formControl.value;
       },
       invalid() {
@@ -430,13 +502,13 @@ window.onload = function () {
             //this.files = [];
 
             //set value
-            store.commit('setFile', {
+            /*store.commit('setFile', {
               id: this.controlId,
               property: this.formControl.property,
               filename: '',
               controlIndex: this.controlIndex,
               value: '',
-            });
+            });*/
 
             this.filenameLocal = this.formControl.multy
               ? this.formControl.filename[this.controlIndex]
@@ -495,6 +567,7 @@ window.onload = function () {
       },
       async sendData(data) {
         try {
+          this.loading = true;
           const url = this.$store.state.url.fileUpload;
           const formData = new FormData();
           Object.keys(data).forEach((key) => {
@@ -530,6 +603,8 @@ window.onload = function () {
             setTimeout(() => {
               this.$refs.inputFile.value = '';
             }, 100);
+
+            this.loading = false;
           }
           this.$emit('timeoutAutosave');
         } catch (err) {
@@ -605,7 +680,7 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" :class="{invalid: isInvalid}">
-            <textarea :data-required="formControl.required" ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @blur="blurControl()" @input="inputControl()" v-model="controlValue"></textarea>
+            <textarea :data-required="formControl.required" ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @focus="focusControl" @blur="blurControl" @input="inputControl" v-model="controlValue"></textarea>
             <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
           </div>
         </div>
@@ -652,6 +727,15 @@ window.onload = function () {
         //autosave
         this.$emit('timeoutAutosave');
       },
+      focusControl() {
+        if (
+          this.$refs.input
+            .closest('.b-float-label')
+            .className.includes('invalid')
+        ) {
+          this.isInvalid = true;
+        }
+      },
       blurControl() {
         if (this.controlValue !== '') {
           this.isActive = true;
@@ -675,11 +759,9 @@ window.onload = function () {
   //form control multy
   Vue.component('formControlMulty', {
     data() {
-      return {
-        length: this.formControl.value.length,
-      };
+      return {};
     },
-    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'controlId'],
+    props: ['formControl', 'fieldsetBlockIndex', 'controlId'],
     emits: ['autosave', 'timeoutAutosave'],
     template: `
       <div>
@@ -723,16 +805,13 @@ window.onload = function () {
     computed: {
       isBtnDisabled() {
         if (typeof this.formControl.multy === 'number') {
-          return this.length >= this.formControl.multy;
+          return this.formControl.value.length >= this.formControl.multy;
         } else {
           return false;
         }
       },
     },
     methods: {
-      generateKey(controlIndex) {
-        return Math.round(new Date().getTime() * Math.random()) + controlIndex;
-      },
       autosave() {
         this.$emit('autosave');
       },
@@ -752,15 +831,13 @@ window.onload = function () {
           index: this.formControl.value.length,
           value: '',
         });
-        this.length = this.formControl.value.length;
         this.autosave();
       },
       remove(idx) {
-        if (this.formControl.type === 'file') {
-          this.formControl.filename.splice(idx, 1);
-        }
-        this.formControl.value.splice(idx, 1);
-        this.length = this.formControl.value.length;
+        this.$store.dispatch('removeControl', {
+          property: this.formControl.property,
+          index: idx,
+        });
       },
     },
     beforeMount() {
@@ -780,8 +857,8 @@ window.onload = function () {
     <div>
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
-        <div class="b-float-label" data-src="${store.state.url.img}calendar.svg" :class="{invalid: isInvalid}">
-          <date-picker :data-required="formControl.required" :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @blur="blurInput"></date-picker>
+        <div class="b-float-label" data-src="${store.state.url.img}calendar.svg" :class="{invalid: isInvalid}" ref="floatLabel">
+          <date-picker :data-required="formControl.required" :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @focus="focusInput" @blur="blurInput"></date-picker>
           <label :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{ active: isActive }">{{formControl.label}}</label>
         </div>
         </div>
@@ -807,7 +884,7 @@ window.onload = function () {
           name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
         },
         isActive: this.formControl.multy
-          ? this.formControl.value[this.controlIndex] === ''
+          ? this.formControl.value[this.controlIndex].val === ''
             ? false
             : true
           : this.formControl.value === ''
@@ -815,7 +892,7 @@ window.onload = function () {
           : true,
         isInvalid: false,
         date: this.formControl.multy
-          ? this.formControl.value[this.controlIndex]
+          ? this.formControl.value[this.controlIndex].val
           : this.formControl.value,
         lang: {
           // the locale of formatting and parsing function
@@ -924,6 +1001,11 @@ window.onload = function () {
           this.isInvalid = true;
         }
       },
+      focusInput() {
+        if (this.$refs.floatLabel.className.includes('invalid')) {
+          this.isInvalid = true;
+        }
+      },
       blurInput() {
         //validate
         if (this.formControl.required && !this.date) {
@@ -971,7 +1053,7 @@ window.onload = function () {
         <hr class="hr--lg">
         <div class="b-appeal-new-change-form__submit">
           <a href="#" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#submitConfirmModal" :disabled="isDisabled">Отправить</a>
-          <small class="text-muted">Вы не закончили заполнение обязательных полей. <a href="#" @click.prevent="clickContinue">Продолжить</a></small>
+          <small class="text-muted" v-if="isDisabled">Вы не закончили заполнение обязательных полей. <a href="#" @click.prevent="clickContinue">Продолжить</a></small>
         </div>
       </div>
     `,
@@ -1033,7 +1115,7 @@ window.onload = function () {
 
           confirmDocsFlag = requiredConfirm
             ? requiredConfirm.every((control) =>
-                control.value
+                control.value && typeof control.value === 'object'
                   ? control.value.every((value) => value.val !== '')
                   : control.value !== ''
               )
@@ -1089,6 +1171,12 @@ window.onload = function () {
         });
 
         if (!control) return;
+
+        if (control.closest('.b-float-label')) {
+          control.closest('.b-float-label').classList.add('invalid');
+        } else if (control.closest('.b-float-label--file')) {
+          control.closest('.b-float-label--file').classList.add('invalid');
+        }
 
         window.scrollTo({
           top: control.getBoundingClientRect().top + window.scrollY - 120,

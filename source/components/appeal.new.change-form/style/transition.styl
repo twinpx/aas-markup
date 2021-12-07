@@ -62,11 +62,11 @@
   fill: #fff;
 }
 /*.list-enter-active {
-  transition(opacity .5s ease-in)
-}*/
-.list-enter-active .b-float-label label,
+  transition: opacity .3s ease-in, color 5s linear;
+}
+.list-enter-active .b-float-label label,*/
 .list-enter-active .b-float-label--file label a {
-  transition(color 5s ease)
+  transition(color 5s linear)
 }
 .list-enter-active .b-float-label input:not([type=checkbox]),
 .list-enter-active .b-float-label input:not([type=radio]),
@@ -89,5 +89,5 @@
   margin-top -70px
 }
 .list-leave-active {
-  transition( all .3s ease-in)
+  transition( all .3s linear)
 }

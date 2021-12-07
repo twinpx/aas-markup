@@ -1,8 +1,6 @@
 window.onload = function () {
   if (!window.Vue && !window.Vuex) return;
 
-  window.moderationSrcPath = '/template/images/';
-
   Vue.use(Vuex);
   Vue.use(VueScrollTo);
 
@@ -19,18 +17,39 @@ window.onload = function () {
         state.confirmDocsBlock.items[payload.index].checked = true;
       },
       changeControl(state, payload) {
-        const control = state.controlsBlock.controls.find(
+        let control = state.controlsBlock.controls.find(
           (control) => control.property === payload.property
         );
+        if (!control) {
+          control = state.confirmDocsBlock.items
+            .map((item) => {
+              return item.controls.find(
+                (control) => control.property === payload.property
+              );
+            })
+            .find((elem) => elem);
+        }
+
         //multy
         if (control.multy && payload.index !== undefined) {
           if (!control.value) {
             control.value = [];
           }
-          control.value[payload.index] = payload.value;
+          if (!control.value[payload.index]) {
+            control.value.push({
+              id: parseInt(Math.random() * 100000, 10),
+            });
+          }
+          Vue.set(control.value[payload.index], 'val', payload.value);
         } else {
-          control.value = payload.value;
+          Vue.set(control, 'value', payload.value);
         }
+      },
+      removeControl(state, payload) {
+        if (payload.control.type === 'file') {
+          payload.control.filename.splice(payload.index, 1);
+        }
+        payload.control.value.splice(payload.index, 1);
       },
       setFile(state, payload) {
         const item = state.confirmDocsBlock.items.find(
@@ -39,11 +58,67 @@ window.onload = function () {
         const control = item.controls.find(
           (control) => control.property === payload.property
         );
-        control.filename = payload.filename;
-        control.fileId = payload.fileId;
+        if (control.multy) {
+          Vue.set(control.filename, payload.controlIndex, payload.filename);
+          Vue.set(control.value[payload.controlIndex], 'val', payload.value);
+        } else {
+          Vue.set(control, 'filename', payload.filename);
+          Vue.set(control, 'value', payload.value);
+        }
       },
       changeAutosaveTimeoutId(state, payload) {
         state.autosaveTimeoutId = payload;
+      },
+    },
+    actions: {
+      async removeControl({ state, commit }, payload) {
+        //find control
+        let control = state.controlsBlock.controls.find(
+          (control) => control.property === payload.property
+        );
+        if (!control) {
+          control = state.confirmDocsBlock.items
+            .map((item) => {
+              return item.controls.find(
+                (control) => control.property === payload.property
+              );
+            })
+            .find((elem) => elem);
+        }
+
+        //always multy
+        if (control.type === 'file' && control.value[payload.index].val) {
+          //set loading
+          Vue.set(control.value[payload.index], 'loading', true);
+          //send data
+          try {
+            const url = state.url.fileUpload;
+            const formData = new FormData();
+            formData.append(
+              `${control.word}[${control.property}][0]`,
+              'DELETE'
+            );
+            formData.append('FILEID', control.value[payload.index].val);
+
+            const response = await fetch(url, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                Authentication: 'secret',
+              },
+            });
+            const fileObject = await response.json();
+            if (fileObject && fileObject.STATUS === 'Y') {
+              //set value
+              commit('removeControl', { control, index: payload.index });
+            }
+            //autosave
+          } catch (err) {
+            throw err;
+          }
+        } else {
+          commit('removeControl', { control, index: payload.index });
+        }
       },
     },
   });
@@ -85,7 +160,11 @@ window.onload = function () {
       </label>
       <div class="b-form-control-vc__fields" v-show="blockFlag || $store.state.confirmDocsBlock.items[index].checked">
         <hr class="hr--line">
-        <form-control-file v-for="(formControl, controlIndex) in control.controls" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" :controlId="control.id" @autosave="autosave"></form-control-file>
+        <div v-for="(formControl, controlIndex) in control.controls">
+          <form-control-multy v-if="formControl.multy" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" :controlId="control.id" @autosave="autosave"></form-control-multy>
+          <form-control-file v-else :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" :controlId="control.id" @autosave="autosave"></form-control-file>
+        </div>
+        
       </div>
     </div>
     `,
@@ -119,7 +198,7 @@ window.onload = function () {
         (async () => {
           try {
             let response = await fetch(
-              `${window.appealNewChangeFormPaths.autosave}?name=${this.control.name}&value=${this.control.value}&element_id=${store.state.reportId}`
+              `${this.$store.state.url.autosave}?name=${this.control.name}&value=${this.control.value}&element_id=${store.state.reportId}`
             );
             let result = await response.json();
             if (result.STATUS !== 'Y') {
@@ -175,9 +254,6 @@ window.onload = function () {
         //slide body
         this.open = !this.open;
       },
-      generateKey(index) {
-        return Date.now() * Math.random() + index;
-      },
       autosave() {
         this.$emit('autosave');
       },
@@ -192,10 +268,10 @@ window.onload = function () {
     data() {
       return {
         controlValue: this.formControl.multy
-          ? this.formControl.value[this.controlIndex]
+          ? this.formControl.value[this.controlIndex].val
           : this.formControl.value,
         isActive: this.formControl.multy
-          ? this.formControl.value[this.controlIndex] === ''
+          ? this.formControl.value[this.controlIndex].val === ''
             ? false
             : true
           : this.formControl.value === ''
@@ -211,7 +287,7 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" :class="{invalid: isInvalid}">
-            <input :data-required="formControl.required" ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" type="text" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @blur="blurControl()" @input="inputControl()" v-model="controlValue">
+            <input :data-pattern="formControl.pattern" :data-required="formControl.required" ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" type="text" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @focus="focusControl" @blur="blurControl" @input="inputControl" v-model="controlValue">
             <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
           </div>
         </div>
@@ -259,6 +335,15 @@ window.onload = function () {
         this.$emit('timeoutAutosave');
         //restartFormAutosaveTimeout();
       },
+      focusControl() {
+        if (
+          this.$refs.input
+            .closest('.b-float-label')
+            .className.includes('invalid')
+        ) {
+          this.isInvalid = true;
+        }
+      },
       blurControl() {
         if (this.controlValue !== '') {
           this.isActive = true;
@@ -270,7 +355,12 @@ window.onload = function () {
         this.$emit('autosave');
       },
       validate() {
-        if (this.formControl.required && !this.controlValue) {
+        if (
+          (this.formControl.required && this.controlValue === '') ||
+          (this.formControl.pattern &&
+            this.controlValue !== '' &&
+            !new RegExp(this.formControl.pattern, 'ig').test(this.controlValue))
+        ) {
           this.isInvalid = true;
         } else {
           this.isInvalid = false;
@@ -283,54 +373,89 @@ window.onload = function () {
   Vue.component('formControlFile', {
     data() {
       return {
+        loading: false,
         isActive: true,
         files: [],
+        filenameLocal: this.formControl.multy
+          ? this.formControl.filename[this.controlIndex]
+          : this.formControl.filename,
+        required: this.formControl.required,
+        name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
+        id: `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`,
+        icon: `<g transform="translate(-4.461)">
+          <g transform="translate(4.461)">
+            <g>
+              <path d="M21.844,6.573v15.88A1.547,1.547,0,0,1,20.3,24H6.008a1.546,1.546,0,0,1-1.547-1.547V1.547A1.546,1.546,0,0,1,6.008,0H15.27Z" transform="translate(-4.461)" class="a"/>
+            </g>
+            <path d="M20.036,8.289l5.677,2.339v-2.2l-3.218-.951Z" transform="translate(-8.33 -1.858)" class="b"/>
+            <path d="M25.416,6.573H20.389a1.546,1.546,0,0,1-1.547-1.547V0Z" transform="translate(-8.033)" class="c"/>
+          </g>
+          <path d="M18.117,19.012l-2.85-2.85a.555.555,0,0,0-.785,0l-2.85,2.85a.555.555,0,0,0,.785.784l1.9-1.9v5.024a.555.555,0,1,0,1.109,0V17.894l1.9,1.9a.555.555,0,0,0,.785-.784Z" transform="translate(-1.741 -3.974)" class="d"/>
+        </g>`,
       };
     },
     template: `
     <div>
-      <hr class="hr--sl">
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
-          <span class="b-float-label-file__close" @click.prevent="clearInputFile" v-if="formControl.filename"></span>
-          <div class="b-float-label--file" :class="{'filled': isFilled, 'invalid': !!invalid}" ref="controlFile" >
+          <span class="b-float-label-file__clear" @click.prevent="clearInputFile" v-if="isClearable"></span>
+          <div class="b-float-label--file" :class="{'filled': isFilled, 'invalid': !!invalid, 'btn--load-circle': isLoading }" ref="controlFile" >
             <span class="b-float-label-file__label">{{ formControl.label }}</span>
 
-            <svg xmlns="http://www.w3.org/2000/svg" width="17.383" height="24" viewBox="0 0 17.383 24">
-              <g transform="translate(-4.461)">
-                <g transform="translate(4.461)">
-                  <g>
-                    <path d="M21.844,6.573v15.88A1.547,1.547,0,0,1,20.3,24H6.008a1.546,1.546,0,0,1-1.547-1.547V1.547A1.546,1.546,0,0,1,6.008,0H15.27Z" transform="translate(-4.461)" class="a"/>
-                  </g>
-                  <path d="M20.036,8.289l5.677,2.339v-2.2l-3.218-.951Z" transform="translate(-8.33 -1.858)" class="b"/>
-                  <path d="M25.416,6.573H20.389a1.546,1.546,0,0,1-1.547-1.547V0Z" transform="translate(-8.033)" class="c"/>
-                </g>
-                <path d="M18.117,19.012l-2.85-2.85a.555.555,0,0,0-.785,0l-2.85,2.85a.555.555,0,0,0,.785.784l1.9-1.9v5.024a.555.555,0,1,0,1.109,0V17.894l1.9,1.9a.555.555,0,0,0,.785-.784Z" transform="translate(-1.741 -3.974)" class="d"/>
-              </g>
-            </svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="17.383" height="24" viewBox="0 0 17.383 24" v-html="icon"></svg>
 
-            <input type="file" :data-required="formControl.required" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" @change="uploadFile()" ref="inputFile" />
-            <label :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" class="active" v-html="label" ref="dropzone" ></label>
-            <input type="hidden" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" :value="formControl.fileId" />
+            <input type="file" :data-value="fileid" :data-required="required" :name="name" :id="id" @change="uploadFile($refs.inputFile.files)" ref="inputFile" />
+            <label :for="id" class="active" v-html="label" ref="dropzone" ></label>
           </div>
         </div>
         <hr class="hr--xs d-block d-lg-none w-100">
-        <div class="col-lg-6 col-12 small">
+        <div class="col-lg-6 col-12 small" v-if="!formControl.multy || !controlIndex">
           <div v-if="formControl.completeBlock && formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ formControl.completeBlock.comment }}</div>
         </div>
       </div>
+      <hr class="hr--sl">
     </div>
     `,
-    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex', 'controlId'],
+    props: {
+      formControl: Object,
+      fieldsetBlockIndex: [Number, String],
+      controlIndex: {
+        type: [Number, String],
+        required: true,
+        default() {
+          return 0;
+        },
+      },
+      controlId: [Number, String],
+    },
+    emits: ['autosave', 'timeoutAutosave'],
     computed: {
+      isLoading() {
+        if (this.formControl.multy) {
+          return (
+            this.loading || this.formControl.value[this.controlIndex].loading
+          );
+        }
+        return this.loading;
+      },
+      isClearable() {
+        return !!this.filenameLocal && !this.isLoading;
+      },
       isFilled() {
-        return !!this.formControl.filename;
+        return !!this.filenameLocal;
+      },
+      fileid() {
+        return typeof this.formControl.value === 'object'
+          ? this.formControl.value[this.controlIndex].val
+          : this.formControl.value;
       },
       invalid() {
         if (this.files[0] && this.files[0].size && this.files[0].name) {
-          if (this.files[0].size >= 1e7) {
+          if (this.files[0].size >= this.formControl.maxSize) {
             this.files = [];
-            return 'Размер файла превышает 10 Мбайт.';
+            return `Размер файла превышает ${this.formatSize(
+              this.formControl.maxSize
+            )}`;
           }
 
           const filename = this.files[0].name;
@@ -353,40 +478,69 @@ window.onload = function () {
         if (this.files[0] && this.files[0].name) {
           return this.files[0].name;
         }
-        if (this.formControl.filename) {
+        if (
+          this.formControl.multy &&
+          this.formControl.filename[this.controlIndex]
+        ) {
+          return this.formControl.filename[this.controlIndex];
+        } else if (!this.formControl.multy && this.formControl.filename) {
           return this.formControl.filename;
         }
         return this.formControl.default;
       },
       filename() {
-        return this.formControl.filename;
+        return this.filenameLocal;
       },
     },
     methods: {
-      uploadFile() {
-        this.files = this.$refs.inputFile.files;
+      uploadFile(files) {
+        this.files = files;
         //invalid and label change
         setTimeout(() => {
           if (this.invalid) {
             this.$refs.inputFile.value = '';
-          }
+            //this.files = [];
 
-          //set value
-          store.commit('setFile', {
-            id: this.controlId,
-            property: this.formControl.property,
-            filename: this.invalid ? '' : this.files[0].name,
-            fileId: 'Y',
-          });
+            //set value
+            /*store.commit('setFile', {
+              id: this.controlId,
+              property: this.formControl.property,
+              filename: '',
+              controlIndex: this.controlIndex,
+              value: '',
+            });*/
+
+            this.filenameLocal = this.formControl.multy
+              ? this.formControl.filename[this.controlIndex]
+              : this.formControl.filename;
+          } else {
+            this.sendData({
+              [this.name]: this.files[0],
+              FILEID:
+                typeof this.formControl.value === 'object'
+                  ? this.formControl.value[this.controlIndex].val
+                  : this.formControl.value,
+            });
+          }
         }, 0);
       },
       clearInputFile() {
         this.files = [];
+        this.$refs.inputFile.value = '';
+        this.sendData({
+          [this.name]: 'DELETE',
+          FILEID:
+            typeof this.formControl.value === 'object'
+              ? this.formControl.value[this.controlIndex].val
+              : this.formControl.value,
+        });
+        //set value
         store.commit('setFile', {
           id: this.controlId,
           property: this.formControl.property,
           filename: '',
-          fileId: '',
+          controlIndex: this.controlIndex,
+          value: '',
         });
       },
       cancelEvent(e) {
@@ -401,6 +555,61 @@ window.onload = function () {
           top: box.top + scrollY,
           left: box.left + scrollX,
         };
+      },
+      formatSize(length) {
+        var i = 0,
+          type = ['б', 'Кб', 'Мб', 'Гб', 'Тб', 'Пб'];
+        while ((length / 1000) | 0 && i < type.length - 1) {
+          length /= 1000;
+          i++;
+        }
+        return parseInt(length) + ' ' + type[i];
+      },
+      async sendData(data) {
+        try {
+          this.loading = true;
+          const url = this.$store.state.url.fileUpload;
+          const formData = new FormData();
+          Object.keys(data).forEach((key) => {
+            formData.append(key, data[key]);
+          });
+
+          const response = await fetch(url, {
+            method: 'POST',
+            body: formData,
+            headers: {
+              Authentication: 'secret',
+            },
+          });
+          const fileObject = /*{
+            STATUS: 'Y',
+            ID: '123',
+          };
+          //*/ await response.json();
+          if (fileObject && fileObject.STATUS === 'Y') {
+            //set value
+            store.commit('setFile', {
+              id: this.controlId,
+              property: this.formControl.property,
+              filename: this.files[0] ? this.files[0].name : '',
+              controlIndex: this.controlIndex,
+              value: this.files[0] ? fileObject.ID : '',
+            });
+
+            this.filenameLocal = this.formControl.multy
+              ? this.formControl.filename[this.controlIndex]
+              : this.formControl.filename;
+
+            setTimeout(() => {
+              this.$refs.inputFile.value = '';
+            }, 100);
+
+            this.loading = false;
+          }
+          this.$emit('timeoutAutosave');
+        } catch (err) {
+          throw err;
+        }
       },
     },
 
@@ -441,8 +650,7 @@ window.onload = function () {
       dropZone.addEventListener('drop', (e) => {
         controlFile.classList.remove('dragover');
         controlFile.classList.add('filled');
-        this.files = e.dataTransfer.files;
-        dropZone.innerHTML = this.files[0].name;
+        this.uploadFile(e.dataTransfer.files);
       });
     },
   });
@@ -452,10 +660,10 @@ window.onload = function () {
     data() {
       return {
         controlValue: this.formControl.multy
-          ? this.formControl.value[this.controlIndex]
+          ? this.formControl.value[this.controlIndex].val
           : this.formControl.value,
         isActive: this.formControl.multy
-          ? this.formControl.value[this.controlIndex] === ''
+          ? this.formControl.value[this.controlIndex].val === ''
             ? false
             : true
           : this.formControl.value === ''
@@ -472,7 +680,7 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" :class="{invalid: isInvalid}">
-            <textarea :data-required="formControl.required" ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @blur="blurControl()" @input="inputControl()" v-model="controlValue"></textarea>
+            <textarea :data-required="formControl.required" ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @focus="focusControl" @blur="blurControl" @input="inputControl" v-model="controlValue"></textarea>
             <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
           </div>
         </div>
@@ -519,6 +727,15 @@ window.onload = function () {
         //autosave
         this.$emit('timeoutAutosave');
       },
+      focusControl() {
+        if (
+          this.$refs.input
+            .closest('.b-float-label')
+            .className.includes('invalid')
+        ) {
+          this.isInvalid = true;
+        }
+      },
       blurControl() {
         if (this.controlValue !== '') {
           this.isActive = true;
@@ -542,43 +759,59 @@ window.onload = function () {
   //form control multy
   Vue.component('formControlMulty', {
     data() {
-      return {
-        newClass: false,
-        animClass: false,
-      };
+      return {};
     },
-    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
+    props: ['formControl', 'fieldsetBlockIndex', 'controlId'],
     emits: ['autosave', 'timeoutAutosave'],
     template: `
-      <div :class="{new: newClass, anim: animClass}">
+      <div>
         <hr class="hr--line hr--xxl" style="margin-top: 0;">
-        <div v-if="formControl.type==='date'">
-          <div v-for="(control, idx) in formControl.value.length" :key="generateKey(idx)" class="multy-control-wrapper">
-            <form-control-date :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-date>
-            <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
-          </div>
+        <div v-if="formControl.type==='file'">
+          <transition-group name="list" tag="div" >
+            <div v-for="(valueObject, idx) in formControl.value" :key="valueObject.id" class="multy-control-wrapper">
+              <form-control-file :formControl="formControl" :fieldsetBlockIndex="idx" :controlIndex="idx" :controlId="controlId" @autosave="autosave"></form-control-file>
+              <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
+            </div>
+          </transition-group>
+        </div>
+        <div v-else-if="formControl.type==='date'">
+          <transition-group name="list" tag="div" >
+            <div v-for="(valueObject, idx) in formControl.value" :key="valueObject.id" class="multy-control-wrapper">
+              <form-control-date :formControl="formControl" :fieldsetBlockIndex="idx" :controlIndex="idx" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-date>
+              <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
+            </div>
+          </transition-group>
         </div>
         <div v-else-if="formControl.type==='textarea'">
-          <div v-for="(control, idx) in formControl.value.length" :key="generateKey(idx)" class="multy-control-wrapper">
-            <form-control-textarea :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-textarea>
-            <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
-          </div>
+          <transition-group name="list" tag="div" >
+            <div v-for="(valueObject, idx) in formControl.value" :key="valueObject.id" class="multy-control-wrapper">
+              <form-control-textarea :formControl="formControl" :fieldsetBlockIndex="idx" :controlIndex="idx" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-textarea>
+              <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
+            </div>
+          </transition-group>
         </div>
         <div v-else>
-          <div v-for="(control, idx) in formControl.value.length" :key="generateKey(idx)" class="multy-control-wrapper">
-            <form-control :formControl="formControl" :fieldsetBlockIndex="control-1" :controlIndex="idx" :required="formControl.required" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control>
-            <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
-          </div>
+          <transition-group name="list" tag="div" >
+            <div v-for="(valueObject, idx) in formControl.value" :key="valueObject.id" class="multy-control-wrapper">
+              <form-control :formControl="formControl" :fieldsetBlockIndex="idx" :controlIndex="idx" :required="formControl.required" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control>
+              <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
+            </div>
+          </transition-group>
         </div>
-        
-        <button class="btn btn-success btn-md" @click.prevent="add">Добавить</button>
+        <button class="btn btn-success btn-md" :class="{disabled: isBtnDisabled}" @click.prevent="add">Добавить</button>
         <hr class="hr--line hr--xxl">
       </div>
     `,
-    methods: {
-      generateKey(controlIndex) {
-        return Math.round(new Date().getTime() * Math.random()) + controlIndex;
+    computed: {
+      isBtnDisabled() {
+        if (typeof this.formControl.multy === 'number') {
+          return this.formControl.value.length >= this.formControl.multy;
+        } else {
+          return false;
+        }
       },
+    },
+    methods: {
       autosave() {
         this.$emit('autosave');
       },
@@ -599,24 +832,22 @@ window.onload = function () {
           value: '',
         });
         this.autosave();
-        this.$forceUpdate();
-        //new animation
-        setTimeout(() => {
-          this.newClass = true;
-          setTimeout(() => {
-            this.animClass = true;
-            setTimeout(() => {
-              this.newClass = false;
-              setTimeout(() => {
-                this.animClass = false;
-              }, 1000);
-            }, 100);
-          }, 100);
-        }, 0);
       },
       remove(idx) {
-        this.formControl.value.splice(idx, 1);
+        this.$store.dispatch('removeControl', {
+          property: this.formControl.property,
+          index: idx,
+        });
       },
+    },
+    beforeMount() {
+      const newValue = this.formControl.value.map((val) => {
+        return {
+          id: parseInt(Math.random() * 100000, 10),
+          val,
+        };
+      });
+      this.formControl.value = newValue;
     },
   });
 
@@ -626,8 +857,8 @@ window.onload = function () {
     <div>
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
-        <div class="b-float-label" data-src="${window.moderationSrcPath}calendar.svg" :class="{invalid: isInvalid}">
-          <date-picker :data-required="formControl.required" :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @blur="blurInput"></date-picker>
+        <div class="b-float-label" data-src="${store.state.url.img}calendar.svg" :class="{invalid: isInvalid}" ref="floatLabel">
+          <date-picker :data-required="formControl.required" :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @focus="focusInput" @blur="blurInput"></date-picker>
           <label :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{ active: isActive }">{{formControl.label}}</label>
         </div>
         </div>
@@ -653,7 +884,7 @@ window.onload = function () {
           name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
         },
         isActive: this.formControl.multy
-          ? this.formControl.value[this.controlIndex] === ''
+          ? this.formControl.value[this.controlIndex].val === ''
             ? false
             : true
           : this.formControl.value === ''
@@ -661,7 +892,7 @@ window.onload = function () {
           : true,
         isInvalid: false,
         date: this.formControl.multy
-          ? this.formControl.value[this.controlIndex]
+          ? this.formControl.value[this.controlIndex].val
           : this.formControl.value,
         lang: {
           // the locale of formatting and parsing function
@@ -770,6 +1001,11 @@ window.onload = function () {
           this.isInvalid = true;
         }
       },
+      focusInput() {
+        if (this.$refs.floatLabel.className.includes('invalid')) {
+          this.isInvalid = true;
+        }
+      },
       blurInput() {
         //validate
         if (this.formControl.required && !this.date) {
@@ -817,7 +1053,7 @@ window.onload = function () {
         <hr class="hr--lg">
         <div class="b-appeal-new-change-form__submit">
           <a href="#" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#submitConfirmModal" :disabled="isDisabled">Отправить</a>
-          <small class="text-muted">Вы не закончили заполнение обязательных полей. <a href="#" @click.prevent="clickContinue">Продолжить</a></small>
+          <small class="text-muted" v-if="isDisabled">Вы не закончили заполнение обязательных полей. <a href="#" @click.prevent="clickContinue">Продолжить</a></small>
         </div>
       </div>
     `,
@@ -825,19 +1061,40 @@ window.onload = function () {
       isDisabled() {
         //controls
         let controlsFlag = true;
+        let controlsPatternFlag = true;
         if (
           this.$store.state.controlsBlock &&
           this.$store.state.controlsBlock.controls
         ) {
+          //required
           const requiredControls =
             this.$store.state.controlsBlock.controls.filter(
               (control) => control.required
             );
           controlsFlag = requiredControls.every((control) => {
             if (control.multy) {
-              return control.value.every((value) => !!value);
+              return control.value.every((value) => value.val !== '');
             } else {
-              return !!control.value;
+              return control.value !== '';
+            }
+          });
+          //width pattern
+          const patternControls =
+            this.$store.state.controlsBlock.controls.filter(
+              (control) => control.pattern
+            );
+          controlsPatternFlag = patternControls.every((control) => {
+            if (control.multy) {
+              return control.value.every(
+                (value) =>
+                  value.val === '' ||
+                  new RegExp(control.pattern, 'ig').test(value.val)
+              );
+            } else {
+              return (
+                control.value === '' ||
+                new RegExp(control.pattern, 'ig').test(control.value)
+              );
             }
           });
         }
@@ -857,14 +1114,23 @@ window.onload = function () {
             : undefined;
 
           confirmDocsFlag = requiredConfirm
-            ? requiredConfirm.every((control) => !!control.fileId)
+            ? requiredConfirm.every((control) =>
+                control.value && typeof control.value === 'object'
+                  ? control.value.every((value) => value.val !== '')
+                  : control.value !== ''
+              )
             : false;
         }
 
         //checkbox
         const checkboxFlag = this.checked;
 
-        return !(controlsFlag && confirmDocsFlag && checkboxFlag);
+        return !(
+          controlsFlag &&
+          controlsPatternFlag &&
+          confirmDocsFlag &&
+          checkboxFlag
+        );
       },
     },
     methods: {
@@ -887,18 +1153,30 @@ window.onload = function () {
 
           const value =
             elem.getAttribute('type') === 'file'
-              ? elem.parentNode.querySelector('input[type=hidden]').value
+              ? elem.getAttribute('data-value')
               : elem.value;
 
-          return (
-            isRequired &&
-            elem.tagName.toLowerCase() !== 'button' &&
-            elem.getAttribute('type') !== 'hidden' &&
-            value === ''
-          );
+          const pattern = elem.getAttribute('data-pattern');
+
+          if (pattern && value !== '') {
+            return !new RegExp(pattern, 'ig').test(value);
+          } else {
+            return (
+              isRequired &&
+              elem.tagName.toLowerCase() !== 'button' &&
+              elem.getAttribute('type') !== 'hidden' &&
+              value === ''
+            );
+          }
         });
 
         if (!control) return;
+
+        if (control.closest('.b-float-label')) {
+          control.closest('.b-float-label').classList.add('invalid');
+        } else if (control.closest('.b-float-label--file')) {
+          control.closest('.b-float-label--file').classList.add('invalid');
+        }
 
         window.scrollTo({
           top: control.getBoundingClientRect().top + window.scrollY - 120,
@@ -993,14 +1271,35 @@ window.onload = function () {
         //send request
         (async () => {
           try {
-            let response = await fetch(
-              `${window.appealNewChangeFormPaths.autosave}` /*,
-              { method: 'POST', body: new FormData(form) }*/
-            );
+            const formData = new FormData(form);
+            if (this.$store.state.confirmDocsBlock) {
+              let files = [];
+              this.$store.state.confirmDocsBlock.items.forEach((item) => {
+                item.controls.forEach((control) => {
+                  if (typeof control.value === 'object') {
+                    files = files.concat(
+                      control.value.filter((el) => !!el.val).map((el) => el.val)
+                    );
+                  } else if (control.value) {
+                    files = files.concat([control.value]);
+                  }
+                });
+              });
+              formData.append('FILES', files);
+            }
+
+            let response = await fetch(`${this.$store.state.url.autosave}`, {
+              method: 'POST',
+              body: formData,
+            });
             let result = await response.json();
             if (result.STATUS !== 'Y' && counter < 3) {
               this.autosave(form, ++counter);
-            } else if (result.CONTROLS && result.CONTROLS.length) {
+            } else if (
+              result.CONTROLS &&
+              result.CONTROLS.length &&
+              this.$store.state.confirmDocsBlock
+            ) {
               let cont;
               result.CONTROLS.forEach((control) => {
                 this.$store.state.confirmDocsBlock.items.forEach((item) => {
@@ -1010,7 +1309,7 @@ window.onload = function () {
                     ) || cont;
                 });
                 if (cont) {
-                  cont.fileId = control.fileId;
+                  cont.value = control.value;
                 }
               });
             }

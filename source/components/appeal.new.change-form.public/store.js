@@ -25,38 +25,109 @@ window.appealNewChangeFormStore = {
   },
   controlsBlock: {
     title: 'Данные для изменения',
-    text: '',
+    text: 'Подробное описание заполнения формы с <a href="">пояснением</a> о том, какие поля надо заполнять и как они должны выглядеть. Описанием может быть довольно большим.',
     controls: [
       {
-        property: 64,
+        property: '178',
         word: 'PROPERTY',
-        sort: 0,
-        label: 'Наименование юридического лица *',
-        type: 'text',
-        required: true,
+        sort: '',
+        label: 'Текст*',
+        type: 'textarea',
+        required: false,
         value: '',
-        multy: false,
         completeBlock: {
-          title: '',
-          value: '',
+          title: 'Текущие данные из реестра:',
+          value: 'Текущие данные',
           comment:
-            'Наименование юридического лица — учредителя (участника, акционера).',
+            'Заполните это поле для того, чтобы Заполните это поле для того, чтобы Заполните это поле для того, чтобы…',
         },
       },
       {
-        property: 65,
+        property: '179',
         word: 'PROPERTY',
-        sort: 1,
-        label: 'Юридический адрес *',
+        sort: '',
+        label: 'Краткое наименование*',
         type: 'text',
-        required: true,
+        required: false,
         value: '',
-        multy: false,
         completeBlock: {
-          title: '',
-          value: '',
+          title: 'Текущие данные из реестра:',
+          value: 'ООО «Компания»',
           comment:
-            'Юридический адрес организации: индекс, субъект РФ, район, город, улица, дом, корпус, офис',
+            'Заполните это поле для того, чтобы Заполните это поле для того, чтобы Заполните это поле для того, чтобы…',
+        },
+      },
+      {
+        property: '180',
+        word: 'WORD',
+        label: 'Полное наименование*',
+        type: 'text',
+        required: false,
+        value: '',
+        completeBlock: {
+          title: 'Текущие данные из реестра:',
+          value: 'ООО «Компания + Я»',
+        },
+      },
+      {
+        property: '181',
+        word: 'WORD',
+        label: 'Телефон',
+        type: 'tel',
+        required: false,
+        pattern: '^([+]?[\\s0-9]+)?(\\d{3}|[(]?[0-9]+[)])?([-]?[\\s]?[0-9])+$',
+        value: '',
+        completeBlock: {
+          title: 'Текущие данные из реестра:',
+          value: '+75647891231',
+        },
+      },
+      {
+        property: '182',
+        word: 'WORD',
+        label: 'Наименование на иностранном языке*',
+        type: 'tel',
+        required: false,
+        value: '',
+        completeBlock: {
+          title: 'Текущие данные из реестра:',
+          value: null,
+        },
+      },
+      {
+        multy: true,
+        required: false,
+        value: [''],
+        property: '183',
+        word: 'WORD',
+        type: 'url',
+        label: 'Сайт*',
+        completeBlock: {
+          comment: 'Вы можете добавить несколько сайтов.',
+        },
+      },
+      {
+        multy: true,
+        required: false,
+        value: [''],
+        property: '184',
+        word: 'QUALITY',
+        type: 'textarea',
+        label: 'Сообщение*',
+        completeBlock: {
+          comment: 'Вы можете добавить несколько сообщений.',
+        },
+      },
+      {
+        multy: true,
+        value: [''],
+        property: '185',
+        word: 'QUANTITY',
+        type: 'date',
+        required: false,
+        label: 'Дата*',
+        completeBlock: {
+          comment: 'Вы можете добавить несколько дат.',
         },
       },
     ],
@@ -74,19 +145,44 @@ window.appealNewChangeFormStore = {
         value: 0,
         controls: [
           {
+            multy: 5,
             property: 4,
             word: 'FILES[0]',
-            label: 'Заполненное Приложение № 6а *',
+            label: 'Заполненное Приложение № 6а',
             type: 'file',
-            required: true,
-            filename: '',
-            fileId: '',
+            required: false,
+            filename: [''],
+            value: [''], //file id
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: [''],
+            maxSize: 1e7,
             completeBlock: {
               comment:
                 'Актуальный список учредителей (участников, акционеров). Заполненное Приложение № 6а.',
             },
+            pattern: '',
+          },
+          {
+            //draft
+            multy: 2,
+            property: 7,
+            word: 'FILES[0]',
+            label: 'Устав компании *',
+            type: 'file',
+            required: true,
+            filename: [
+              'Устав ОАО "Аудит Стрит.pdf',
+              'Устав ОАО "Audit street.pdf',
+            ],
+            value: ['852', '456'], //file id
+            default: '<a href>Выберите файл</a> или перетащите в поле',
+            ext: ['pdf'],
+            maxSize: 10e6,
+            completeBlock: {
+              comment:
+                'Актуальный список учредителей (участников, акционеров). Заполненное Приложение № 6а.',
+            },
+            pattern: '',
           },
           {
             property: 5,
@@ -95,12 +191,30 @@ window.appealNewChangeFormStore = {
             type: 'file',
             required: true,
             filename: '',
-            fileId: '',
+            value: '',
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: [''],
+            maxSize: 1000,
             completeBlock: {
               comment: 'Актуальная выписка из реестра акционеров',
             },
+            pattern: '',
+          },
+          {
+            property: 6,
+            word: 'FILES[0]',
+            label: 'Актуальная выписка 2 из реестра акционеров *',
+            type: 'file',
+            required: true,
+            filename: '',
+            value: '',
+            default: '<a href>Выберите файл</a> или перетащите в поле',
+            ext: [''],
+            maxSize: 1e5,
+            completeBlock: {
+              comment: 'Актуальная выписка из реестра акционеров',
+            },
+            pattern: '',
           },
         ],
       },
@@ -115,7 +229,13 @@ window.appealNewChangeFormStore = {
     text: 'Я принимаю <a href="/privacy/" target="_blank">условия Пользовательского соглашения</a> и даю своё согласие СРО ААС на обработку моей персональной информации на условиях, определенных Политикой конфиденциальности.',
     invalid: false,
   },
+  url: {
+    autosave: '/components/appeal.new.change-form/autosave.json',
+    fileUpload: '/components/appeal.new.change-form/fileupload.json',
+    img: '/template/images/',
+  },
 };
+
 /*{
   docsBlock: {
     title: 'Документы необходимые для внесения изменения',
@@ -282,7 +402,7 @@ window.appealNewChangeFormStore = {
             type: 'file',
             required: true,
             filename: '',
-            fileId: '',
+            value: '',
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
@@ -295,7 +415,7 @@ window.appealNewChangeFormStore = {
             label: 'Актуальная выписка из ЕГРЮЛ*',
             type: 'file',
             filename: '',
-            fileId: '',
+            value: '',
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
@@ -319,7 +439,7 @@ window.appealNewChangeFormStore = {
             type: 'file',
             required: true,
             filename: 'Программа БЧ-2021.pdf',
-            fileId: '123',
+            value: '123',
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
@@ -332,7 +452,7 @@ window.appealNewChangeFormStore = {
             label: 'Актуальная выписка из ЕГРЮЛ*',
             type: 'file',
             filename: '',
-            fileId: '',
+            value: '',
             default: '<a href>Выберите файл</a> или перетащите в поле',
             ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {

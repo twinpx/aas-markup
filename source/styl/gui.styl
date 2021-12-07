@@ -583,7 +583,8 @@ h2,.h2
   &:focus,
   &:active,
   &:not(:disabled):not(.disabled).active,
-  &:not(:disabled):not(.disabled):active
+  &:not(:disabled):not(.disabled):active,
+  & a
     color transparent !important
 
   &:after
@@ -610,7 +611,12 @@ h2,.h2
   height 32px
   background-image url('images/btn-delete.svg');
   background-bg()
-  
+  cursor pointer
+  transition( opacity .5s ease )
+
+  &:hover
+    opacity .7
+
 .text-muted
   color #9b9b9b !important
   

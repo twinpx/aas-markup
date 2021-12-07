@@ -77,14 +77,18 @@
 
   .b-collapse-block
     border-bottom none !important
+    /*break-after auto*/
 
     &__head
       padding 0 0 10px !important
 
       a
-        text-decoration none
+        text-decoration none !important
         color #000 !important
         opacity 1 !important
+        line-height 1
+        margin-top 10px
+        margin-bottom 5px
 
     &__body
       display block !important
@@ -113,8 +117,17 @@
       hr
         margin 0 !important
 
-      .row
+        &.hr--line
+          border-top 0
+          display none
+
+      .row:last-of-type
         margin-bottom 10px
+
+      /*p,
+      .col-lg-4,
+      .row
+        break-after avoid*/
 
   .b-report__date
     position static
