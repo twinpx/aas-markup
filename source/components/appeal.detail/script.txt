@@ -52,8 +52,8 @@ window.addEventListener('load', () => {
               <div class="modal-body">
                 <div v-html="modal.html"></div>
                 <div class="text-center modal-buttons">
-                  <button :name="button.name" class="btn btn-secondary" type="submit">{{button.confirm}}</button>
-                  <button class="btn btn-light" data-dismiss="modal">{{button.dismiss}}</button>
+                  <button :name="button.name" class="btn btn-lg btn-secondary" type="submit">{{button.confirm}}</button>
+                  <button class="btn btn-lg btn-light" data-dismiss="modal">{{button.dismiss}}</button>
                 </div>
               </div>
             </div>

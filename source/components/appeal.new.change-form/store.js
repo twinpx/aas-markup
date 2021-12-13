@@ -171,8 +171,8 @@ window.appealNewChangeFormStore = {
             type: 'file',
             required: true,
             filename: [
-              'Устав ОАО "Аудит Стрит.pdf',
-              'Устав ОАО "Audit street.pdf',
+              'Устав Открытого Акционерного Общества "Аудит Стрит".pdf',
+              'Устав ОАО "Audit street".pdf',
             ],
             value: ['852', '456'], //file id
             default: '<a href>Выберите файл</a> или перетащите в поле',

@@ -159,7 +159,7 @@ window.onload = function () {
         <div class="b-radio-vc"><input type="radio" :name="control.name" :checked="checked" :value="control.value" class="with-gap" @change="change"><span></span></div>
       </label>
       <div class="b-form-control-vc__fields" v-show="blockFlag || $store.state.confirmDocsBlock.items[index].checked">
-        <hr class="hr--line">
+        <hr class="hr--line" style="margin-bottom: 2.5rem;">
         <div v-for="(formControl, controlIndex) in control.controls">
           <form-control-multy v-if="formControl.multy" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" :controlId="control.id" @autosave="autosave"></form-control-multy>
           <form-control-file v-else :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" :controlId="control.id" @autosave="autosave"></form-control-file>
@@ -765,7 +765,7 @@ window.onload = function () {
     emits: ['autosave', 'timeoutAutosave'],
     template: `
       <div>
-        <hr class="hr--line hr--xxl" style="margin-top: 0;">
+        <hr class="hr--md" style="margin-top: 0;">
         <div v-if="formControl.type==='file'">
           <transition-group name="list" tag="div" >
             <div v-for="(valueObject, idx) in formControl.value" :key="valueObject.id" class="multy-control-wrapper">
@@ -798,8 +798,8 @@ window.onload = function () {
             </div>
           </transition-group>
         </div>
-        <button class="btn btn-success btn-md" :class="{disabled: isBtnDisabled}" @click.prevent="add">Добавить</button>
-        <hr class="hr--line hr--xxl">
+        <button class="btn btn-success btn-md" :class="{disabled: isBtnDisabled}" @click.prevent="add">Добавить еще</button>
+        <hr class="hr--sl">
       </div>
     `,
     computed: {
