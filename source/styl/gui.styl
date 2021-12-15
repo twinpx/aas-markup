@@ -816,7 +816,13 @@ label
         margin-left 0
 
       &:last-child
-        margin-right 0      
+        margin-right 0 
+
+      @media (max-width: 575px)
+        margin 0 0 8px
+
+        &:last-child
+          margin-bottom 0
 
   &-dialog
     box-shadow 0 5px 10px #0000000d

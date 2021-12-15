@@ -1,6 +1,6 @@
 @import '../../styl/component-include.styl'
 
-.b-appeal-detail-public
+.b-appeal-detail
 
   &.ph-block
     
@@ -19,7 +19,7 @@
         opacity 0
         z-index -1
 
-.b-appeal-detail-public
+.b-appeal-detail
 
   @media (max-width: 575px)
     h3:first-child
@@ -36,8 +36,6 @@
       td:nth-child(2)
         display table-cell
   
-.b-appeal-detail
-
   &__data
     background-color $light-gray
     border-radius 10px
@@ -151,3 +149,8 @@
   &,
   &:focus
     font-size $14px
+
+form .btn
+  width 100%
+  max-width 250px
+  min-width auto
