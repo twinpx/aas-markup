@@ -2,6 +2,173 @@ window.appealNewChangeFormStore = {
   hidden: [
     {
       name: 'APPEAL_ID',
+      value: 115084,
+    },
+    {
+      name: 'FORM_ID',
+      value: 107330,
+    },
+  ],
+  docsBlock: {
+    title: 'Документы необходимые для внесения изменения',
+    text: '',
+    items: [
+      {
+        id: 7024,
+        title: 'Заявление на внесение изменений. Приложение № 2.',
+        url: '/upload/iblock/357/Vnesenie-izm_Prilozhenie-_-2.docx',
+        icon: '/local/templates/aas/images/doc.svg',
+        data: ['52.89 Кб .docx'],
+      },
+    ],
+  },
+  controlsBlock: null,
+  confirmDocsBlock: {
+    title: 'Подтверждающие документы',
+    text: '',
+    items: [
+      {
+        id: 0,
+        checked: true,
+        title: 'Пакет документов 1',
+        text: '<ul><li>Трудовая книжка (первая страница)</li><li>Трудовая книжка (страница с записью об увольнении из организации)</li><li>Заявления на внесение изменений. Заполненное Приложение № 2.</li></ul>',
+        name: 'FIELDS_ATTACHE',
+        value: 0,
+        controls: [
+          {
+            property: 44,
+            word: 'FILES[0]',
+            label: 'Сведения о трудовой деятельности *',
+            type: 'file',
+            multy: false,
+            maxSize: 10240000,
+            required: true,
+            filename: '',
+            value: '',
+            default:
+              '<a href>Выберите файл</a> (pdf, jpg, jpeg, png, doc, docx, до 10МБ)',
+            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            completeBlock: {
+              comment: 'Трудовая книжка (первая страница)',
+            },
+          },
+          {
+            property: 45,
+            word: 'FILES[0]',
+            label: 'Сведения о трудовой деятельности *',
+            type: 'file',
+            multy: false,
+            maxSize: 10240000,
+            required: true,
+            filename: '',
+            value: '',
+            default:
+              '<a href>Выберите файл</a> (pdf, jpg, jpeg, png, doc, docx, до 10МБ)',
+            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            completeBlock: {
+              comment:
+                'Трудовая книжка (страница с записью об увольнении из организации)',
+            },
+          },
+          {
+            property: 55,
+            word: 'FILES[0]',
+            label: 'Заполненное Приложение № 2 *',
+            type: 'file',
+            multy: 5,
+            maxSize: 10240000,
+            required: true,
+            filename: [''],
+            value: [
+              {
+                id: 92500,
+                val: '',
+              },
+            ],
+            default:
+              '<a href>Выберите файл</a> (pdf, jpg, jpeg, png, doc, docx, до 10МБ)',
+            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            completeBlock: {
+              comment:
+                'Заявления на внесение изменений. Заполненное Приложение № 2.',
+            },
+          },
+        ],
+      },
+      {
+        id: 1,
+        checked: false,
+        title: 'Пакет документов 2',
+        text: '<ul><li>Приказ об увольнении или соглашение о расторжении трудового договора</li><li>Заявления на внесение изменений. Заполненное Приложение № 2.</li></ul>',
+        name: 'FIELDS_ATTACHE',
+        value: 1,
+        controls: [
+          {
+            property: 46,
+            word: 'FILES[1]',
+            label: 'Сведения о трудовой деятельности *',
+            type: 'file',
+            multy: false,
+            maxSize: 10240000,
+            required: true,
+            filename: '',
+            value: '',
+            default:
+              '<a href>Выберите файл</a> (pdf, jpg, jpeg, png, doc, docx, до 10МБ)',
+            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            completeBlock: {
+              comment:
+                'Приказ об увольнении или соглашение о расторжении трудового договора',
+            },
+          },
+          {
+            property: 56,
+            word: 'FILES[1]',
+            label: 'Заполненное Приложение № 2 *',
+            type: 'file',
+            multy: 5,
+            maxSize: 10240000,
+            required: true,
+            filename: [''],
+            value: [
+              {
+                id: 32989,
+                val: '',
+              },
+            ],
+            default:
+              '<a href>Выберите файл</a> (pdf, jpg, jpeg, png, doc, docx, до 10МБ)',
+            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            completeBlock: {
+              comment:
+                'Заявления на внесение изменений. Заполненное Приложение № 2.',
+            },
+          },
+        ],
+      },
+    ],
+  },
+  autosaveTimeoutId: 48,
+  autosave: 5000,
+  agreement: {
+    name: 'FORM_AGREEMENT',
+    value: 'Y',
+    checked: false,
+    text: 'Я принимаю <a href="/privacy/" target="_blank">условия Пользовательского соглашения</a> и даю своё согласие СРО ААС на обработку моей персональной информации на условиях, определенных Политикой конфиденциальности.',
+    invalid: false,
+  },
+  url: {
+    autosave:
+      '/local/components/twinpx/journal.new/templates/.default/autosave.php',
+    fileUpload:
+      '/local/components/twinpx/journal.new/templates/.default/fileupload.php?APPEAL_ID=115084',
+  },
+};
+
+/*window.appealNewChangeFormStore = {
+  hidden: [
+    {
+      name: 'APPEAL_ID',
       value: 110402,
     },
     {
@@ -138,7 +305,7 @@ window.appealNewChangeFormStore = {
     items: [
       {
         id: 0,
-        checked: true,
+        checked: false,
         title: 'Пакет документов 1',
         text: '<ul><li>Актуальный список учредителей (участников, акционеров). Заполненное Приложение № 6а.</li><li>Актуальная выписка из реестра акционеров</li></ul>',
         name: 'FIELDS_ATTACHE',
@@ -218,6 +385,43 @@ window.appealNewChangeFormStore = {
           },
         ],
       },
+      {
+        id: '7846',
+        checked: false,
+        title: 'Пакет документов 1',
+        text: '<ul><li>Приказ об увольнении или соглашение о расторжении трудового договора,</li><li>Справка-подтверждение (Приложение № 8а)</li></ul>',
+        name: 'confirm-docs',
+        value: 'block1',
+        controls: [
+          {
+            property: '189',
+            word: 'FILE',
+            label: 'Устав в новой редакции или изменения к Уставу*',
+            type: 'file',
+            required: true,
+            filename: 'Программа БЧ-2021.pdf',
+            value: '123',
+            default: '<a href>Выберите файл</a> или перетащите в поле',
+            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            completeBlock: {
+              comment: 'Комментарий который поясняет ограничения.',
+            },
+          },
+          {
+            property: '190',
+            word: 'FILE',
+            label: 'Актуальная выписка из ЕГРЮЛ*',
+            type: 'file',
+            filename: '',
+            value: '',
+            default: '<a href>Выберите файл</a> или перетащите в поле',
+            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            completeBlock: {
+              comment: 'Другой комментарий который поясняет ограничения.',
+            },
+          },
+        ],
+      },
     ],
   },
   autosaveTimeoutId: 1666,
@@ -234,7 +438,7 @@ window.appealNewChangeFormStore = {
     fileUpload: '/components/appeal.new.change-form/fileupload.json',
     img: '/template/images/',
   },
-};
+};*/
 
 /*{
   docsBlock: {

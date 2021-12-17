@@ -17,9 +17,12 @@ window.onload = function () {
         state.confirmDocsBlock.items[payload.index].checked = true;
       },
       changeControl(state, payload) {
-        let control = state.controlsBlock.controls.find(
-          (control) => control.property === payload.property
-        );
+        let control;
+        if (state.controlsBlock && state.controlsBlock.controls) {
+          control = state.controlsBlock.controls.find(
+            (control) => control.property === payload.property
+          );
+        }
         if (!control) {
           control = state.confirmDocsBlock.items
             .map((item) => {
