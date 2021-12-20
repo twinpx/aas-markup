@@ -70,7 +70,7 @@ window.addEventListener('load', () => {
               <div class="modal-body">
                 <div v-html="alert.html"></div>
                 <div class="text-center modal-buttons">
-                  <button class="btn btn-lg btn-secondary" data-dismiss="modal">{{alert.button}}</button>
+                  <button class="btn btn-lg btn-secondary" @click.prevent="reload">{{alert.button}}</button>
                 </div>
               </div>
             </div>
@@ -79,6 +79,9 @@ window.addEventListener('load', () => {
       </div>`,
     methods: {
       onSelect() {},
+      reload() {
+        window.location.href = window.location.href;
+      },
       async changeStatus() {
         try {
           this.isLoading = true;

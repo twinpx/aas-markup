@@ -112,10 +112,7 @@ window.appealIndexStore = {
         type: 'date',
         label: 'Дата',
         name: 'DATE',
-        value: {
-          start: '',
-          end: '',
-        },
+        value: [null, null],
       },
     ],
   },

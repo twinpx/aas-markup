@@ -18,13 +18,13 @@ window.addEventListener('load', () => {
         );
         switch (control.type) {
           case 'text':
-            control.value = payload.controlValue;
+            Vue.set(control, 'value', payload.controlValue);
             break;
           case 'select':
-            control.selected = payload.controlValue;
+            Vue.set(control, 'selected', payload.controlValue);
             break;
           case 'date':
-            control.value = payload.controlValue;
+            Vue.set(control, 'value', payload.controlValue);
             break;
         }
       },
@@ -99,13 +99,15 @@ window.addEventListener('load', () => {
 
   Vue.component('form-control-date', {
     template: `<div class="b-float-label" data-src="${window.appealIndexStore.paths.src}calendar.svg">
-      <date-picker :input-attr="{name: control.name}" :lang="lang" v-model="dateRange" value-type="X" range format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDateRange"></date-picker>
-      <label for="DATE" :class="{ active: isActive }">{{ control.label }}</label>
+      <date-picker :input-attr="{name: control.name}" :lang="lang" v-model="$store.state.filter.controls[inputIndex].value" value-type="X" range format="DD.MM.YYYY" @open="openInput" @close="closeInput" @input="inputDateRange"></date-picker>
+      <label for="DATE" :class="{ active: isActive || focusFlag }">{{ control.label }}</label>
     </div>`,
     data() {
       return {
-        isActive: !!this.control.value.start,
-        dateRange: [`${this.control.value.start}`, `${this.control.value.end}`],
+        focusFlag: false,
+        inputIndex: this.$store.state.filter.controls.findIndex(
+          (ctr) => ctr.code === this.control.code
+        ),
         lang: {
           // the locale of formatting and parsing function
           formatLocale: {
@@ -198,31 +200,24 @@ window.addEventListener('load', () => {
     props: {
       control: Object,
     },
+    computed: {
+      dateRange() {
+        return this.$store.state.filter.controls[this.inputIndex].value;
+      },
+      isActive() {
+        return !!this.dateRange[0];
+      },
+    },
     methods: {
       openInput() {
-        this.isActive = true;
+        this.focusFlag = true;
       },
       closeInput() {
-        if (!this.dateRange[0] && !this.dateRange[1]) {
-          this.isActive = false;
-        }
-      },
-      reset() {
-        this.dateRange = [];
-        this.closeInput();
-        store.commit('changeControlValue', {
-          controlCode: this.control.code,
-          controlValue: { start: this.dateRange[0], end: this.dateRange[1] },
-        });
+        this.focusFlag = false;
       },
       inputDateRange() {
         //reset page
         store.commit('changePage', 1);
-        //set start&end
-        store.commit('changeControlValue', {
-          controlCode: this.control.code,
-          controlValue: { start: this.dateRange[0], end: this.dateRange[1] },
-        });
         //render table
         this.$emit('rendertable');
         //set URL
@@ -235,11 +230,13 @@ window.addEventListener('load', () => {
     data() {
       return {
         options: this.control.options,
-        selectedOption: this.control.selected,
+        inputIndex: this.$store.state.filter.controls.findIndex(
+          (ctr) => ctr.code === this.control.code
+        ),
       };
     },
     template: `<div class="form-control-wrapper">
-      <v-select :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="selectedOption"></v-select>
+      <v-select :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="$store.state.filter.controls[inputIndex].selected"></v-select>
       <label>{{ control.label }}</label>
     </div>`,
     props: {
@@ -249,11 +246,6 @@ window.addEventListener('load', () => {
       onSelect() {
         //reset page
         store.commit('changePage', 1);
-        //set status
-        store.commit('changeControlValue', {
-          controlCode: this.control.code,
-          controlValue: this.selectedOption,
-        });
         //render table
         this.$emit('rendertable');
         //set URL
@@ -265,16 +257,19 @@ window.addEventListener('load', () => {
   Vue.component('form-control-text', {
     data() {
       return {
-        inputText: this.control.value,
         hover: false,
+        inputIndex: this.$store.state.filter.controls.findIndex(
+          (ctr) => ctr.code === this.control.code
+        ),
       };
     },
-
     props: {
       control: Object,
     },
-
     computed: {
+      inputText() {
+        return this.$store.state.filter.controls[this.inputIndex].value;
+      },
       isClearable() {
         return this.inputText !== '' && this.hover ? true : false;
       },
@@ -283,57 +278,28 @@ window.addEventListener('load', () => {
       },
     },
 
-    template: `<div class="b-float-label" @mouseover="hover=true;" @mouseout="hover=false;">
-      <input :id="'inbox-filter-' + control.code" type="text" :name="control.name" required="" autocomplete="off" v-model="inputText" @input="changeInput" @blur="blurInput($event)">
+    template: `<div class="b-float-label" @mouseover="hover=true" @mouseout="hover=false">
+      <input :id="'inbox-filter-' + control.code" type="text" :name="control.name" required="" autocomplete="off" v-model="$store.state.filter.controls[inputIndex].value" @input="changeInput">
       <label :for="'inbox-filter-' + control.code" :class="{active: isActive}">{{control.label}}</label>
-      <div class="b-input-clear" @click="clearInput($event)" v-show="isClearable"></div>
+      <div class="b-input-clear" @click.prevent="clearInput()" v-show="isClearable"></div>
     </div>`,
 
     methods: {
       changeInput() {
-        store.commit('changeControlValue', {
-          controlCode: this.control.code,
-          controlValue: this.inputText,
-        });
-        if (this.inputText.length >= this.control.count) {
-          this.getTableData();
-        } else {
-          this.getTableData(false);
-        }
-      },
-      blurInput(e) {
-        if (e.target.value !== '') {
-          this.isActive = true;
-        } else {
-          this.isActive = false;
-        }
-      },
-      clearInput(e) {
-        if (e) {
-          e.preventDefault();
-        }
-        this.inputText = '';
-        this.isActive = false;
         this.getTableData();
       },
-      reset() {
-        this.inputText = '';
-        this.isActive = false;
+      clearInput() {
+        //clear text
         store.commit('changeControlValue', {
           controlCode: this.control.code,
           controlValue: '',
         });
+        //table
+        this.getTableData();
       },
-      getTableData(setQueryFlag) {
+      getTableData() {
         //reset page
         store.commit('changePage', 1);
-        //set query
-        if (setQueryFlag !== false) {
-          store.commit('changeControlValue', {
-            controlCode: this.control.code,
-            controlValue: this.inputText || '',
-          });
-        }
         //render Table
         this.$emit('rendertable');
         //set URL
