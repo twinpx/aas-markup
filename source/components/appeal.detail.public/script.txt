@@ -10,6 +10,7 @@ window.addEventListener('load', () => {
       return {
         ...window.appealDetailData,
         isLoading: false,
+        initialCode: null
       };
     },
     computed: {
@@ -89,7 +90,7 @@ window.addEventListener('load', () => {
             (result.CURRENT || result.CURRENT === '')
           ) {
             this.isLoading = false;
-            if (result.CURRENT === this.select.selectedOption.code) {
+            if (result.CURRENT === this.initialCode) {
               //show confirm modal
               $('#changeStatusConfirmModal').modal('show');
             } else {
@@ -102,5 +103,8 @@ window.addEventListener('load', () => {
         }
       },
     },
+    mounted() {
+      this.initialCode = this.select.selectedOption.code;
+    }
   });
 });
