@@ -2,86 +2,146 @@ window.appealNewChangeFormStore = {
   hidden: [
     {
       name: 'APPEAL_ID',
-      value: 115084,
+      value: 116252,
     },
     {
       name: 'FORM_ID',
-      value: 107330,
+      value: 108719,
     },
   ],
-  docsBlock: {
-    title: 'Документы необходимые для внесения изменения',
+  docsBlock: null,
+  controlsBlock: {
+    title: 'Содержание жалобы',
     text: '',
-    items: [
+    controls: [
       {
-        id: 7024,
-        title: 'Заявление на внесение изменений. Приложение № 2.',
-        url: '/upload/iblock/357/Vnesenie-izm_Prilozhenie-_-2.docx',
-        icon: '/local/templates/aas/images/doc.svg',
-        data: ['52.89 Кб .docx'],
+        property: 50,
+        word: 'PROPERTY',
+        sort: 0,
+        label: 'ОРНЗ объекта жалобы *',
+        type: 'ornz',
+        required: true,
+        value: [''],
+        multy: true,
+        pattern: '^\\d{11}$',
+        completeBlock: {
+          title: 'Текущие данные из реестра:',
+          value: 'Текущие данные',
+          comment:
+            'ОРНЗ аудитора или аудиторской организации, на которую вы хотите пожаловаться.',
+        },
+      },
+      {
+        property: 51,
+        word: 'PROPERTY',
+        sort: 1,
+        label: 'Суть жалобы *',
+        type: 'textarea',
+        required: true,
+        value: '',
+        multy: false,
+        pattern: '',
+        completeBlock: {
+          title: '',
+          value: '',
+          comment:
+            'Опишите в свободной форме, в чем, по вашему мнению, состоит нарушение.',
+        },
+      },
+      {
+        property: 93,
+        word: 'PROPERTY',
+        sort: 2,
+        label: 'Что нарушено? *',
+        type: 'textarea',
+        required: true,
+        value: '',
+        multy: false,
+        pattern: '',
+        completeBlock: {
+          title: '',
+          value: '',
+          comment:
+            'Какие нормы (пункты, статьи нормативных актов), по вашему мнению, нарушил аудитор или аудиторская организация.',
+        },
+      },
+      {
+        property: 52,
+        word: 'PROPERTY',
+        sort: 3,
+        label: 'Чем подтверждаются ваши доводы? *',
+        type: 'textarea',
+        required: true,
+        value: '',
+        multy: false,
+        pattern: '',
+        completeBlock: {
+          title: '',
+          value: '',
+          comment:
+            'Из каких документов или публичной информации следует наличие нарушения.',
+        },
+      },
+      {
+        property: 94,
+        word: 'PROPERTY',
+        sort: 4,
+        label: 'Какие меры вы ожидаете от СРО? *',
+        type: 'textarea',
+        required: true,
+        value: '',
+        multy: false,
+        pattern: '',
+        completeBlock: {
+          title: '',
+          value: '',
+          comment:
+            'Что, на ваш взгляд, может предпринять СРО ААС? Например, провести проверку, применить меры дисциплинарного воздействия (какие?).',
+        },
       },
     ],
   },
-  controlsBlock: null,
   confirmDocsBlock: {
-    title: 'Подтверждающие документы',
+    title: 'Документы',
     text: '',
     items: [
       {
         id: 0,
         checked: true,
         title: 'Пакет документов 1',
-        text: '<ul><li>Трудовая книжка (первая страница)</li><li>Трудовая книжка (страница с записью об увольнении из организации)</li><li>Заявления на внесение изменений. Заполненное Приложение № 2.</li></ul>',
+        text: '<ul><li>Жалоба в формате PDF с подписью и печатью (если печать есть)</li><li>Документ, подтверждающий полномочия заявителя</li><li>Документ, подтверждающий доводы</li></ul>',
         name: 'FIELDS_ATTACHE',
         value: 0,
         controls: [
           {
-            property: 44,
+            property: 47,
             word: 'FILES[0]',
-            label: 'Сведения о трудовой деятельности *',
+            label: 'Жалоба *',
             type: 'file',
             multy: false,
-            maxSize: 10240000,
+            maxSize: 102400000,
             required: true,
             filename: '',
             value: '',
-            default:
-              '<a href>Выберите файл</a> (pdf, jpg, jpeg, png, doc, docx, до 10МБ)',
-            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-            completeBlock: {
-              comment: 'Трудовая книжка (первая страница)',
-            },
-          },
-          {
-            property: 45,
-            word: 'FILES[0]',
-            label: 'Сведения о трудовой деятельности *',
-            type: 'file',
-            multy: false,
-            maxSize: 10240000,
-            required: true,
-            filename: '',
-            value: '',
-            default:
-              '<a href>Выберите файл</a> (pdf, jpg, jpeg, png, doc, docx, до 10МБ)',
-            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            default: '<a href>Выберите файл</a> (pdf, до 100МБ)',
+            ext: ['pdf'],
             completeBlock: {
               comment:
-                'Трудовая книжка (страница с записью об увольнении из организации)',
+                'Жалоба в формате PDF с подписью и печатью (если печать есть)',
             },
           },
           {
-            property: 55,
+            property: 42,
             word: 'FILES[0]',
-            label: 'Заполненное Приложение № 2 *',
+            label: 'Документ, подтверждающий полномочия заявителя',
             type: 'file',
-            multy: 5,
+            multy: 3,
             maxSize: 10240000,
-            required: true,
+            required: false,
             filename: [''],
             value: [
               {
-                id: 92500,
+                id: 15444,
                 val: '',
               },
             ],
@@ -89,50 +149,21 @@ window.appealNewChangeFormStore = {
               '<a href>Выберите файл</a> (pdf, jpg, jpeg, png, doc, docx, до 10МБ)',
             ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
-              comment:
-                'Заявления на внесение изменений. Заполненное Приложение № 2.',
-            },
-          },
-        ],
-      },
-      {
-        id: 1,
-        checked: false,
-        title: 'Пакет документов 2',
-        text: '<ul><li>Приказ об увольнении или соглашение о расторжении трудового договора</li><li>Заявления на внесение изменений. Заполненное Приложение № 2.</li></ul>',
-        name: 'FIELDS_ATTACHE',
-        value: 1,
-        controls: [
-          {
-            property: 46,
-            word: 'FILES[1]',
-            label: 'Сведения о трудовой деятельности *',
-            type: 'file',
-            multy: false,
-            maxSize: 10240000,
-            required: true,
-            filename: '',
-            value: '',
-            default:
-              '<a href>Выберите файл</a> (pdf, jpg, jpeg, png, doc, docx, до 10МБ)',
-            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
-            completeBlock: {
-              comment:
-                'Приказ об увольнении или соглашение о расторжении трудового договора',
+              comment: 'Документ, подтверждающий полномочия заявителя',
             },
           },
           {
-            property: 56,
-            word: 'FILES[1]',
-            label: 'Заполненное Приложение № 2 *',
+            property: 43,
+            word: 'FILES[0]',
+            label: 'Документ, подтверждающий доводы',
             type: 'file',
-            multy: 5,
+            multy: 3,
             maxSize: 10240000,
-            required: true,
+            required: false,
             filename: [''],
             value: [
               {
-                id: 32989,
+                id: 96328,
                 val: '',
               },
             ],
@@ -140,15 +171,14 @@ window.appealNewChangeFormStore = {
               '<a href>Выберите файл</a> (pdf, jpg, jpeg, png, doc, docx, до 10МБ)',
             ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
             completeBlock: {
-              comment:
-                'Заявления на внесение изменений. Заполненное Приложение № 2.',
+              comment: 'Документ, подтверждающий доводы',
             },
           },
         ],
       },
     ],
   },
-  autosaveTimeoutId: 48,
+  autosaveTimeoutId: 42,
   autosave: 5000,
   agreement: {
     name: 'FORM_AGREEMENT',
@@ -158,13 +188,12 @@ window.appealNewChangeFormStore = {
     invalid: false,
   },
   url: {
-    autosave:
-      '/local/components/twinpx/journal.new/templates/.default/autosave.php',
-    fileUpload:
-      '/local/components/twinpx/journal.new/templates/.default/fileupload.php?APPEAL_ID=115084',
+    autosave: '/components/appeal.new.change-form/autosave.json',
+    fileUpload: '/components/appeal.new.change-form/fileupload.json',
+    img: '/template/images/',
+    getUsers: '/components/appeal.new.change-form/getuserjson.json',
   },
 };
-
 /*window.appealNewChangeFormStore = {
   hidden: [
     {
@@ -438,7 +467,7 @@ window.appealNewChangeFormStore = {
     fileUpload: '/components/appeal.new.change-form/fileupload.json',
     img: '/template/images/',
   },
-};*/
+};
 
 /*{
   docsBlock: {

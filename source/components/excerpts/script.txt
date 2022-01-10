@@ -199,7 +199,7 @@ window.onload = function () {
         if (!id) {
           id = e.target.parentNode.getAttribute('data-id');
         }
-        this.activeUser = this.users.filter((user) => user.ID === id)[0] || {};
+        this.activeUser = this.users.find((user) => user.ID === id) || {};
         this.renderExcerpts();
       },
       enterInput() {
