@@ -8,6 +8,11 @@ window.addEventListener('load', () => {
       return window.appealIndexStore;
     },
     mutations: {
+      setNew(state, payload) {
+        state.numBlocks.find(
+          (block) => block.new
+        ).num = payload;
+      },
       changeTableHtml(state, payload) {
         state.table.html = payload;
       },
@@ -597,6 +602,7 @@ window.addEventListener('load', () => {
 
               if (!filterFlag && Number(json.DATA.num) !== Number(currentNum)) {
                 this.renderTable();
+                this.$store.commit('setNew', json.DATA.num);
               }
               $(digitNode).animateNumber({
                 number: json.DATA.num,
