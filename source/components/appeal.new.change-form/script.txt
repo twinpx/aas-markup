@@ -512,7 +512,7 @@ window.onload = function () {
         }
         setTimeout(() => {
           this.users = [];
-        }, 100);
+        }, 200);
       },
       clickHint(e) {
         let id = e.target.getAttribute('data-id');
@@ -520,7 +520,7 @@ window.onload = function () {
           id = e.target.parentNode.getAttribute('data-id');
         }
         this.activeUser = this.users.find((user) => user.ID === id) || {};
-        this.controlValue = this.activeUser.FIO ? this.activeUser.FIO : '';
+        this.controlValue = this.activeUser.ORNZ ? this.activeUser.ORNZ : '';
         this.users = [];
       },
       enterInput() {
@@ -542,7 +542,7 @@ window.onload = function () {
               ) || {};
           }
         }
-        this.controlValue = this.activeUser.FIO ? this.activeUser.FIO : '';
+        this.controlValue = this.activeUser.ORNZ ? this.activeUser.ORNZ : '';
         this.users = [];
       },
       clearInput() {
