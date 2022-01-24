@@ -44,6 +44,45 @@ else
 
             include ../../modules/browser-choice/include
 
+    #uploadModal.modal--text.modal--alert.modal.fade(tabindex="-1" aria-labelledby="uploadModalLabel" aria-hidden="true")
+      .modal-dialog
+        .modal-content.modal-content--step1
+          button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
+          .modal-body( data-hint-url="/components/report-form/hint-response.json" data-info-url="/components/report-form/info-response.json" data-method="GET" )
+
+            .step1
+              h3.text-center Прикрепить файл
+
+              hr
+
+              p.text-center Выберите файл, который вы скачали на сайте министерства финансов. Обратите внимание, что изменение этого файла приведет к невозможности загрузить данные в форму.
+
+            .step2
+              h3.text-center Обработка файла
+
+              hr
+              
+              .progress-indicator
+                .item.item-1
+                .item.item-2
+                .item.item-3
+                .item.item-4
+                .item.item-5
+
+            .step3
+              h3.text-center.text-danger Файл не может быть обработан
+
+              hr
+
+              p.text-center Формат вашего файла не соответствует формату оригинального файла с сайта Министерства финансов.
+
+            hr.hr--xxxl
+
+            .text-center.modal-buttons
+              input#uploadFileInput( type="file" acceptx=".xls" )
+              label.btn.btn-lg.btn-secondary( for="uploadFileInput" href="/pages/report-form/" ) Загрузить<span> другой</span>
+              button.btn.btn-lg.btn-light( data-dismiss="modal" ) Отменить
+
     .b-report-form__text
 
       form( action="" method="GET" data-ajax-url="/components/report-form/response.json" )
@@ -59,6 +98,10 @@ else
           .b-form-error__text
             p Личный кабинет доступен только физическим лицам. Информация о компании доступна в личном кабинете «Единоличного органа управления» СРО (генерального директора).
             a( href="" ) Подробнее
+
+        .b-report-form__upload
+          span Загрузить данные из отчета 2НДФЛ
+          .btn.btn-dark.btn-md( data-toggle="modal" data-target="#uploadModal" ) Загрузить файл
 
         .b-collapse-block.open.slide
           .b-collapse-block__head

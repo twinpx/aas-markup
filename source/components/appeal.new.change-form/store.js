@@ -2,6 +2,86 @@ window.appealNewChangeFormStore = {
   hidden: [
     {
       name: 'APPEAL_ID',
+      value: 116397,
+    },
+    {
+      name: 'FORM_ID',
+      value: 107328,
+    },
+  ],
+  docsBlock: {
+    title: 'Документы необходимые для внесения изменения',
+    text: '',
+    items: [
+      {
+        id: 6611,
+        title: 'Справка-подтверждение. Приложение № 8а.',
+        url: '/upload/iblock/a4b/Prilozhenie_8a_010121.docx',
+        icon: '/local/templates/aas/images/doc.svg',
+        data: ['23.20 Кб .docx'],
+      },
+    ],
+  },
+  controlsBlock: {
+    title: 'Данные для изменения',
+    text: '',
+    controls: [
+      {
+        property: 42,
+        word: 'PROPERTY',
+        sort: 0,
+        label: 'ОРНЗ организации / индивидуального аудитора *',
+        type: 'ornz',
+        required: true,
+        value: '22006129',
+        multy: false,
+        pattern: '^\\d{11}$',
+        completeBlock: {
+          title: '',
+          value: '',
+          comment: '',
+        },
+      },
+      {
+        property: 43,
+        word: 'PROPERTY',
+        sort: 0,
+        label: '789 *',
+        type: 'text',
+        required: true,
+        value: '',
+        multy: false,
+        pattern: '^\\d{11}$',
+        completeBlock: {
+          title: 'Text',
+          value: '4564546654',
+          comment: 'Comment',
+        },
+      },
+    ],
+  },
+
+  autosaveTimeoutId: 58,
+  autosave: 5000,
+  agreement: {
+    name: 'FORM_AGREEMENT',
+    value: 'Y',
+    checked: false,
+    text: 'Я принимаю <a href="/privacy/" target="_blank">условия Пользовательского соглашения</a> и даю своё согласие СРО ААС на обработку моей персональной информации на условиях, определенных Политикой конфиденциальности.',
+    invalid: false,
+  },
+  url: {
+    autosave: '/components/appeal.new.change-form/autosave.json',
+    fileUpload: '/components/appeal.new.change-form/fileupload.json',
+    img: '/template/images/',
+    getUsers: '/components/appeal.new.change-form/getuserjson.json',
+  },
+};
+
+/*{
+  hidden: [
+    {
+      name: 'APPEAL_ID',
       value: 116252,
     },
     {

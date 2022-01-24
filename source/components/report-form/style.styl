@@ -21,8 +21,50 @@
         
 h1
   width calc( 100% - 260px )
+
+#uploadFileInput
+  position absolute
+  top 0
+  left 0
+  width 1px
+  height 1px
+  z-index -1
+
+#uploadModal
+
+  .modal-buttons label span
+    display none
+
+  .step1,
+  .step2,
+  .step3
+    display none
+
+  .modal-content.modal-content--step1 .step1,
+  .modal-content.modal-content--step2 .step2,
+  .modal-content.modal-content--step3 .step3
+    display block
+
+  .modal-content.modal-content--step2 .modal-buttons label
+    display none
+
+  .modal-content.modal-content--step3 .modal-buttons label span
+    display block
     
 .b-report-form
+
+  &__upload
+    background-color #FAFAFA
+    border-radius 10px
+    padding 20px
+    display flex
+    justify-content space-between
+    align-items center
+
+    span
+      font-family $roboto
+      font-size $16px
+      font-weight $bold
 
   &__text
     position relative

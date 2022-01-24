@@ -311,6 +311,19 @@ window.onload = function () {
       <hr class="hr--sl">
     </div>
     `,
+
+    watch: {
+      controlValue(val) {
+        let payload = {
+          property: this.formControl.property,
+          value: val,
+        };
+        if (this.formControl.multy) {
+          payload.index = this.controlIndex;
+        }
+        store.commit('changeControl', payload);
+      },
+    },
     methods: {
       clickLink() {
         this.controlValue = this.formControl.completeBlock.value;
@@ -326,15 +339,6 @@ window.onload = function () {
         if (!!this.controlValue) {
           this.isInvalid = false;
         }
-        //set value
-        let payload = {
-          property: this.formControl.property,
-          value: this.controlValue,
-        };
-        if (this.formControl.multy) {
-          payload.index = this.controlIndex;
-        }
-        store.commit('changeControl', payload);
         //autosave
         this.$emit('timeoutAutosave');
         //restartFormAutosaveTimeout();
@@ -433,6 +437,19 @@ window.onload = function () {
         <hr class="hr--sl">
       </div>`,
 
+    watch: {
+      controlValue(val) {
+        let payload = {
+          property: this.formControl.property,
+          value: val,
+        };
+        if (this.formControl.multy) {
+          payload.index = this.controlIndex;
+        }
+        store.commit('changeControl', payload);
+      },
+    },
+
     methods: {
       clickLink() {
         this.controlValue = this.formControl.completeBlock.value;
@@ -514,6 +531,8 @@ window.onload = function () {
         setTimeout(() => {
           this.users = [];
         }, 200);
+        //autosave
+        this.$emit('autosave');
       },
       clickHint(e) {
         let id = e.target.getAttribute('data-id');
@@ -1437,7 +1456,6 @@ window.onload = function () {
     store,
     template: `
       <div>
-
         <hidden-fields v-if="$store.state.hidden"></hidden-fields>
 
         <div v-if="$store.state.docsBlock && $store.state.docsBlock.items.length">

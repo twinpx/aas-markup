@@ -8,12 +8,113 @@
     };
 
     //open modal
-    if (document.getElementById('ieAlertModal')) {
+    /*if (document.getElementById('ieAlertModal')) {
       $('#ieAlertModal').modal('show');
       $('#ieAlertModal').on('hide.bs.modal', function (event) {
         window.location.href = window.backUrl;
       });
+    }*/
+
+    //upload file
+    const modalContent = document.querySelector('#uploadModal .modal-content');
+    document
+      .getElementById('uploadFileInput')
+      .addEventListener('change', (e) => {
+        const file = e.target.files[0];
+        let error;
+
+        //size
+        if (file.size >= 1e7) {
+          error = 'Размер вашего файла превышает 10 Мб.';
+          e.target.value = null;
+          return;
+        } else {
+          error = undefined;
+        }
+
+        //extention
+        const filename = file.name;
+        const lastIndex = filename.lastIndexOf('.');
+
+        if (filename.substring(lastIndex + 1) !== 'pdf') {
+          error =
+            'Формат вашего файла не соответствует формату оригинального файла с сайта Министерства финансов.';
+          e.target.value = null;
+          return;
+        } else {
+          error = undefined;
+        }
+
+        if (error) {
+          modalContent.classList.remove(
+            'modal-content--step1',
+            'modal-content--step2'
+          );
+          modalContent.classList.add('modal-content--step3');
+          modalContent.querySelector('.step3 p').textContent = error;
+        } else {
+          modalContent.classList.remove(
+            'modal-content--step1',
+            'modal-content--step3'
+          );
+          modalContent.classList.add('modal-content--step2');
+          sendFile(file);
+        }
+      });
+
+    const uploadFileController = new AbortController();
+
+    async function sendFile(file) {
+      //create form data
+      const formData = new FormData();
+      formData.append('file', file);
+
+      //response
+      let response, result;
+
+      try {
+        response = await fetch(
+          '/components/report-form/upload-file.json' /*, {
+          signal: uploadFileController.signal,
+          method: 'POST',
+          headers: {
+            Authorization: 'token',
+          },
+          body: formData,
+        }*/
+        );
+
+        result = await response.json();
+        //fill the form
+        if (
+          typeof result === 'object' &&
+          result.STATUS === 'Y' &&
+          result.DATA
+        ) {
+          let formControl;
+          for (let key in result.DATA) {
+            formControl = document.querySelector(`[name="${key}"]`);
+            if (formControl) {
+              formControl.value = result.DATA[key];
+              inputValidation(formControl);
+            }
+          }
+        }
+      } catch (err) {
+        throw err;
+      }
     }
+
+    $('#uploadModal').on('hide.bs.modal', function () {
+      //cancel uploading
+      uploadFileController.abort();
+      //show step1
+      modalContent.classList.remove(
+        'modal-content--step2',
+        'modal-content--step3'
+      );
+      modalContent.classList.add('modal-content--step1');
+    });
 
     //open collapsed
     var openedLS = window.localStorage.getItem('collapseOpened');
@@ -327,8 +428,9 @@
         var num = block.querySelectorAll('.b-float-label').length;
         var controlName = nameArray[0] + '[' + nameArray[1] + '][' + num + ']';
         var controlId = nameArray[0] + '_' + nameArray[1] + '_' + num;
-        var controlLable = block.querySelector('.b-float-label label')
-          .textContent;
+        var controlLable = block.querySelector(
+          '.b-float-label label'
+        ).textContent;
         var div = document.createElement('div');
 
         div.className = 'b-add-input-block__item new';
@@ -1011,9 +1113,8 @@
     }
 
     function showAutocompleteTime(date) {
-      document.querySelector(
-        '.b-report-form__autosave-text span'
-      ).textContent = date;
+      document.querySelector('.b-report-form__autosave-text span').textContent =
+        date;
     }
 
     function setInvalid(input) {
