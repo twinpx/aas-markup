@@ -24,26 +24,17 @@
         let error;
 
         //size
-        if (file.size >= 1e7) {
-          error = 'Размер вашего файла превышает 10 Мб.';
-          e.target.value = null;
-          return;
-        } else {
-          error = undefined;
-        }
+        error =
+          file.size >= 1e7 ? 'Размер вашего файла превышает 10 Мб.' : error;
 
         //extention
         const filename = file.name;
-        const lastIndex = filename.lastIndexOf('.');
+        const fileExt = filename.substring(filename.lastIndexOf('.'));
+        const accept = e.target.getAttribute('accept').split(',');
 
-        if (filename.substring(lastIndex + 1) !== 'pdf') {
-          error =
-            'Формат вашего файла не соответствует формату оригинального файла с сайта Министерства финансов.';
-          e.target.value = null;
-          return;
-        } else {
-          error = undefined;
-        }
+        error = accept.some((acc) => fileExt === acc.trim())
+          ? error
+          : 'Формат вашего файла не соответствует формату оригинального файла с сайта Министерства финансов.';
 
         if (error) {
           modalContent.classList.remove(
@@ -60,11 +51,14 @@
           modalContent.classList.add('modal-content--step2');
           sendFile(file);
         }
+
+        e.target.value = null;
       });
 
-    const uploadFileController = new AbortController();
+    let uploadFileController;
 
     async function sendFile(file) {
+      uploadFileController = new AbortController();
       //create form data
       const formData = new FormData();
       formData.append('file', file);
@@ -73,16 +67,14 @@
       let response, result;
 
       try {
-        response = await fetch(
-          '/components/report-form/upload-file.json' /*, {
+        response = await fetch(window.uploadFile, {
           signal: uploadFileController.signal,
           method: 'POST',
           headers: {
             Authorization: 'token',
           },
           body: formData,
-        }*/
-        );
+        });
 
         result = await response.json();
         //fill the form
@@ -97,8 +89,40 @@
             if (formControl) {
               formControl.value = result.DATA[key];
               inputValidation(formControl);
+              //set active label
+              formControl.parentNode
+                .querySelector('label')
+                .classList.add('active');
             }
           }
+
+          //open collapse
+          document.querySelectorAll('.b-collapse-block').forEach((block) => {
+            if (!block.classList.contains('slide')) {
+              block.querySelector('.b-collapse-block__head').click();
+            }
+          });
+          //save to localStorage
+          saveOpenedCollapsed();
+
+          //autosave the form
+          formAutosaveRequest();
+
+          //close modal
+          setTimeout(() => {
+            $('#uploadModal').modal('hide');
+          }, 500);
+        } else if (
+          typeof result === 'object' &&
+          result.STATUS === 'N' &&
+          result.MESSAGE
+        ) {
+          modalContent.classList.remove(
+            'modal-content--step1',
+            'modal-content--step2'
+          );
+          modalContent.classList.add('modal-content--step3');
+          modalContent.querySelector('.step3 p').textContent = result.MESSAGE;
         }
       } catch (err) {
         throw err;
@@ -107,7 +131,14 @@
 
     $('#uploadModal').on('hide.bs.modal', function () {
       //cancel uploading
-      uploadFileController.abort();
+      if (
+        typeof uploadFileController === 'object' &&
+        uploadFileController.abort
+      ) {
+        uploadFileController.abort();
+      }
+      //clean input
+      document.getElementById('uploadFileInput').value = null;
       //show step1
       modalContent.classList.remove(
         'modal-content--step2',

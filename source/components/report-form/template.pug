@@ -24,6 +24,7 @@ else
 
     script
       | window.backUrl = '/pages/profile';
+      | window.uploadFile = '/components/report-form/upload-file.json';
 
     #ieAlertModal.modal--text.modal--alert.modal.fade(tabindex="-1" aria-labelledby="editConfirmModalLabel" aria-hidden="true")
       .modal-dialog
@@ -79,7 +80,7 @@ else
             hr.hr--xxxl
 
             .text-center.modal-buttons
-              input#uploadFileInput( type="file" acceptx=".xls" )
+              input#uploadFileInput( type="file" accept=".xlsx" )
               label.btn.btn-lg.btn-secondary( for="uploadFileInput" href="/pages/report-form/" ) Загрузить<span> другой</span>
               button.btn.btn-lg.btn-light( data-dismiss="modal" ) Отменить
 
