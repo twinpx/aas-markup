@@ -1083,7 +1083,7 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
         <div class="b-float-label" data-src="${store.state.url.img}calendar.svg" :class="{invalid: isInvalid}" ref="floatLabel">
-          <date-picker :data-required="formControl.required" :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @focus="focusInput" @blur="blurInput"></date-picker>
+          <date-picker :data-required="formControl.required" :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @focus="focusInput" @blur="blurInput" :disabled-date="futureDatesDisabled"></date-picker>
           <label :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{ active: isActive }">{{formControl.label}}</label>
         </div>
         </div>
@@ -1211,6 +1211,12 @@ window.onload = function () {
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
     emits: ['autosave'],
     methods: {
+      futureDatesDisabled(date) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        return date.getTime() > today.getTime();
+      },
       clickLink() {
         this.date = this.formControl.completeBlock.value;
         this.isActive = true;

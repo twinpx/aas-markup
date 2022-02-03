@@ -27,6 +27,18 @@ window.appealNewChangeFormStore = {
     text: '',
     controls: [
       {
+        multy: true,
+        value: [''],
+        property: '185',
+        word: 'QUANTITY',
+        type: 'date',
+        required: false,
+        label: 'Дата*',
+        completeBlock: {
+          comment: 'Вы можете добавить несколько дат.',
+        },
+      },
+      {
         property: 42,
         word: 'PROPERTY',
         sort: 0,
