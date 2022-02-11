@@ -1,20 +1,59 @@
+extends ../../layouts/notifications
+
 block vars
-  - var page = 'page-under-construction'
+  - var page = 'pages-news-detail'
   - var authorized = 'true'
 
-doctype html
-html
-  head
-    block title
-      title Under construction
-      
-    include ../../layouts/includes/meta
+block title
+  title News detail | AAS
 
-    style
-      | body {padding: 0; margin:0; width: 100vw; height: 100vh; position: relative; display: flex;align-items:center; justify-content:center;}
-  body
+block content
 
-    .under-construction
-      img( src="/template/images/logo-aas.svg" width="250" height="260" alt="СРО ААС" )
-      .title На сайте проводятся технические работы
-      p Возвращайтесь позже, скоро все заработает.
+  hr
+
+  .container-fluid
+  
+    include ../../modules/breadcrumbs/include
+
+  hr
+
+  .container-fluid
+  
+    .row.justify-content-md-between
+          
+      article.col-12.col-lg-7
+        
+        include ../../components/news.detail/template
+        
+        hr
+        
+        script( src="https://yastatic.net/share2/share.js" )
+        .ya-share2( data-curtain data-services="vkontakte,facebook,odnoklassniki,messenger,telegram,twitter,viber,whatsapp,skype" )
+    
+        hr.hr--lg
+
+        h2 Документы по теме
+
+        include ../../modules/docs/include
+
+        hr
+
+        include ../../modules/articles/include
+
+        hr
+
+        h4 Тэги
+
+        include ../../modules/tags/include
+
+        hr.hr--lg
+        
+        include ../../components/news/connected
+
+        hr.hr--lg
+
+        a.btn.btn-light( href="/pages/news/" ) Все новости
+          
+      aside.col-4.d-none.d-lg-block
+  
+    

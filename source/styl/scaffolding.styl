@@ -1,12 +1,26 @@
 .b-header
   height 144px
   background-color #fff
+
+  .body--notifications &
+    height calc(144px + 70px)
   
   @media( max-width 767px )
     height 86px
-    
+
+    .body--notifications &
+      height calc(86px + 70px)
+      
   .container-fluid
     position relative
+    top 0
+    transition( top .5s ease )
+    
+    @media( min-width 768px )
+  
+      .header-fixed &:not(.top-alert__content)
+        top calc( -1 * ( 144px - 86px ))
+        z-index -1
     
   &.ph-block--animated
     overflow visible
@@ -23,11 +37,6 @@
     left 0
     width 100%
     z-index 994
-    
-    @media( min-width 768px )
-  
-      .header-fixed &
-        top calc( -1 * ( 144px - 86px ))
   
   &__top
     border-bottom 1px solid $line-color
