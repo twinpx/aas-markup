@@ -346,11 +346,7 @@ document
 var widthTimeoutId;
 var menuWidthTimeoutId;
 if (window.matchMedia('(min-width: 768px)').matches) {
-  var h = 86;
-  if (document.querySelector('body.body--notifications')) {
-    h += 70;
-  }
-  var height = document.querySelector('.b-header').offsetHeight - h;
+  var height = document.querySelector('.b-header').offsetHeight - 86;
   window.addEventListener('scroll', function (e) {
     if (window.scrollY >= height) {
       document.querySelector('body').classList.add('header-fixed');

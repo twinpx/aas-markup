@@ -1,46 +1,75 @@
 @import '../../styl/component-include.styl'
 
-#top-alert
-    background: transparent linear-gradient(90deg, #FF8000 25%, #0110C4 75%) 0% 0% no-repeat
-    background-size: 200% 200%
-    color: #fff
-    display: flex
-    justify-content: center
-    align-items: center
-    font-family: Roboto, Arial, serif
-    font-size: 14px
-    line-height: 1.3
-    height: 0
-    overflow: hidden
-    transition( height .5s ease-in-out )
-    animation: gradient 5s ease infinite
+#topNotification
+  //background: transparent linear-gradient(90deg, #FF8000 25%, #0110C4 75%) 0% 0% no-repeat
+  background: radial-gradient(farthest-corner at top, #0110C4 0%, #FF8000 100%) top right/200% 200%;
+  background-size: 400% 400%
+  color: #fff
+  display: flex
+  justify-content: center
+  align-items: center
+  font-family: Roboto, Arial, serif
+  font-size: 14px
+  line-height: 1.3
+  height: 0
+  overflow: hidden
+  transition( height .5s ease-in-out )
+  animation: gradient 10s ease infinite alternate
+  position relative
+  z-index 10
 
-#top-alert.top-alert--show
-    height: 70px
+#topNotification.top-notification--show
+  display flex
+  height: 70px
 
-.top-alert__content
-    padding: 0
+.top-notification__content
+  display flex
+  justify-content center
+  align-items center
+  padding 0 40px
 
-@media(max-width: 991px)
-    .top-alert__content
-        font-size: 12px
+  @media(max-width 767px)
+    font-size 12px
+    padding 0 40px 0 15px
+
+  .btn
     
+    &,
+    &:hover,
+    &.focus,
+    &:focus,
+    &.disabled,
+    &:disabled
+      color #fff
+      background-color #ffffff44
+      border-color transparent
+      
+    &.focus,
+    &:focus
+      box-shadow none
 
-@media(max-width: 767px)
-    .top-alert__content
-        padding-left: 30px
+    &:not(:disabled):not(.disabled)
 
-    .top-alert__content div
-        display: none
+      &.active,
+      &:active
+        color #fff
+        background-color #ffffff22
+        border-color transparent
 
-    .top-alert__content span
-        display: block
+        &:focus
+          box-shadow none
+
+#topNotificationClear
+  position absolute
+  top calc(50% - 8px)
+  right 35px
+  cursor pointer
+  z-index 1
+
+  @media(max-width 767px)
+    right 15px
 
 @keyframes gradient
-	0%
-		background-position 50% 0
-	50%
-		background-position 0% 0
-	100%
-		background-position 50% 0
+	to
+    background-position bottom left
     
