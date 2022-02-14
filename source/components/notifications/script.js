@@ -14,7 +14,7 @@ window.addEventListener('load', () => {
 
   document
     .querySelector('#topNotificationClear')
-    .addEventListener('click', (e) => {
+    .addEventListener('click', async function (e) {
       e.preventDefault();
 
       //fetch
