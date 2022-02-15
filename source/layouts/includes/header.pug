@@ -22,8 +22,8 @@ header.b-header.ph-block
           
             if authorized
               a.d-none.d-md-block( href="/pages/profile/" )
-                i( style="background-image: url( '/upload/portrait.jpg' );" )
-                  em.b-note-badge( style="background-color: #f00;" ) !
+                i.nc( style="background-image: url( '/upload/portrait.jpg' );" )
+                  include ../../components/notifications/count
                 span Иванов Пётр Васильевич
             else
               a.btn.btn-secondary.d-none.d-md-block( href="/pages/form-auth/" ) Личный кабинет

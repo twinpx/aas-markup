@@ -7,6 +7,11 @@ window.onload = function () {
   const store = new Vuex.Store({
     state: window.appealNewChangeFormStore,
     mutations: {
+      setAppealId(state) {
+        state.APPEAL_ID = state.hidden.find(
+          (h) => h.name === 'APPEAL_ID'
+        ).value;
+      },
       changeChecked(state, payload) {
         state.formBlocks[0].controls[payload.index].checked = payload.checked;
       },
@@ -284,6 +289,7 @@ window.onload = function () {
           ? false
           : true,
         isInvalid: false,
+        compare: this.controlValue,
       };
     },
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
@@ -324,18 +330,24 @@ window.onload = function () {
           payload.index = this.controlIndex;
         }
         store.commit('changeControl', payload);
-
+      },
+    },
+    methods: {
+      ajaxBitrix() {
         //AXAJ Bitrix
         if (window.BX) {
           BX.ajax.post(
             '/local/ajax/logs.php',
-            { id: 6, el: this.name, message: 'ajax log' },
+            {
+              id: 6,
+              el: this.$store.state.APPEAL_ID,
+              message: `${this.formControl.label}: ${this.controlValue}`,
+              level: 1,
+            },
             function (result) {}
           );
         }
       },
-    },
-    methods: {
       clickLink() {
         this.controlValue = this.formControl.completeBlock.value;
         this.isActive = true;
@@ -343,7 +355,8 @@ window.onload = function () {
         //if tel
         //autosave
         this.$emit('autosave');
-        //restartFormAutosaveTimeout();
+
+        this.ajaxBitrix();
       },
       inputControl() {
         //validate
@@ -352,7 +365,6 @@ window.onload = function () {
         }
         //autosave
         this.$emit('timeoutAutosave');
-        //restartFormAutosaveTimeout();
       },
       focusControl() {
         if (
@@ -362,6 +374,7 @@ window.onload = function () {
         ) {
           this.isInvalid = true;
         }
+        this.compare = this.controlValue;
       },
       blurControl() {
         if (this.controlValue !== '') {
@@ -370,8 +383,12 @@ window.onload = function () {
           this.isActive = false;
         }
         this.validate();
-        //autosave
-        this.$emit('autosave');
+
+        if (this.controlValue !== this.compare) {
+          //autosave
+          this.$emit('autosave');
+          this.ajaxBitrix();
+        }
       },
       validate() {
         if (
@@ -410,6 +427,7 @@ window.onload = function () {
         activeUser: {},
         activeHint: [],
         hover: false,
+        compare: this.controlValue,
       };
     },
 
@@ -426,7 +444,7 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" @mouseover="hover=true;" @mouseout="hover=false;">
-            <input :data-pattern="formControl.pattern" :data-required="formControl.required" ref="input" :id="id" type="text" :name="name" autocomplete="off" v-model="controlValue" @input="changeInput" @blur="blurInput($event)" @keydown.enter.prevent="enterInput" @keydown.up.prevent="upArrow()" @keydown.down.prevent="downArrow()">
+            <input :data-pattern="formControl.pattern" :data-required="formControl.required" ref="input" :id="id" type="text" :name="name" autocomplete="off" v-model="controlValue" @input="changeInput" @focus="focusInput" @blur="blurInput($event)" @keydown.enter.prevent="enterInput" @keydown.up.prevent="upArrow()" @keydown.down.prevent="downArrow()">
             <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
 
             <div class="b-input-clear" @click.prevent="clearInput()" v-show="isClearable"></div>
@@ -460,19 +478,25 @@ window.onload = function () {
           payload.index = this.controlIndex;
         }
         store.commit('changeControl', payload);
-
-        //AXAJ Bitrix
-        if (window.BX) {
-          BX.ajax.post(
-            '/local/ajax/logs.php',
-            { id: 6, el: this.name, message: 'ajax log' },
-            function (result) {}
-          );
-        }
       },
     },
 
     methods: {
+      ajaxBitrix() {
+        //AXAJ Bitrix
+        if (window.BX) {
+          BX.ajax.post(
+            '/local/ajax/logs.php',
+            {
+              id: 6,
+              el: this.$store.state.APPEAL_ID,
+              message: `${this.formControl.label}: ${this.controlValue}`,
+              level: 1,
+            },
+            function (result) {}
+          );
+        }
+      },
       clickLink() {
         this.controlValue = this.formControl.completeBlock.value;
         this.isActive = true;
@@ -480,7 +504,8 @@ window.onload = function () {
         //if tel
         //autosave
         this.$emit('autosave');
-        //restartFormAutosaveTimeout();
+
+        this.ajaxBitrix();
       },
       changeInput() {
         this.activeHint = [];
@@ -544,6 +569,9 @@ window.onload = function () {
         this.activeUser =
           this.users.find((user) => user.ORNZ === this.controlValue) || {};
       },
+      focusInput() {
+        this.compare = this.controlValue;
+      },
       blurInput(e) {
         if (e.target.value !== '') {
           this.isActive = true;
@@ -553,8 +581,11 @@ window.onload = function () {
         setTimeout(() => {
           this.users = [];
         }, 200);
-        //autosave
-        this.$emit('autosave');
+
+        if (this.controlValue !== this.compare) {
+          this.$emit('autosave');
+          this.ajaxBitrix();
+        }
       },
       clickHint(e) {
         let id = e.target.getAttribute('data-id');
@@ -767,7 +798,12 @@ window.onload = function () {
         if (window.BX) {
           BX.ajax.post(
             '/local/ajax/logs.php',
-            { id: 11, el: this.name, message: 'ajax log' },
+            {
+              id: 11,
+              el: this.$store.state.APPEAL_ID,
+              message: `${this.formControl.label}: ${this.label}`,
+              level: 1,
+            },
             function (result) {}
           );
         }
@@ -920,6 +956,7 @@ window.onload = function () {
           ? false
           : true,
         isInvalid: false,
+        compare: this.controlValue,
       };
     },
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
@@ -952,6 +989,21 @@ window.onload = function () {
     `,
 
     methods: {
+      ajaxBitrix() {
+        //AXAJ Bitrix
+        if (window.BX) {
+          BX.ajax.post(
+            '/local/ajax/logs.php',
+            {
+              id: 6,
+              el: this.$store.state.APPEAL_ID,
+              message: `${this.formControl.label}: ${this.controlValue}`,
+              level: 1,
+            },
+            function (result) {}
+          );
+        }
+      },
       clickLink() {
         this.controlValue = this.formControl.completeBlock.value;
         this.isActive = true;
@@ -959,6 +1011,8 @@ window.onload = function () {
         //if tel
         //autosave
         this.$emit('autosave');
+
+        this.ajaxBitrix();
       },
       inputControl() {
         //validate
@@ -976,15 +1030,6 @@ window.onload = function () {
         store.commit('changeControl', payload);
         //autosave
         this.$emit('timeoutAutosave');
-
-        //AXAJ Bitrix
-        if (window.BX) {
-          BX.ajax.post(
-            '/local/ajax/logs.php',
-            { id: 6, el: this.name, message: 'ajax log' },
-            function (result) {}
-          );
-        }
       },
       focusControl() {
         if (
@@ -994,6 +1039,7 @@ window.onload = function () {
         ) {
           this.isInvalid = true;
         }
+        thif.compare = this.controlValue;
       },
       blurControl() {
         if (this.controlValue !== '') {
@@ -1002,8 +1048,11 @@ window.onload = function () {
           this.isActive = false;
         }
         this.validate();
-        //autosave
-        this.$emit('autosave');
+
+        if (this.compare !== this.controlValue) {
+          this.$emit('autosave');
+          this.ajaxBitrix();
+        }
       },
       validate() {
         if (this.formControl.required && !this.controlValue) {
@@ -1106,14 +1155,31 @@ window.onload = function () {
             '/local/ajax/logs.php',
             {
               id: this.formControl.type === 'file' ? 9 : 7,
-              el: `${this.formControl.word}[${this.formControl.property}]`,
-              message: 'ajax log',
+              el: this.$store.state.APPEAL_ID,
+              message: `${this.formControl.label}:`,
+              level: 1,
             },
             function (result) {}
           );
         }
       },
       remove(idx) {
+        //find control
+        let control = this.$store.state.controlsBlock.controls.find(
+          (control) => control.property === this.formControl.property
+        );
+        if (!control) {
+          control = this.$store.state.confirmDocsBlock.items
+            .map((item) => {
+              return item.controls.find(
+                (control) => control.property === this.formControl.property
+              );
+            })
+            .find((elem) => elem);
+        }
+
+        let controlValue = control.value;
+
         this.$store.dispatch('removeControl', {
           property: this.formControl.property,
           index: idx,
@@ -1125,8 +1191,9 @@ window.onload = function () {
             '/local/ajax/logs.php',
             {
               id: this.formControl.type === 'file' ? 10 : 8,
-              el: `${this.formControl.word}[${this.formControl.property}]`,
-              message: 'ajax log',
+              el: this.$store.state.APPEAL_ID,
+              message: `${this.formControl.label}: ${controlValue}`,
+              level: 1,
             },
             function (result) {}
           );
@@ -1279,12 +1346,17 @@ window.onload = function () {
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
     emits: ['autosave'],
     watch: {
-      date() {
+      date(val) {
         //AXAJ Bitrix
         if (window.BX) {
           BX.ajax.post(
             '/local/ajax/logs.php',
-            { id: 6, el: this.name, message: 'ajax log' },
+            {
+              id: 6,
+              el: this.$store.state.APPEAL_ID,
+              message: `${this.formControl.label} ${val}`,
+              level: 1,
+            },
             function (result) {}
           );
         }
@@ -1369,15 +1441,16 @@ window.onload = function () {
       </div>
     `,
     watch: {
-      checked() {
+      checked(val) {
         //AXAJ Bitrix
         if (window.BX) {
           BX.ajax.post(
             '/local/ajax/logs.php',
             {
               id: 12,
-              el: this.$store.state.agreement.name,
-              message: 'ajax log',
+              el: this.$store.state.APPEAL_ID,
+              message: `${this.$store.state.agreement.text}: ${val}`,
+              level: 1,
             },
             function (result) {}
           );
@@ -1647,6 +1720,7 @@ window.onload = function () {
     },
     mounted() {
       this.timeoutAutosave();
+      this.$store.commit('setAppealId');
     },
   };
 
