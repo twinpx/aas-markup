@@ -271,6 +271,8 @@ window.onload = function () {
   Vue.component('formControl', {
     data() {
       return {
+        id: `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`,
+        name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
         controlValue: this.formControl.multy
           ? this.formControl.value[this.controlIndex].val
           : this.formControl.value,
@@ -291,7 +293,7 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" :class="{invalid: isInvalid}">
-            <input :data-pattern="formControl.pattern" :data-required="formControl.required" ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" type="text" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @focus="focusControl" @blur="blurControl" @input="inputControl" v-model="controlValue">
+            <input :data-pattern="formControl.pattern" :data-required="formControl.required" ref="input" :id="id" type="text" :name="name" autocomplete="off" @focus="focusControl" @blur="blurControl" @input="inputControl" v-model="controlValue">
             <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
           </div>
         </div>
@@ -322,6 +324,15 @@ window.onload = function () {
           payload.index = this.controlIndex;
         }
         store.commit('changeControl', payload);
+
+        //AXAJ Bitrix
+        if (window.BX) {
+          BX.ajax.post(
+            '/local/ajax/logs.php',
+            { id: 6, el: this.name, message: 'ajax log' },
+            function (result) {}
+          );
+        }
       },
     },
     methods: {
@@ -381,6 +392,8 @@ window.onload = function () {
   Vue.component('formControlOrnz', {
     data() {
       return {
+        id: `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`,
+        name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
         controlValue: this.formControl.multy
           ? this.formControl.value[this.controlIndex].val
           : this.formControl.value,
@@ -413,7 +426,7 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" @mouseover="hover=true;" @mouseout="hover=false;">
-            <input :data-pattern="formControl.pattern" :data-required="formControl.required" ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" type="text" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" v-model="controlValue" @input="changeInput" @blur="blurInput($event)" @keydown.enter.prevent="enterInput" @keydown.up.prevent="upArrow()" @keydown.down.prevent="downArrow()">
+            <input :data-pattern="formControl.pattern" :data-required="formControl.required" ref="input" :id="id" type="text" :name="name" autocomplete="off" v-model="controlValue" @input="changeInput" @blur="blurInput($event)" @keydown.enter.prevent="enterInput" @keydown.up.prevent="upArrow()" @keydown.down.prevent="downArrow()">
             <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
 
             <div class="b-input-clear" @click.prevent="clearInput()" v-show="isClearable"></div>
@@ -447,6 +460,15 @@ window.onload = function () {
           payload.index = this.controlIndex;
         }
         store.commit('changeControl', payload);
+
+        //AXAJ Bitrix
+        if (window.BX) {
+          BX.ajax.post(
+            '/local/ajax/logs.php',
+            { id: 6, el: this.name, message: 'ajax log' },
+            function (result) {}
+          );
+        }
       },
     },
 
@@ -740,6 +762,15 @@ window.onload = function () {
             });
           }
         }, 0);
+
+        //AXAJ Bitrix
+        if (window.BX) {
+          BX.ajax.post(
+            '/local/ajax/logs.php',
+            { id: 11, el: this.name, message: 'ajax log' },
+            function (result) {}
+          );
+        }
       },
       clearInputFile() {
         this.files = [];
@@ -876,6 +907,8 @@ window.onload = function () {
   Vue.component('formControlTextarea', {
     data() {
       return {
+        id: `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`,
+        name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
         controlValue: this.formControl.multy
           ? this.formControl.value[this.controlIndex].val
           : this.formControl.value,
@@ -897,7 +930,7 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" :class="{invalid: isInvalid}">
-            <textarea :data-required="formControl.required" ref="input" :id="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :name="formControl.word+'['+formControl.property+']['+fieldsetBlockIndex+']'" autocomplete="off" @focus="focusControl" @blur="blurControl" @input="inputControl" v-model="controlValue"></textarea>
+            <textarea :data-required="formControl.required" ref="input" :id="id" :name="name" autocomplete="off" @focus="focusControl" @blur="blurControl" @input="inputControl" v-model="controlValue"></textarea>
             <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
           </div>
         </div>
@@ -943,6 +976,15 @@ window.onload = function () {
         store.commit('changeControl', payload);
         //autosave
         this.$emit('timeoutAutosave');
+
+        //AXAJ Bitrix
+        if (window.BX) {
+          BX.ajax.post(
+            '/local/ajax/logs.php',
+            { id: 6, el: this.name, message: 'ajax log' },
+            function (result) {}
+          );
+        }
       },
       focusControl() {
         if (
@@ -1057,12 +1099,38 @@ window.onload = function () {
           value: '',
         });
         this.autosave();
+
+        //AXAJ Bitrix
+        if (window.BX) {
+          BX.ajax.post(
+            '/local/ajax/logs.php',
+            {
+              id: this.formControl.type === 'file' ? 9 : 7,
+              el: `${this.formControl.word}[${this.formControl.property}]`,
+              message: 'ajax log',
+            },
+            function (result) {}
+          );
+        }
       },
       remove(idx) {
         this.$store.dispatch('removeControl', {
           property: this.formControl.property,
           index: idx,
         });
+
+        //AXAJ Bitrix
+        if (window.BX) {
+          BX.ajax.post(
+            '/local/ajax/logs.php',
+            {
+              id: this.formControl.type === 'file' ? 10 : 8,
+              el: `${this.formControl.word}[${this.formControl.property}]`,
+              message: 'ajax log',
+            },
+            function (result) {}
+          );
+        }
       },
     },
     beforeMount() {
@@ -1210,6 +1278,18 @@ window.onload = function () {
     },
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
     emits: ['autosave'],
+    watch: {
+      date() {
+        //AXAJ Bitrix
+        if (window.BX) {
+          BX.ajax.post(
+            '/local/ajax/logs.php',
+            { id: 6, el: this.name, message: 'ajax log' },
+            function (result) {}
+          );
+        }
+      },
+    },
     methods: {
       futureDatesDisabled(date) {
         const today = new Date();
@@ -1288,6 +1368,22 @@ window.onload = function () {
         </div>
       </div>
     `,
+    watch: {
+      checked() {
+        //AXAJ Bitrix
+        if (window.BX) {
+          BX.ajax.post(
+            '/local/ajax/logs.php',
+            {
+              id: 12,
+              el: this.$store.state.agreement.name,
+              message: 'ajax log',
+            },
+            function (result) {}
+          );
+        }
+      },
+    },
     computed: {
       isDisabled() {
         //controls
