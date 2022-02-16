@@ -10,6 +10,8 @@ block title
 
 block content
 
+  include ../../components/notifications/template
+
   hr
 
   .container-fluid
@@ -18,13 +20,13 @@ block content
 
   hr
 
-  .container-fluid
+  .container-fluid 
 
-    include ../../components/notifications/inside
+    .nc( data-type="content" data-url="/components/notifications/response.json" )
 
     hr
 
-    include ../../components/notifications/popup
+    .nc( data-type="popup" data-url="/components/notifications/response.json" )
   
     h1 Пресс-релиз Круглого стола-вебинара аудиторов Уральского ТО 31 августа 2020 г.
   
@@ -40,7 +42,7 @@ block content
         
         p В работе Круглого стола приняли участие аудиторов и представители аудиторских организаций Уральского ТО СРО ААС, дистанционно подключились более 40 участников-аудиторов членов Уральского ТО СРО ААС.
 
-        include ../../components/notifications/inside
+        .nc( data-type="content" data-url="/components/notifications/response.json" )
         
         p В рамках мероприятия Сюткина Минзиля Галиулловна – член Правления СРО ААС, председатель Комиссии по контролю качества Уральского ТО СРО ААС, председатель Комитета по финансам, аудиту и налогообложению ХМРО Деловая Россия генеральный директор ЧОУ ДПО «Сибирский институт международного бизнес-образования», генеральный директор ООО «Югра-аудит», аудитор, налоговый консультант, к.э.н. Предложила обсуждение следующих вопросов:
         
