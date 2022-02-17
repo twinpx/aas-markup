@@ -3,7 +3,7 @@ header.b-header.ph-block
   .b-header-fixed-wrapper
 
     if notifications
-      .nc( data-type="top" data-url="/components/notifications/response.json" )
+      .nc( data-type="top" data-url="/components/notifications/response.json" data-id="4" )
 
     .container-fluid
 
@@ -21,9 +21,9 @@ header.b-header.ph-block
           .b-header__profile
           
             if authorized
+              .nc( data-type="count" data-url="/components/notifications/response.json" data-id="5" )
               a.d-none.d-md-block( href="/pages/profile/" )
                 i( style="background-image: url( '/upload/portrait.jpg' );" )
-                  .nc( data-type="count" data-url="/components/notifications/response.json" )
                 span Иванов Пётр Васильевич
             else
               a.btn.btn-secondary.d-none.d-md-block( href="/pages/form-auth/" ) Личный кабинет

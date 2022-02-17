@@ -3,10 +3,15 @@
 /*notification container*/
 .nc
   position relative
+  transition( transform .5s ease )
+  z-index 10
+
+  .header-fixed:not(.not-authorized ) .b-header__profile &
+    transform( translateX(calc(100% - 32px)))
 
 /*notification*/
 .notification
-  background: radial-gradient(farthest-corner at top, #0110C4 0%, #FF8000 100%) top right/200% 200%;
+  background: radial-gradient(farthest-corner at top, #0110C4 30%, #FF8000 70%) top right;
   background-size: 400% 400%
   color: #fff
   display: flex
@@ -72,7 +77,7 @@
       color #fff !important
       font-family $roboto
       font-weight $bold
-      font-size $11px !important
+      font-size $10px !important
       line-height $16px !important
       height $16px !important
       margin 0 !important
@@ -82,7 +87,7 @@
 
     .b-header__profile &
       top 0
-      left 32px
+      left 8px
 
       span
         top 7px
@@ -90,28 +95,35 @@
 
     .b-left-menu &
       top 0
-      left 0
+      left -17px
 
       span
         top 2px
         right 0
 
-  &--popup
+  &--modal
     height auto
     padding 70px
 
-    .notification__h3
-      font-family $roboto
-      font-size $24px
-      font-weight $bold
-      line-height 1.2
-      margin-bottom 2rem
-      letter-spacing -1px
-      text-align center
+    .notification
 
-    .notification__p
-      text-align center
-      margin-bottom 2rem
+      &__h3
+        font-family $roboto
+        font-size $24px
+        font-weight $bold
+        line-height 1.2
+        margin-bottom 2rem
+        letter-spacing -1px
+        text-align center
+
+      &__p
+        text-align center
+        margin-bottom 2rem
+
+    .modal & .close
+      width 16px
+      height 16px
+      transition(opacity .5s ease-in)
 
   &.notification--show
 
@@ -153,6 +165,9 @@
 
         &:focus
           box-shadow none
+
+    @media(max-width 767px)
+      display none
 
 @keyframes gradient
 	to

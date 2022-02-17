@@ -9,7 +9,7 @@
     .body--notifications &.ph-block--animated
       height calc(86px + 70px)
       
-  .container-fluid:not(.top-notification__content)
+  .container-fluid:not(.notification__content)
     position relative
     top 0
     transition( top .5s ease )
@@ -23,7 +23,7 @@
   &.ph-block--animated
     overflow visible
     
-    .container-fluid:not(.top-notification__content):before
+    .container-fluid:not(.notification__content):before
       background-color #fff
       z-index -1
 
@@ -94,6 +94,7 @@
     
   &__profile
     overflow hidden
+    padding-left 15px
   
     @media( min-width 768px )
       position absolute
@@ -107,9 +108,6 @@
         
       .header-fixed:not( .not-authorized ) &.width
         width 50px
-
-        .b-note-badge
-          left 16px
     
     a.d-none
       transition( transform .5s ease )
