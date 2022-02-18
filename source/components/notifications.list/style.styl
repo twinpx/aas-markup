@@ -18,3 +18,111 @@
         width 100%
         opacity 0
         z-index -1
+
+.b-notifications-list
+
+  table.table
+    font-family $roboto
+
+    th,
+    td
+      font-size $14px
+      text-align center
+      vertical-align middle
+      border-top none
+      border-bottom 1px solid $line-color
+      cursor pointer
+
+      &.asc,
+      &.desc
+        background-color #f2e4d866
+
+      @media( max-width 1399px )
+
+        &:nth-child(6)
+          display none
+
+      @media( max-width 1199px )
+
+        &:nth-child(5)
+          display none
+
+      @media( max-width 991px )
+
+        &:nth-child(4)
+          display none
+
+      @media( max-width 575px )
+
+        &:nth-child(2)
+          display none
+
+    th
+      padding-right 35px
+      padding-left 35px
+
+      &:first-child
+        text-align left
+        padding-left 1.5rem
+
+      &.asc,
+      &.desc
+        color $secondary-color-2
+        position relative
+
+        &:before
+          content ''
+          width 17px
+          height 17px
+          border-radius 51%
+          position absolute
+          top 50%
+          right 15px
+          margin-top -8px
+          background-color #EA5E21
+          z-index 1
+
+        &:after
+          content ''
+          width 5px
+          height 5px
+          border-right 1px solid #fff
+          border-bottom 1px solid #fff
+          transform( rotate( 45deg ))
+          position absolute
+          top 50%
+          right 21px
+          margin-top -3px
+          z-index 2
+
+      &.asc
+
+        &:after
+          transform( rotate( -135deg ))
+          margin-top -1px
+
+    td
+      width 150px
+
+      &:first-child
+        text-align left
+        width auto
+        max-width 150px
+
+        div
+          text-overflow ellipsis
+          overflow hidden
+          white-space nowrap
+        
+      &:last-child
+        padding-left 0
+        padding-right 0
+
+    tbody
+
+      tr
+        cursor pointer
+        transition( background-color .5s ease )
+      
+        &:hover
+          background-color #fcfcfc
