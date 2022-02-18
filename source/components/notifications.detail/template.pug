@@ -1,0 +1,11 @@
+// start /components/notifications.detail/
+
+//- push style and script file to the end of the page
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'notifications.detail'
+else
+  - var componentsArray = [ 'notifications.detail' ]
+
+.b-notifications-list detail
+
+// end /components/notifications.detail/
