@@ -19,6 +19,11 @@ window.appealIndexStore = {
       title: 'Завершены за месяц',
       num: 254,
     },
+    {
+      selected: true,
+      title: 'Выбрано',
+      num: 185999,
+    },
   ],
   filter: {
     controls: [

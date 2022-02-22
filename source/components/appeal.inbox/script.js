@@ -40,6 +40,69 @@ window.addEventListener('load', () => {
         state.query.sortField = payload.sortField;
         state.query.sortType = payload.sortType;
       },
+      setSelected(state, payload) {
+        state.numBlocks.find((block) => block.selected).num = payload;
+      },
+    },
+    getters: {
+      requestObj(state) {
+        const requestObj = {};
+
+        state.filter.controls.forEach((control) => {
+          switch (control.type) {
+            case 'text':
+              if (
+                control.value &&
+                control.count &&
+                control.value.length >= control.count
+              ) {
+                requestObj[control.code] = control.value;
+              }
+              break;
+            case 'select':
+              if (control.selected.code) {
+                requestObj[control.code] = control.selected.code;
+              }
+              break;
+            case 'date':
+              if (control.value[0]) {
+                requestObj.start = control.value[0];
+              }
+              if (control.value[1]) {
+                requestObj.end = control.value[1];
+              }
+          }
+        });
+
+        Object.keys(state.query).forEach((q) => {
+          if (state.table[q]) {
+            requestObj[q] = state.table[q];
+          }
+        });
+
+        return requestObj;
+      },
+      isDateFilled(state) {
+        return state.filter.controls.find((c) => c.type === 'date').value[0];
+      },
+    },
+    actions: {
+      getSelected({ commit, state }) {
+        (async () => {
+          const response = await fetch(
+            `${state.paths.getNewNum}${getQuery(store.getters.requestObj)}`,
+            {
+              headers: {
+                Authentication: 'secret',
+              },
+            }
+          );
+          const result = await response.json();
+          if (result.STATUS === 'Y') {
+            commit('setSelected', result.DATA.num);
+          }
+        })();
+      },
     },
   });
 
@@ -50,10 +113,27 @@ window.addEventListener('load', () => {
     template: `<div class="b-num-blocks" v-if="$store.state.numBlocks">
       <div class="b-num-block"
         v-for="block in $store.state.numBlocks"
-        :class="{'inactive': !block.new, 'b-num-block--counter': block.new}"
+        :class="{'inactive': !block.new && !block.selected, 'b-num-block--counter': block.new, 'b-num-block--selected': block.selected}"
         @click="getNew(block.new)">
-        <i>{{ block.title }}</i>
-        <b :class="{'b-num-block__b': block.new}">{{ block.num }}</b>
+        <div class="b-num-block__data">
+          <i>{{ block.title }}</i>
+          <b :class="{'b-num-block__b': block.new}">{{ block.num }}</b>
+        </div>
+        <div class="b-num-block__icon" v-if="block.selected">
+          <svg xmlns="http://www.w3.org/2000/svg" width="23.177" height="32" viewBox="0 0 23.177 32">
+            <g>
+              <path d="M28.171,8.7V29.869a2.062,2.062,0,0,1-2.062,2.063H7.056a2.062,2.062,0,0,1-2.062-2.063V1.994A2.062,2.062,0,0,1,7.056-.068H19.407Z" transform="translate(-4.994 0.068)" fill="#288c0a"/>
+            </g>
+            <path d="M20.6,8.506l7.569,3.118V8.7L23.88,7.429Z" transform="translate(-4.994 0.068)" fill="#0e5429"/>
+            <path d="M28.171,8.7h-6.7a2.062,2.062,0,0,1-2.062-2.063v-6.7Z" transform="translate(-4.994 0.068)" fill="#cef4ae"/>
+            <g transform="translate(5.029 11.693)">
+              <rect width="13.119" height="1.458" rx="0.729" transform="translate(0 2.577)" fill="#fff"/>
+              <rect width="7.853" height="1.458" rx="0.729" transform="translate(0 9.089)" fill="#fff"/>
+              <rect width="13.119" height="1.458" rx="0.729" transform="translate(2.511 13.119) rotate(-90)" fill="#fff"/>
+              <rect width="7.288" height="1.458" rx="0.729" transform="translate(9.149 7.29) rotate(-90)" fill="#fff"/>
+            </g>
+          </svg>
+        </div>
       </div>
     </div>`,
     data() {
@@ -219,6 +299,8 @@ window.addEventListener('load', () => {
         this.focusFlag = false;
       },
       inputDateRange() {
+        //get selected
+        store.dispatch('getSelected');
         //reset page
         store.commit('changePage', 1);
         //render table
@@ -247,6 +329,10 @@ window.addEventListener('load', () => {
     },
     methods: {
       onSelect() {
+        //get selected
+        if (store.getters.isDateFilled) {
+          store.dispatch('getSelected');
+        }
         //reset page
         store.commit('changePage', 1);
         //render table
@@ -290,6 +376,10 @@ window.addEventListener('load', () => {
     methods: {
       changeInput() {
         this.getTableData();
+        //get selected
+        if (store.getters.isDateFilled) {
+          store.dispatch('getSelected');
+        }
       },
       clearInput() {
         //clear text
@@ -421,42 +511,10 @@ window.addEventListener('load', () => {
     methods: {
       renderTable() {
         (async () => {
-          const requestObj = {};
-
-          store.state.filter.controls.forEach((control) => {
-            switch (control.type) {
-              case 'text':
-                if (
-                  control.value &&
-                  control.count &&
-                  control.value.length >= control.count
-                ) {
-                  requestObj[control.code] = control.value;
-                }
-                break;
-              case 'select':
-                if (control.selected.code) {
-                  requestObj[control.code] = control.selected.code;
-                }
-                break;
-              case 'date':
-                if (control.value[0]) {
-                  requestObj.start = control.value[0];
-                }
-                if (control.value[1]) {
-                  requestObj.end = control.value[1];
-                }
-            }
-          });
-
-          Object.keys(store.state.query).forEach((q) => {
-            if (store.state.table[q]) {
-              requestObj[q] = store.state.table[q];
-            }
-          });
-
           const response = await fetch(
-            `${this.$store.state.paths.getTable}${getQuery(requestObj)}`,
+            `${this.$store.state.paths.getTable}${getQuery(
+              store.getters.requestObj
+            )}`,
             {
               headers: {
                 Authentication: 'secret',
