@@ -1,5 +1,5 @@
 window.addEventListener('load', () => {
-  if (!window.Vue && !window.Vuex) return;
+  if (!window.Vue || !window.Vuex) return;
 
   Vue.use(Vuex);
 
@@ -9,9 +9,7 @@ window.addEventListener('load', () => {
     },
     mutations: {
       setNew(state, payload) {
-        state.numBlocks.find(
-          (block) => block.new
-        ).num = payload;
+        state.numBlocks.find((block) => block.new).num = payload;
       },
       changeTableHtml(state, payload) {
         state.table.html = payload;
@@ -551,7 +549,7 @@ window.addEventListener('load', () => {
                 controlCode: this.$store.state.filter.controls.find(
                   (control) => control.type === 'date'
                 ).code,
-                controlValue: [ queryObject.start || '', queryObject.end || '' ],
+                controlValue: [queryObject.start || '', queryObject.end || ''],
               });
               break;
             case 'sortField' || 'sortType':
