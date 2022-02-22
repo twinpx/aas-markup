@@ -6,6 +6,9 @@
   transition( transform .5s ease )
   z-index 10
 
+  &[data-type=content] .notification
+    margin 2rem 0
+
   .header-fixed:not(.not-authorized ) .b-header__profile &
     transform( translateX(calc(100% - 32px)))
 
