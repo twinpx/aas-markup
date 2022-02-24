@@ -1,4 +1,10 @@
 window.addEventListener('load', () => {
+  //icon print
+  document.getElementById('iconPrint').addEventListener('click', (e) => {
+    e.preventDefault();
+    window.print();
+  });
+
   //Vue app form
   if (!window.Vue) return;
 
@@ -10,7 +16,7 @@ window.addEventListener('load', () => {
       return {
         ...window.appealDetailData,
         isLoading: false,
-        initialCode: null
+        initialCode: null,
       };
     },
     computed: {
@@ -108,6 +114,6 @@ window.addEventListener('load', () => {
     },
     mounted() {
       this.initialCode = this.select.selectedOption.code;
-    }
+    },
   });
 });

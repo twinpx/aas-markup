@@ -5,6 +5,55 @@ if componentsArray
   - componentsArray[ componentsArray.length ] = 'appeal.detail'
 else
   - var componentsArray = [ 'appeal.detail' ]
+
+#printTemplate( style="display: none;")
+
+  table.table-800.mb-100
+    col( width="400" )
+    col( width="400" )
+    tr
+      td
+      td
+
+        table.table-100
+          tr
+            td.text-right.text-11
+              b
+                i Обращение №1957ЛК240222<br>Приложение № 1
+          tr
+            td В СРО ААС<br>от аудиторской организации
+          tr
+            td
+              table.table-100
+                col
+                col( width="5" )
+                tr
+                  td.pb-3
+                    table.table-100
+                      tr
+                        td.border &nbsp;
+                  td.text-right.text-bottom ,
+          tr
+            td.text-center.text-11 (наименование)
+          tr
+            td
+              table.table-100
+                col( width="60" )
+                col
+                col( width="5" )
+                tr
+                  td.text-bottom ОРНЗ
+                  td.pb-3
+                    table.table-100
+                      tr
+                        td.border &nbsp;
+                  td.text-right.text-bottom ,
+          tr
+            td.text-right в лице
+          tr
+            td.border &nbsp;
+          tr
+            td.text-center.text-11 (должность, ФИО)
   
 .b-appeal-detail.ph-block
 
@@ -124,7 +173,7 @@ else
 
     script( src="/components/appeal.detail/store.js" )
 
-    .row 
+    #changeStatus.row 
       .col-sm-6 
         h3 Изменение статуса
         hr
@@ -132,11 +181,25 @@ else
 
       hr.d-block.d-sm-none.w-100
       .col-sm-6 
-        h3 История изменения обращения
+        h3.d-flex.align-items-center
+          span.pr-4 История изменения обращения
+          svg#iconPrint.flex-shrink-0(xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32")
+            rect(width="32" height="32" rx="10" fill="#f0f0f0")
+            g(transform="translate(-296 -184)")
+              g(transform="translate(300 188)")
+                path(d="M0,5H9.5V3c0-2-.75-3-3-3H3C.75,0,0,1,0,3Z" transform="translate(7.25 2)" fill="none" stroke="#e27d41" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5")
+                path(d="M8,0V4A2.652,2.652,0,0,1,5,7H3A2.652,2.652,0,0,1,0,4V0Z" transform="translate(8 15)" fill="none" stroke="#e27d41" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5")
+                path(d="M18,3V8a2.652,2.652,0,0,1-3,3H13V8H5v3H3A2.652,2.652,0,0,1,0,8V3A2.652,2.652,0,0,1,3,0H15A2.652,2.652,0,0,1,18,3Z" transform="translate(3 7)" fill="none" stroke="#e27d41" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5")
+                path(d="M10,0H0" transform="translate(7 15)" fill="none" stroke="#e27d41" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5")
+                path(d="M0,0H3" transform="translate(7 11)" fill="none" stroke="#e27d41" stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5")
+                path(d="M0,0H24V24H0Z" fill="none" opacity="0")
+
         hr
-        p 13.01.2011 13:01 Обращение создано. Ожидает рассмотрения.
-        p 13.01.2011 14:37 Изменен статус «В работе».
-        p 13.01.2011 14:37 Добавлен комментарий.
-        p 13.01.2011 15:37 Изменен статус «Исполнено».
+            
+        .print-content
+          p 13.01.2011 13:01 Обращение создано. Ожидает рассмотрения.
+          p 13.01.2011 14:37 Изменен статус «В работе».
+          p 13.01.2011 14:37 Добавлен комментарий.
+          p 13.01.2011 15:37 Изменен статус «Исполнено».
 
 // end /components/appeal.detail/
