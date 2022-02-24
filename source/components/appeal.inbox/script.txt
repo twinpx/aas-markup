@@ -41,7 +41,9 @@ window.addEventListener('load', () => {
         state.query.sortType = payload.sortType;
       },
       setSelected(state, payload) {
-        state.numBlocks.find((block) => block.selected).num = payload;
+        const selected = state.numBlocks.find((block) => block.selected);
+        selected.num = payload.num;
+        selected.link = payload.link;
       },
     },
     getters: {
@@ -90,7 +92,7 @@ window.addEventListener('load', () => {
       getSelected({ commit, state }) {
         (async () => {
           const response = await fetch(
-            `${state.paths.getNewNum}${getQuery(store.getters.requestObj)}`,
+            `${state.paths.getSelected}${getQuery(store.getters.requestObj)}`,
             {
               headers: {
                 Authentication: 'secret',
@@ -99,7 +101,7 @@ window.addEventListener('load', () => {
           );
           const result = await response.json();
           if (result.STATUS === 'Y') {
-            commit('setSelected', result.DATA.num);
+            commit('setSelected', result.DATA);
           }
         })();
       },
@@ -113,8 +115,8 @@ window.addEventListener('load', () => {
     template: `<div class="b-num-blocks" v-if="$store.state.numBlocks">
       <div class="b-num-block"
         v-for="block in $store.state.numBlocks"
-        :class="{'inactive': !block.new && !block.selected, 'b-num-block--counter': block.new, 'b-num-block--selected': block.selected}"
-        @click="getNew(block.new)">
+        :class="{'inactive': !block.new && !block.selected, 'b-num-block--counter': block.new, 'b-num-block--selected': block.selected, 'b-num-block--none':( block.selected && block.num === null)}"
+        @click="click(block)">
         <div class="b-num-block__data">
           <i>{{ block.title }}</i>
           <b :class="{'b-num-block__b': block.new}">{{ block.num }}</b>
@@ -141,6 +143,15 @@ window.addEventListener('load', () => {
     },
     emits: ['rendertable', 'seturl'],
     methods: {
+      click(block) {
+        if (block.new) {
+          this.getNew(block.new);
+        } else if (block.selected) {
+          this.getSelected(block.link);
+        } else {
+          return;
+        }
+      },
       getNew(newFlag) {
         if (!newFlag) return;
         //reset values
@@ -176,6 +187,9 @@ window.addEventListener('load', () => {
         this.$emit('rendertable');
         //set URL
         this.$emit('seturl');
+      },
+      getSelected(link) {
+        window.open(link);
       },
     },
   });
@@ -300,7 +314,11 @@ window.addEventListener('load', () => {
       },
       inputDateRange() {
         //get selected
-        store.dispatch('getSelected');
+        if (this.dateRange[0]) {
+          store.dispatch('getSelected');
+        } else {
+          store.commit('setSelected', { num: null, link: null });
+        }
         //reset page
         store.commit('changePage', 1);
         //render table
@@ -609,6 +627,9 @@ window.addEventListener('load', () => {
                 ).code,
                 controlValue: [queryObject.start || '', queryObject.end || ''],
               });
+
+              //get selected block
+              store.dispatch('getSelected');
               break;
             case 'sortField' || 'sortType':
               store.commit('changeSorting', {

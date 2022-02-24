@@ -3,6 +3,7 @@ window.appealIndexStore = {
   paths: {
     getTable: '/components/appeal.inbox/table.json',
     getNewNum: '/components/appeal.inbox/newNum.json',
+    getSelected: '/components/appeal.inbox/selected.json',
     src: '/template/images/',
   },
   numBlocks: [
@@ -22,7 +23,7 @@ window.appealIndexStore = {
     {
       selected: true,
       title: 'Выбрано',
-      num: 185999,
+      num: null,
     },
   ],
   filter: {
