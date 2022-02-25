@@ -1,4 +1,10 @@
 window.addEventListener('load', () => {
+  //icon print
+  document.getElementById('iconPrint').addEventListener('click', (e) => {
+    e.preventDefault();
+    window.print();
+  });
+  
   //Vue app form
   if (!window.Vue) return;
 
