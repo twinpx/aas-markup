@@ -21,6 +21,31 @@
 
 .b-notifications-list
 
+  .ph-content.content--load-circle
+    position relative
+
+    &:before
+      content ''
+      display block
+      position absolute
+      top 0
+      left 0
+      width 100%
+      height 100%
+      background-color #ffffff88
+
+    &:after
+      content ""
+      position absolute
+      height 70px
+      width 70px
+      top calc(50% - 35px)
+      right calc(50% - 35px)
+      animation circle 1.3s infinite linear 
+      border 4px solid $primary-color
+      border-radius 50%
+      border-right-color transparent
+
   table.table
     font-family $roboto
 
@@ -60,46 +85,11 @@
     th
       padding-right 35px
       padding-left 35px
+      cursor default
 
       &:first-child
         text-align left
         padding-left 1.5rem
-
-      &.asc,
-      &.desc
-        color $secondary-color-2
-        position relative
-
-        &:before
-          content ''
-          width 17px
-          height 17px
-          border-radius 51%
-          position absolute
-          top 50%
-          right 15px
-          margin-top -8px
-          background-color #EA5E21
-          z-index 1
-
-        &:after
-          content ''
-          width 5px
-          height 5px
-          border-right 1px solid #fff
-          border-bottom 1px solid #fff
-          transform( rotate( 45deg ))
-          position absolute
-          top 50%
-          right 21px
-          margin-top -3px
-          z-index 2
-
-      &.asc
-
-        &:after
-          transform( rotate( -135deg ))
-          margin-top -1px
 
     td
       width 150px

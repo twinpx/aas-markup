@@ -22,9 +22,17 @@
       &.i-forward
         margin-right 0
       
-    span.i-active
+    span.i-active,
+    &__current
       display inline-block
       vertical-align top
+      pointer-events none
+
+      &,
+      &:hover,
+      &:active
+        color $text-color
+        opacity 1
       
     @media( max-width 575px )
       text-align center
