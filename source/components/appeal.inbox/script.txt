@@ -115,7 +115,7 @@ window.addEventListener('load', () => {
     template: `<div class="b-num-blocks" v-if="$store.state.numBlocks">
       <div class="b-num-block"
         v-for="block in $store.state.numBlocks"
-        :class="{'inactive': !block.new && !block.selected, 'b-num-block--counter': block.new, 'b-num-block--selected': block.selected, 'b-num-block--none':( block.selected && block.num === null)}"
+        :class="{'inactive': !block.new && !block.selected, 'b-num-block--counter': block.new, 'b-num-block--selected': block.selected, 'b-num-block--none':( block.selected && !Number(block.num))}"
         @click="click(block)">
         <div class="b-num-block__data">
           <i>{{ block.title }}</i>
