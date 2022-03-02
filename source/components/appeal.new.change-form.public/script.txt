@@ -131,6 +131,7 @@ window.onload = function () {
     },
   });
 
+  Vue.component('v-select', VueSelect.VueSelect);
   Vue.component('date-picker', DatePicker);
 
   //hidden fields
@@ -237,6 +238,7 @@ window.onload = function () {
         <form-control-date v-else-if="formControl.type==='date'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex"  @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-date>
         <form-control-textarea v-else-if="formControl.type==='textarea'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-textarea>
         <form-control-ornz v-else-if="formControl.type==='ornz'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-ornz>
+        <form-control-select v-else-if="formControl.type==='select'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-select>
         <form-control v-else :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control>
       </div>
     </div>
@@ -289,6 +291,7 @@ window.onload = function () {
           ? false
           : true,
         isInvalid: false,
+        compare: this.controlValue,
       };
     },
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
@@ -340,7 +343,7 @@ window.onload = function () {
             {
               id: 6,
               el: this.$store.state.APPEAL_ID,
-              message: `${this.formControl.label} ${this.controlValue}`,
+              message: `${this.formControl.label}: ${this.controlValue}`,
               level: 1,
             },
             function (result) {}
@@ -364,8 +367,6 @@ window.onload = function () {
         }
         //autosave
         this.$emit('timeoutAutosave');
-
-        this.ajaxBitrix();
       },
       focusControl() {
         if (
@@ -375,6 +376,7 @@ window.onload = function () {
         ) {
           this.isInvalid = true;
         }
+        this.compare = this.controlValue;
       },
       blurControl() {
         if (this.controlValue !== '') {
@@ -383,8 +385,12 @@ window.onload = function () {
           this.isActive = false;
         }
         this.validate();
-        //autosave
-        this.$emit('autosave');
+
+        if (this.controlValue !== this.compare) {
+          //autosave
+          this.$emit('autosave');
+          this.ajaxBitrix();
+        }
       },
       validate() {
         if (
@@ -423,6 +429,7 @@ window.onload = function () {
         activeUser: {},
         activeHint: [],
         hover: false,
+        compare: this.controlValue,
       };
     },
 
@@ -439,7 +446,7 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <div class="b-float-label" @mouseover="hover=true;" @mouseout="hover=false;">
-            <input :data-pattern="formControl.pattern" :data-required="formControl.required" ref="input" :id="id" type="text" :name="name" autocomplete="off" v-model="controlValue" @input="changeInput" @blur="blurInput($event)" @keydown.enter.prevent="enterInput" @keydown.up.prevent="upArrow()" @keydown.down.prevent="downArrow()">
+            <input :data-pattern="formControl.pattern" :data-required="formControl.required" ref="input" :id="id" type="text" :name="name" autocomplete="off" v-model="controlValue" @input="changeInput" @focus="focusInput" @blur="blurInput($event)" @keydown.enter.prevent="enterInput" @keydown.up.prevent="upArrow()" @keydown.down.prevent="downArrow()">
             <label ref="label" :for="formControl.word+'_'+formControl.property+'_'+fieldsetBlockIndex" :class="{active: isActive}">{{formControl.label}}</label>
 
             <div class="b-input-clear" @click.prevent="clearInput()" v-show="isClearable"></div>
@@ -485,7 +492,7 @@ window.onload = function () {
             {
               id: 6,
               el: this.$store.state.APPEAL_ID,
-              message: `${this.formControl.label} ${this.controlValue}`,
+              message: `${this.formControl.label}: ${this.controlValue}`,
               level: 1,
             },
             function (result) {}
@@ -564,6 +571,9 @@ window.onload = function () {
         this.activeUser =
           this.users.find((user) => user.ORNZ === this.controlValue) || {};
       },
+      focusInput() {
+        this.compare = this.controlValue;
+      },
       blurInput(e) {
         if (e.target.value !== '') {
           this.isActive = true;
@@ -573,10 +583,11 @@ window.onload = function () {
         setTimeout(() => {
           this.users = [];
         }, 200);
-        //autosave
-        this.$emit('autosave');
 
-        this.ajaxBitrix();
+        if (this.controlValue !== this.compare) {
+          this.$emit('autosave');
+          this.ajaxBitrix();
+        }
       },
       clickHint(e) {
         let id = e.target.getAttribute('data-id');
@@ -792,7 +803,7 @@ window.onload = function () {
             {
               id: 11,
               el: this.$store.state.APPEAL_ID,
-              message: `${this.formControl.label} ${this.label}`,
+              message: `${this.formControl.label}: ${this.label}`,
               level: 1,
             },
             function (result) {}
@@ -947,6 +958,7 @@ window.onload = function () {
           ? false
           : true,
         isInvalid: false,
+        compare: this.controlValue,
       };
     },
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
@@ -987,7 +999,7 @@ window.onload = function () {
             {
               id: 6,
               el: this.$store.state.APPEAL_ID,
-              message: `${this.formControl.label} ${this.controlValue}`,
+              message: `${this.formControl.label}: ${this.controlValue}`,
               level: 1,
             },
             function (result) {}
@@ -1029,6 +1041,7 @@ window.onload = function () {
         ) {
           this.isInvalid = true;
         }
+        thif.compare = this.controlValue;
       },
       blurControl() {
         if (this.controlValue !== '') {
@@ -1037,10 +1050,11 @@ window.onload = function () {
           this.isActive = false;
         }
         this.validate();
-        //autosave
-        this.$emit('autosave');
 
-        this.ajaxBitrix();
+        if (this.compare !== this.controlValue) {
+          this.$emit('autosave');
+          this.ajaxBitrix();
+        }
       },
       validate() {
         if (this.formControl.required && !this.controlValue) {
@@ -1048,6 +1062,62 @@ window.onload = function () {
         } else {
           this.isInvalid = false;
         }
+      },
+    },
+  });
+
+  //form control select
+  Vue.component('formControlSelect', {
+    data() {
+      return {
+        id: `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`,
+        name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
+        options: this.formControl.options,
+        selectedOption: this.formControl.multy
+          ? this.formControl.value[this.controlIndex].val ||
+            this.formControl.selectedOption ||
+            this.formControl.options[0]
+          : this.formControl.selectedOption || this.formControl.options[0],
+        isInvalid: false,
+      };
+    },
+    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
+    emits: ['autosave', 'timeoutAutosave'],
+    template: `
+    <div>
+      <div class="row align-items-center">
+        <div class="col-lg-6 col-12">
+          <div class="b-float-label-select-vc form-control-select">
+            <v-select :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="selectedOption"></v-select>
+            <label>{{ formControl.label }}</label>
+          </div></div>
+          <hr class="hr--xs d-block d-lg-none w-100" v-if="!formControl.multy || !controlIndex">
+          <div class="col-lg-6 col-12 small" v-if="!formControl.multy || !controlIndex">
+            <span class="text-muted" v-if="this.formControl.completeBlock && this.formControl.completeBlock.title">{{ this.formControl.completeBlock.title }}</span>
+            <span v-if="this.formControl.completeBlock && this.formControl.completeBlock.title">
+              <a v-if="this.formControl.completeBlock.value" class="b-complete-link" ref="link" href="" @click.prevent="clickLink">
+                {{ this.formControl.completeBlock.value }}
+                <span class="icon" style="background-image: url( '/template/images/copy.svg' );"></span>
+              </a>
+              <span v-else class="text-muted">Пусто.</span>
+            </span>
+            <div v-if="this.formControl.completeBlock && this.formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ this.formControl.completeBlock.comment }}</div>
+          </div>
+        </div>
+        <hr class="hr--sl">
+      </div>`,
+    methods: {
+      onSelect() {
+        //get selected
+        if (store.getters.isDateFilled) {
+          store.dispatch('getSelected');
+        }
+        //reset page
+        store.commit('changePage', 1);
+        //render table
+        this.$emit('rendertable');
+        //set URL
+        this.$emit('seturl');
       },
     },
   });
@@ -1082,6 +1152,14 @@ window.onload = function () {
           <transition-group name="list" tag="div" >
             <div v-for="(valueObject, idx) in formControl.value" :key="valueObject.id" class="multy-control-wrapper">
               <form-control-textarea :formControl="formControl" :fieldsetBlockIndex="idx" :controlIndex="idx" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-textarea>
+              <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
+            </div>
+          </transition-group>
+        </div>
+        <div v-else-if="formControl.type==='select'">
+          <transition-group name="list" tag="div" >
+            <div v-for="(valueObject, idx) in formControl.value" :key="valueObject.id" class="multy-control-wrapper">
+              <form-control-select :formControl="formControl" :fieldsetBlockIndex="idx" :controlIndex="idx" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-select>
               <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
             </div>
           </transition-group>
@@ -1143,14 +1221,31 @@ window.onload = function () {
             '/local/ajax/logs.php',
             {
               id: this.formControl.type === 'file' ? 9 : 7,
-              el: `${this.formControl.word}[${this.formControl.property}]`,
-              message: 'ajax log',
+              el: this.$store.state.APPEAL_ID,
+              message: `${this.formControl.label}:`,
+              level: 1,
             },
             function (result) {}
           );
         }
       },
       remove(idx) {
+        //find control
+        let control = this.$store.state.controlsBlock.controls.find(
+          (control) => control.property === this.formControl.property
+        );
+        if (!control) {
+          control = this.$store.state.confirmDocsBlock.items
+            .map((item) => {
+              return item.controls.find(
+                (control) => control.property === this.formControl.property
+              );
+            })
+            .find((elem) => elem);
+        }
+
+        let controlValue = control.value;
+
         this.$store.dispatch('removeControl', {
           property: this.formControl.property,
           index: idx,
@@ -1162,8 +1257,9 @@ window.onload = function () {
             '/local/ajax/logs.php',
             {
               id: this.formControl.type === 'file' ? 10 : 8,
-              el: `${this.formControl.word}[${this.formControl.property}]`,
-              message: 'ajax log',
+              el: this.$store.state.APPEAL_ID,
+              message: `${this.formControl.label}: ${controlValue}`,
+              level: 1,
             },
             function (result) {}
           );
@@ -1411,15 +1507,16 @@ window.onload = function () {
       </div>
     `,
     watch: {
-      checked() {
+      checked(val) {
         //AXAJ Bitrix
         if (window.BX) {
           BX.ajax.post(
             '/local/ajax/logs.php',
             {
               id: 12,
-              el: this.$store.state.agreement.name,
-              message: 'ajax log',
+              el: this.$store.state.APPEAL_ID,
+              message: `${this.$store.state.agreement.text}: ${val}`,
+              level: 1,
             },
             function (result) {}
           );

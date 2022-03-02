@@ -39,6 +39,91 @@ window.appealNewChangeFormStore = {
         },
       },
       {
+        multy: true,
+        value: [''],
+        property: '186',
+        word: 'QUANTITY',
+        type: 'date',
+        required: false,
+        label: 'Дата*',
+        completeBlock: {
+          comment: 'Вы можете добавить несколько дат.',
+        },
+      },
+      {
+        multy: true,
+        value: [''],
+        property: 41,
+        word: 'PROPERTY',
+        sort: 0,
+        label: 'Select *',
+        type: 'select',
+        required: true,
+        options: [
+          {
+            label: 'Ожидает проверки',
+            code: '',
+          },
+          {
+            label: 'В работе',
+            code: 'prop1',
+          },
+          {
+            label: 'Отклонено',
+            code: 'prop2',
+          },
+          {
+            label: 'Выполнено',
+            code: 'prop3',
+          },
+        ],
+        selectedOption: {
+          label: 'Ожидает проверки',
+          code: '',
+        },
+        completeBlock: {
+          title: '',
+          value: '',
+          comment: '',
+        },
+      },
+
+      {
+        property: 40,
+        word: 'PROPERTY',
+        sort: 0,
+        label: 'Select *',
+        type: 'select',
+        required: true,
+        options: [
+          {
+            label: 'Ожидает проверки',
+            code: '',
+          },
+          {
+            label: 'В работе',
+            code: 'prop1',
+          },
+          {
+            label: 'Отклонено',
+            code: 'prop2',
+          },
+          {
+            label: 'Выполнено',
+            code: 'prop3',
+          },
+        ],
+        selectedOption: {
+          label: 'Ожидает проверки',
+          code: '',
+        },
+        completeBlock: {
+          title: '',
+          value: '',
+          comment: 'Comment',
+        },
+      },
+      {
         property: 42,
         word: 'PROPERTY',
         sort: 0,
