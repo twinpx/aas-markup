@@ -7,6 +7,12 @@ window.onload = function () {
   const store = new Vuex.Store({
     state: window.appealNewChangeFormStore,
     mutations: {
+      setSelected(state, payload) {
+        let control = state.controlsBlock.controls.find(
+          (c) => String(c.property) === String(payload.property)
+        );
+        Vue.set(control, 'selectedOption', payload.selectedOption);
+      },
       setAppealId(state) {
         state.APPEAL_ID = state.hidden.find(
           (h) => h.name === 'APPEAL_ID'
@@ -1090,6 +1096,7 @@ window.onload = function () {
           <div class="b-float-label-select-vc form-control-select">
             <v-select :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="selectedOption"></v-select>
             <label>{{ formControl.label }}</label>
+            <input type="hidden" :name="name" :value="formControl.selectedOption.code">
           </div></div>
           <hr class="hr--xs d-block d-lg-none w-100" v-if="!formControl.multy || !controlIndex">
           <div class="col-lg-6 col-12 small" v-if="!formControl.multy || !controlIndex">
@@ -1108,16 +1115,12 @@ window.onload = function () {
       </div>`,
     methods: {
       onSelect() {
-        //get selected
-        if (store.getters.isDateFilled) {
-          store.dispatch('getSelected');
-        }
-        //reset page
-        store.commit('changePage', 1);
-        //render table
-        this.$emit('rendertable');
-        //set URL
-        this.$emit('seturl');
+        this.$store.commit('setSelected', {
+          property: this.formControl.property,
+          selectedOption: this.selectedOption,
+        });
+        //autosave
+        this.$emit('autosave');
       },
     },
   });

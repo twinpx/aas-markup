@@ -79,7 +79,7 @@ window.appealNewChangeFormStore = {
         ],
         selectedOption: {
           label: 'Ожидает проверки',
-          code: '',
+          code: 'prop45',
         },
         completeBlock: {
           title: '',
