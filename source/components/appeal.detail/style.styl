@@ -158,6 +158,10 @@ form .btn
 
 #iconPrint
   cursor pointer
+  transition( opacity .5s ease )
+
+  &:hover
+    opacity .7
 
 #printTemplate
   display none
@@ -187,7 +191,7 @@ form .btn
 
   td
     font-family "Times New Roman", serif !important
-    font-size 13pt !important
+    font-size 22px !important
     line-height 1.2 !important
     vertical-align top !important
 
@@ -213,10 +217,10 @@ form .btn
       padding-bottom 30px !important
 
     &.text-11
-      font-size 11pt !important
+      font-size 18px !important
 
     &.text-9
-      font-size 9pt !important
+      font-size 16px !important
 
   td.border
     border none !important
@@ -227,22 +231,34 @@ form .btn
 
   h1,
   .b-appeal-detail h3,
+  .b-appeal-detail .h3,
   .b-appeal-detail hr,
   .b-appeal-detail .row,
   .b-appeal-detail__data,
   .b-appeal-detail #changeStatus.row .col-sm-6:nth-of-type(1)
+  .b-appeal-detail svg
     display none !important
 
   #printTemplate,
   .b-appeal-detail #changeStatus.row
     display block !important
-    font-family "Times New Roman", serif !important
-    font-size 13pt !important
+    font-family "Open Sans", Arial, sans-serif !important
+    font-size 22px !important
     line-height 1.2 !important
+    color #000
+
+  .b-appeal-detail .print-content h3,
+  .b-appeal-detail .print-content .h3
+    display block !important
+    font-size 30px !important
 
   #printTemplate .col-sm-6,
+  .col-sm-6,
   .col-md-9
     max-width 100% !important
     flex 0 0 100% !important
+
+  #printTemplate .col-sm-6
+    width 100%
 
     
