@@ -1120,7 +1120,9 @@ window.onload = function () {
           selectedOption: this.selectedOption,
         });
         //autosave
-        this.$emit('autosave');
+        setTimeout(() => {
+          this.$emit('autosave');
+        }, 0);
       },
     },
   });
