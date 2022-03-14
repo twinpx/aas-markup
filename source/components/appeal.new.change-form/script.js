@@ -652,6 +652,8 @@ window.onload = function () {
     data() {
       return {
         loading: false,
+        fileLoaded: 0, //%
+        xhrStatus: '', //'Y', 'E'
         isActive: true,
         files: [],
         filenameLocal: this.formControl.multy
@@ -677,13 +679,14 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <span class="b-float-label-file__clear" @click.prevent="clearInputFile" v-if="isClearable"></span>
-          <div class="b-float-label--file" :class="{'filled': isFilled, 'invalid': !!invalid, 'btn--load-circle': isLoading }" ref="controlFile" >
+          <div class="b-float-label--file" :class="{'filled': isFilled, 'progressing': isLoading, 'invalid': !!invalid }" ref="controlFile" >
             <span class="b-float-label-file__label">{{ formControl.label }}</span>
 
             <svg xmlns="http://www.w3.org/2000/svg" width="17.383" height="24" viewBox="0 0 17.383 24" v-html="icon"></svg>
 
             <input type="file" :data-value="fileid" :data-required="required" :name="name" :id="id" @change="uploadFile($refs.inputFile.files)" ref="inputFile" />
             <label :for="id" class="active" v-html="label" ref="dropzone" ></label>
+            <div class="b-float-label__progressbar" v-show="isLoading && !invalid" ref="progressbar">{{fileLoaded}}%</div>
           </div>
         </div>
         <hr class="hr--xs d-block d-lg-none w-100">
@@ -728,7 +731,9 @@ window.onload = function () {
           : this.formControl.value;
       },
       invalid() {
-        if (this.files[0] && this.files[0].size && this.files[0].name) {
+        if (this.xhrStatus === 'E') {
+          return 'Ошибка загрузки';
+        } else if (this.files[0] && this.files[0].size && this.files[0].name) {
           if (this.files[0].size >= this.formControl.maxSize) {
             this.files = [];
             return `Размер файла превышает ${this.formatSize(
@@ -773,6 +778,8 @@ window.onload = function () {
     methods: {
       uploadFile(files) {
         this.files = files;
+        this.xhrStatus = '';
+        this.fileLoaded = 0;
         //invalid and label change
         setTimeout(() => {
           if (this.invalid) {
@@ -866,39 +873,64 @@ window.onload = function () {
             formData.append(key, data[key]);
           });
 
-          const response = await fetch(url, {
+          //we have to change fetch to xhr, because the progress bar is needed and is possible only for xhr for now
+          /*const response = await fetch(url, {
             method: 'POST',
             body: formData,
             headers: {
               Authentication: 'secret',
             },
+          });*/
+
+          let xhr = new XMLHttpRequest();
+          xhr.open('POST', url);
+          xhr.setRequestHeader('Content-Type', 'multipart/form-data');
+          xhr.setRequestHeader('Authentication', 'secret');
+          xhr.upload.addEventListener('progress', ({ loaded, total }) => {
+            this.fileLoaded = Math.floor((loaded / total) * 100);
+            this.$refs.progressbar.style.width = `calc(20px + (100% - 20px ) * ${this.fileLoaded} / 100)`;
           });
-          const fileObject = /*{
-            STATUS: 'Y',
-            ID: '123',
+          xhr.send(formData);
+
+          let componentThis = this;
+
+          xhr.onreadystatechange = function () {
+            if (this.readyState != 4) return;
+
+            const fileObject = JSON.parse(this.response);
+
+            if (fileObject) {
+              componentThis.xhrStatus = fileObject.STATUS;
+
+              switch (fileObject.STATUS) {
+                case 'Y':
+                  //set value
+                  store.commit('setFile', {
+                    id: this.controlId,
+                    property: this.formControl.property,
+                    filename: this.files[0] ? this.files[0].name : '',
+                    controlIndex: this.controlIndex,
+                    value: this.files[0] ? fileObject.ID : '',
+                  });
+
+                  this.filenameLocal = this.formControl.multy
+                    ? this.formControl.filename[this.controlIndex]
+                    : this.formControl.filename;
+
+                  setTimeout(() => {
+                    this.$refs.inputFile.value = '';
+                  }, 100);
+
+                  this.loading = false;
+                  break;
+
+                case 'E':
+                  break;
+              }
+              this.fileLoaded = 0;
+            }
+            this.$emit('timeoutAutosave');
           };
-          //*/ await response.json();
-          if (fileObject && fileObject.STATUS === 'Y') {
-            //set value
-            store.commit('setFile', {
-              id: this.controlId,
-              property: this.formControl.property,
-              filename: this.files[0] ? this.files[0].name : '',
-              controlIndex: this.controlIndex,
-              value: this.files[0] ? fileObject.ID : '',
-            });
-
-            this.filenameLocal = this.formControl.multy
-              ? this.formControl.filename[this.controlIndex]
-              : this.formControl.filename;
-
-            setTimeout(() => {
-              this.$refs.inputFile.value = '';
-            }, 100);
-
-            this.loading = false;
-          }
-          this.$emit('timeoutAutosave');
         } catch (err) {
           throw err;
         }

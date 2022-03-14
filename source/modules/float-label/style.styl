@@ -3,6 +3,23 @@
 .b-float-label
   position relative
 
+  &__progressbar
+    width 10%
+    height 100%
+    transition(width .5s linear)
+    position absolute
+    top 0
+    left 0
+    background-color #4375D8
+    color #fff
+    font-size 11px
+    display flex
+    justify-content flex-end
+    align-items center
+    padding 0 15px
+    border-radius 5px
+    z-index 1
+
   &__big-label
     font-size $14px
     line-height 21px

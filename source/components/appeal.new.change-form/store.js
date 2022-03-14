@@ -157,7 +157,83 @@ window.appealNewChangeFormStore = {
       },
     ],
   },
-
+  confirmDocsBlock: {
+    title: 'Документы',
+    text: '',
+    items: [
+      {
+        id: 0,
+        checked: true,
+        title: 'Пакет документов 1',
+        text: '<ul><li>Жалоба в формате PDF с подписью и печатью (если печать есть)</li><li>Документ, подтверждающий полномочия заявителя</li><li>Документ, подтверждающий доводы</li></ul>',
+        name: 'FIELDS_ATTACHE',
+        value: 0,
+        controls: [
+          {
+            property: 47,
+            word: 'FILES[0]',
+            label: 'Жалоба *',
+            type: 'file',
+            multy: false,
+            maxSize: 102400000,
+            required: true,
+            filename: '',
+            value: '',
+            default: '<a href>Выберите файл</a> (pdf, до 100МБ)',
+            ext: ['pdf'],
+            completeBlock: {
+              comment:
+                'Жалоба в формате PDF с подписью и печатью (если печать есть)',
+            },
+          },
+          {
+            property: 42,
+            word: 'FILES[0]',
+            label: 'Документ, подтверждающий полномочия заявителя',
+            type: 'file',
+            multy: 3,
+            maxSize: 10240000,
+            required: false,
+            filename: [''],
+            value: [
+              {
+                id: 15444,
+                val: '',
+              },
+            ],
+            default:
+              '<a href>Выберите файл</a> (pdf, jpg, jpeg, png, doc, docx, до 10МБ)',
+            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            completeBlock: {
+              comment: 'Документ, подтверждающий полномочия заявителя',
+            },
+          },
+          {
+            property: 43,
+            word: 'FILES[0]',
+            label: 'Документ, подтверждающий доводы',
+            type: 'file',
+            multy: 3,
+            maxSize: 10240000,
+            required: false,
+            filename: [''],
+            value: [
+              {
+                id: 96328,
+                val: '',
+              },
+            ],
+            default:
+              '<a href>Выберите файл</a> (pdf, jpg, jpeg, png, doc, docx, до 10МБ)',
+            ext: ['pdf', 'jpg', 'jpeg', 'png', 'doc', 'docx'],
+            completeBlock: {
+              comment: 'Документ, подтверждающий доводы',
+            },
+          },
+        ],
+      },
+    ],
+  },
   autosaveTimeoutId: 58,
   autosave: 5000,
   agreement: {
