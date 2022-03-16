@@ -21,6 +21,19 @@
 
 .b-notifications-list
 
+  .font-weight-bold
+    transition( all .5s ease )
+
+    &,
+    &:hover,
+    &:focus,
+    &:active
+      color $link-color
+      text-decoration none
+      
+    &:hover
+      opacity .7
+
   .ph-content.content--load-circle
     position relative
 
