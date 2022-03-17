@@ -21,20 +21,81 @@
 
 .b-appeal-detail
 
+  .b-copy-icon
+    width 16px
+    height 16px
+    background-repeat no-repeat
+    background-position center
+    background-size contain
+    margin-left 16px
+    flex-shrink 0
+    -webkit-transition( opacity .2s linear )
+    transition( opacity .2s linear )
+    opacity 0
+    position relative
+
+    @media(max-width 767px)
+      display none
+
+    &__note
+      position absolute
+      top -31px
+      left 16px
+      background #F0F5FC
+      border-radius 3px
+      color #074C86
+      font-family $roboto
+      font-size $11px
+      line-height 29px
+      padding 0 10px
+      white-space nowrap
+      opacity 0
+      -webkit-transition( opacity .2s linear )
+      transition( opacity .2s linear )
+      pointer-events none
+
+      &.b-copy-icon__note--show
+        opacity 1
+
   @media (max-width: 575px)
     h3:first-child
       margin-top 0
 
-  table.table
-    margin-bottom 0
+  .table
+
+    table&
+      margin-bottom 0
+
+      @media (max-width: 575px)
+        th:nth-child(2),
+        td:nth-child(2)
+          display table-cell
 
     th
       width 35%
 
-    @media (max-width: 575px)
-      th:nth-child(2),
-      td:nth-child(2)
-        display table-cell
+    td
+      display flex
+      align-items center
+
+    tr:hover
+    
+      .b-copy-icon
+        opacity 1
+
+    &__icon
+      width 24px
+      height 33px
+      background-repeat no-repeat
+      background-position center
+      background-size contain
+      margin-left 20px
+      flex-shrink 0
+
+      &-wrapper
+        display flex
+        justify-content space-between
+        align-items center
   
   &__data
     background-color $light-gray
@@ -43,6 +104,18 @@
 
     h3:first-of-type
       margin-top 0
+
+    &-item
+      display flex
+      align-items center
+
+      .b-copy-icon
+        margin-top 2px
+
+      &:hover
+
+        .b-copy-icon
+          opacity 1
 
   &__file-card
     background-color #fff
