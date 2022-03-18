@@ -32,12 +32,10 @@ window.addEventListener('load', () => {
   if (window.matchMedia('(min-width: 768px)').matches) {
     //table
     document
-      .querySelectorAll('.b-appeal-detail table.table tr')
-      .forEach((tr) => {
-        tr.addEventListener('click', () => {
-          let th = tr.querySelector('th').textContent;
-          let td = tr.querySelector('td').textContent;
-          copyToClipboard(`${th} ${td}`, tr);
+      .querySelectorAll('.b-appeal-detail table.table td')
+      .forEach((td) => {
+        td.addEventListener('click', () => {
+          copyToClipboard(td.textContent, td);
         });
       });
 
