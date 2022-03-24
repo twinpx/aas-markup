@@ -106,8 +106,18 @@
       margin-top 0
 
     &-item
+      margin-bottom 10px
       display flex
       align-items center
+      flex-wrap wrap
+
+      strong,
+      h4
+        display block
+        width 100%
+
+      span:first-of-type
+        max-width calc( 100% - 16px - 16px )
 
       .b-copy-icon
         margin-top 2px

@@ -685,8 +685,11 @@ window.onload = function () {
             <svg xmlns="http://www.w3.org/2000/svg" width="17.383" height="24" viewBox="0 0 17.383 24" v-html="icon"></svg>
 
             <input type="file" :data-value="fileid" :data-required="required" :name="name" :id="id" @change="uploadFile($refs.inputFile.files)" ref="inputFile" />
+            <div class="b-float-label__progressbar" v-show="isLoading && !invalid" ref="progressbar">
+              <span v-html="label" v-show="fileLoaded === 100"></span>
+              <span v-show="fileLoaded < 100">{{fileLoaded}}%</span>
+            </div>
             <label :for="id" class="active" v-html="label" ref="dropzone" ></label>
-            <div class="b-float-label__progressbar" v-show="isLoading && !invalid" ref="progressbar">{{fileLoaded}}%</div>
           </div>
         </div>
         <hr class="hr--xs d-block d-lg-none w-100">
@@ -824,6 +827,7 @@ window.onload = function () {
         }
       },
       clearInputFile() {
+        this.fileLoaded = 0;
         this.files = [];
         this.$refs.inputFile.value = '';
         this.sendData({
