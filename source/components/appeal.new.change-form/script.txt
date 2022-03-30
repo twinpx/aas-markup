@@ -888,7 +888,6 @@ window.onload = function () {
 
           let xhr = new XMLHttpRequest();
           xhr.open('POST', url);
-          xhr.setRequestHeader('Content-Type', 'multipart/form-data');
           xhr.setRequestHeader('Authentication', 'secret');
           xhr.upload.addEventListener('progress', ({ loaded, total }) => {
             this.fileLoaded = Math.floor((loaded / total) * 100);
