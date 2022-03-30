@@ -723,6 +723,7 @@ window.onload = function () {
         return this.loading;
       },
       isClearable() {
+        console.log(this.isLoading);
         return !!this.filenameLocal && !this.isLoading;
       },
       isFilled() {
@@ -802,13 +803,14 @@ window.onload = function () {
               ? this.formControl.filename[this.controlIndex]
               : this.formControl.filename;
           } else {
-            this.sendData({
-              [this.name]: this.files[0],
-              FILEID:
-                typeof this.formControl.value === 'object'
-                  ? this.formControl.value[this.controlIndex].val
-                  : this.formControl.value,
-            });
+            let data = {};
+            data[this.name] = this.files[0];
+            data.FILEID =
+              typeof this.formControl.value === 'object'
+                ? this.formControl.value[this.controlIndex].val
+                : this.formControl.value;
+
+            this.sendData(data);
           }
         }, 0);
 
@@ -888,6 +890,7 @@ window.onload = function () {
 
           let xhr = new XMLHttpRequest();
           xhr.open('POST', url);
+          //xhr.setRequestHeader('Content-Type', 'multipart/form-data');
           xhr.setRequestHeader('Authentication', 'secret');
           xhr.upload.addEventListener('progress', ({ loaded, total }) => {
             this.fileLoaded = Math.floor((loaded / total) * 100);
@@ -909,30 +912,30 @@ window.onload = function () {
                 case 'Y':
                   //set value
                   store.commit('setFile', {
-                    id: this.controlId,
-                    property: this.formControl.property,
-                    filename: this.files[0] ? this.files[0].name : '',
-                    controlIndex: this.controlIndex,
-                    value: this.files[0] ? fileObject.ID : '',
+                    id: componentThis.controlId,
+                    property: componentThis.formControl.property,
+                    filename: componentThis.files[0] ? componentThis.files[0].name : '',
+                    controlIndex: componentThis.controlIndex,
+                    value: componentThis.files[0] ? fileObject.ID : '',
                   });
 
-                  this.filenameLocal = this.formControl.multy
-                    ? this.formControl.filename[this.controlIndex]
-                    : this.formControl.filename;
+                  componentThis.filenameLocal = componentThis.formControl.multy
+                    ? componentThis.formControl.filename[componentThis.controlIndex]
+                    : componentThis.formControl.filename;
 
                   setTimeout(() => {
-                    this.$refs.inputFile.value = '';
+                    componentThis.$refs.inputFile.value = '';
                   }, 100);
 
-                  this.loading = false;
+                  componentThis.loading = false;
                   break;
 
                 case 'E':
                   break;
               }
-              this.fileLoaded = 0;
+              componentThis.fileLoaded = 0;
             }
-            this.$emit('timeoutAutosave');
+            componentThis.$emit('timeoutAutosave');
           };
         } catch (err) {
           throw err;
