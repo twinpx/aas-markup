@@ -1,12 +1,4 @@
 window.onload = function () {
-  //modal submit button
-  document
-    .querySelectorAll('#submitConfirmModal .modal-buttons .btn')
-    .forEach((button, i) => {
-      let id = i === 0 ? 14 : 15;
-      bitrixLogs(id, button.innerHTML);
-    });
-
   function bitrixLogs(id, message) {
     //AXAJ Bitrix
     if (window.BX) {
@@ -404,7 +396,7 @@ window.onload = function () {
         if (this.controlValue !== this.compare) {
           //autosave
           this.$emit('autosave');
-          this.ajaxBitrix();
+          bitrixLogs(6, `${this.formControl.label}: ${this.controlValue}`);
         }
       },
       validate() {
@@ -586,7 +578,7 @@ window.onload = function () {
 
         if (this.controlValue !== this.compare) {
           this.$emit('autosave');
-          this.ajaxBitrix();
+          bitrixLogs(6, `${this.formControl.label}: ${this.controlValue}`);
         }
       },
       clickHint(e) {
@@ -646,8 +638,6 @@ window.onload = function () {
     data() {
       return {
         loading: false,
-        fileLoaded: 0, //%
-        xhrStatus: '', //'Y', 'E'
         isActive: true,
         files: [],
         filenameLocal: this.formControl.multy
@@ -673,16 +663,12 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <span class="b-float-label-file__clear" @click.prevent="clearInputFile" v-if="isClearable"></span>
-          <div class="b-float-label--file" :class="{'filled': isFilled, 'progressing': isLoading, 'invalid': !!invalid }" ref="controlFile" >
+          <div class="b-float-label--file" :class="{'filled': isFilled, 'invalid': !!invalid, 'btn--load-circle': isLoading }" ref="controlFile" >
             <span class="b-float-label-file__label">{{ formControl.label }}</span>
 
             <svg xmlns="http://www.w3.org/2000/svg" width="17.383" height="24" viewBox="0 0 17.383 24" v-html="icon"></svg>
 
             <input type="file" :data-value="fileid" :data-required="required" :name="name" :id="id" @change="uploadFile($refs.inputFile.files)" ref="inputFile" />
-            <div class="b-float-label__progressbar" v-show="isLoading && !invalid" ref="progressbar">
-              <span v-html="label" v-show="fileLoaded === 100"></span>
-              <span v-show="fileLoaded < 100">{{fileLoaded}}%</span>
-            </div>
             <label :for="id" class="active" v-html="label" ref="dropzone" ></label>
           </div>
         </div>
@@ -717,7 +703,6 @@ window.onload = function () {
         return this.loading;
       },
       isClearable() {
-        console.log(this.isLoading);
         return !!this.filenameLocal && !this.isLoading;
       },
       isFilled() {
@@ -729,9 +714,7 @@ window.onload = function () {
           : this.formControl.value;
       },
       invalid() {
-        if (this.xhrStatus === 'E') {
-          return 'Ошибка загрузки';
-        } else if (this.files[0] && this.files[0].size && this.files[0].name) {
+        if (this.files[0] && this.files[0].size && this.files[0].name) {
           if (this.files[0].size >= this.formControl.maxSize) {
             this.files = [];
             return `Размер файла превышает ${this.formatSize(
@@ -776,8 +759,6 @@ window.onload = function () {
     methods: {
       uploadFile(files) {
         this.files = files;
-        this.xhrStatus = '';
-        this.fileLoaded = 0;
         //invalid and label change
         setTimeout(() => {
           if (this.invalid) {
@@ -797,21 +778,17 @@ window.onload = function () {
               ? this.formControl.filename[this.controlIndex]
               : this.formControl.filename;
           } else {
-            let data = {};
-            data[this.name] = this.files[0];
-            data.FILEID =
-              typeof this.formControl.value === 'object'
-                ? this.formControl.value[this.controlIndex].val
-                : this.formControl.value;
-
-            this.sendData(data);
+            this.sendData({
+              [this.name]: this.files[0],
+              FILEID:
+                typeof this.formControl.value === 'object'
+                  ? this.formControl.value[this.controlIndex].val
+                  : this.formControl.value,
+            });
           }
         }, 0);
-
-        bitrixLogs(11, `${this.formControl.label}: ${this.label}`);
       },
       clearInputFile() {
-        this.fileLoaded = 0;
         this.files = [];
         this.$refs.inputFile.value = '';
         this.sendData({
@@ -861,68 +838,39 @@ window.onload = function () {
             formData.append(key, data[key]);
           });
 
-          //we have to change fetch to xhr, because the progress bar is needed and is possible only for xhr for now
-          /*const response = await fetch(url, {
+          const response = await fetch(url, {
             method: 'POST',
             body: formData,
             headers: {
               Authentication: 'secret',
             },
-          });*/
-
-          let xhr = new XMLHttpRequest();
-          xhr.open('POST', url);
-          //xhr.setRequestHeader('Content-Type', 'multipart/form-data');
-          xhr.setRequestHeader('Authentication', 'secret');
-          xhr.upload.addEventListener('progress', ({ loaded, total }) => {
-            this.fileLoaded = Math.floor((loaded / total) * 100);
-            this.$refs.progressbar.style.width = `calc(20px + (100% - 20px ) * ${this.fileLoaded} / 100)`;
           });
-          xhr.send(formData);
-
-          let componentThis = this;
-
-          xhr.onreadystatechange = function () {
-            if (this.readyState != 4) return;
-
-            const fileObject = JSON.parse(this.response);
-
-            if (fileObject) {
-              componentThis.xhrStatus = fileObject.STATUS;
-
-              switch (fileObject.STATUS) {
-                case 'Y':
-                  //set value
-                  store.commit('setFile', {
-                    id: componentThis.controlId,
-                    property: componentThis.formControl.property,
-                    filename: componentThis.files[0]
-                      ? componentThis.files[0].name
-                      : '',
-                    controlIndex: componentThis.controlIndex,
-                    value: componentThis.files[0] ? fileObject.ID : '',
-                  });
-
-                  componentThis.filenameLocal = componentThis.formControl.multy
-                    ? componentThis.formControl.filename[
-                        componentThis.controlIndex
-                      ]
-                    : componentThis.formControl.filename;
-
-                  setTimeout(() => {
-                    componentThis.$refs.inputFile.value = '';
-                  }, 100);
-
-                  componentThis.loading = false;
-                  break;
-
-                case 'E':
-                  break;
-              }
-              componentThis.fileLoaded = 0;
-            }
-            componentThis.$emit('timeoutAutosave');
+          const fileObject = /*{
+            STATUS: 'Y',
+            ID: '123',
           };
+          //*/ await response.json();
+          if (fileObject && fileObject.STATUS === 'Y') {
+            //set value
+            store.commit('setFile', {
+              id: this.controlId,
+              property: this.formControl.property,
+              filename: this.files[0] ? this.files[0].name : '',
+              controlIndex: this.controlIndex,
+              value: this.files[0] ? fileObject.ID : '',
+            });
+
+            this.filenameLocal = this.formControl.multy
+              ? this.formControl.filename[this.controlIndex]
+              : this.formControl.filename;
+
+            setTimeout(() => {
+              this.$refs.inputFile.value = '';
+            }, 100);
+
+            this.loading = false;
+          }
+          this.$emit('timeoutAutosave');
         } catch (err) {
           throw err;
         }
@@ -1056,7 +1004,7 @@ window.onload = function () {
         ) {
           this.isInvalid = true;
         }
-        thif.compare = this.controlValue;
+        this.compare = this.controlValue;
       },
       blurControl() {
         if (this.controlValue !== '') {
@@ -1068,7 +1016,7 @@ window.onload = function () {
 
         if (this.compare !== this.controlValue) {
           this.$emit('autosave');
-          this.ajaxBitrix();
+          bitrixLogs(6, `${this.formControl.label}: ${this.controlValue}`);
         }
       },
       validate() {
@@ -1573,7 +1521,6 @@ window.onload = function () {
     },
     methods: {
       clickSubmit(e) {
-        this.ajaxBitrix(e.target.innerHTML);
         bitrixLogs(13, e.target.innerHTML);
       },
       clickContinue() {
@@ -1767,4 +1714,14 @@ window.onload = function () {
   };
 
   const app = new Vue(App);
+
+  //modal submit button
+  document
+    .querySelectorAll('#submitConfirmModal .modal-buttons .btn')
+    .forEach((button, i) => {
+      button.addEventListener('click', () => {
+        let id = i === 0 ? 14 : 15;
+        bitrixLogs(id, button.innerHTML);
+      });
+    });
 };
