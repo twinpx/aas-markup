@@ -1,4 +1,28 @@
 window.onload = function () {
+  //modal submit button
+  document
+    .querySelectorAll('#submitConfirmModal .modal-buttons .btn')
+    .forEach((button, i) => {
+      let id = i === 0 ? 14 : 15;
+      bitrixLogs(id, button.innerHTML);
+    });
+
+  function bitrixLogs(id, message) {
+    //AXAJ Bitrix
+    if (window.BX) {
+      BX.ajax.post(
+        '/local/ajax/logs.php',
+        {
+          id: id,
+          el: document.querySelector('input[name = "APPEAL_ID"]').value,
+          message: message,
+          level: 1,
+        },
+        function (result) {}
+      );
+    }
+  }
+
   if (!window.Vue && !window.Vuex) return;
 
   Vue.use(Vuex);
@@ -341,21 +365,6 @@ window.onload = function () {
       },
     },
     methods: {
-      ajaxBitrix() {
-        //AXAJ Bitrix
-        if (window.BX) {
-          BX.ajax.post(
-            '/local/ajax/logs.php',
-            {
-              id: 6,
-              el: this.$store.state.APPEAL_ID,
-              message: `${this.formControl.label}: ${this.controlValue}`,
-              level: 1,
-            },
-            function (result) {}
-          );
-        }
-      },
       clickLink() {
         this.controlValue = this.formControl.completeBlock.value;
         this.isActive = true;
@@ -364,7 +373,7 @@ window.onload = function () {
         //autosave
         this.$emit('autosave');
 
-        this.ajaxBitrix();
+        bitrixLogs(6, `${this.formControl.label}: ${this.controlValue}`);
       },
       inputControl() {
         //validate
@@ -490,21 +499,6 @@ window.onload = function () {
     },
 
     methods: {
-      ajaxBitrix() {
-        //AXAJ Bitrix
-        if (window.BX) {
-          BX.ajax.post(
-            '/local/ajax/logs.php',
-            {
-              id: 6,
-              el: this.$store.state.APPEAL_ID,
-              message: `${this.formControl.label}: ${this.controlValue}`,
-              level: 1,
-            },
-            function (result) {}
-          );
-        }
-      },
       clickLink() {
         this.controlValue = this.formControl.completeBlock.value;
         this.isActive = true;
@@ -513,7 +507,7 @@ window.onload = function () {
         //autosave
         this.$emit('autosave');
 
-        this.ajaxBitrix();
+        bitrixLogs(6, `${this.formControl.label}: ${this.controlValue}`);
       },
       changeInput() {
         this.activeHint = [];
@@ -814,19 +808,7 @@ window.onload = function () {
           }
         }, 0);
 
-        //AXAJ Bitrix
-        if (window.BX) {
-          BX.ajax.post(
-            '/local/ajax/logs.php',
-            {
-              id: 11,
-              el: this.$store.state.APPEAL_ID,
-              message: `${this.formControl.label}: ${this.label}`,
-              level: 1,
-            },
-            function (result) {}
-          );
-        }
+        bitrixLogs(11, `${this.formControl.label}: ${this.label}`);
       },
       clearInputFile() {
         this.fileLoaded = 0;
@@ -914,13 +896,17 @@ window.onload = function () {
                   store.commit('setFile', {
                     id: componentThis.controlId,
                     property: componentThis.formControl.property,
-                    filename: componentThis.files[0] ? componentThis.files[0].name : '',
+                    filename: componentThis.files[0]
+                      ? componentThis.files[0].name
+                      : '',
                     controlIndex: componentThis.controlIndex,
                     value: componentThis.files[0] ? fileObject.ID : '',
                   });
 
                   componentThis.filenameLocal = componentThis.formControl.multy
-                    ? componentThis.formControl.filename[componentThis.controlIndex]
+                    ? componentThis.formControl.filename[
+                        componentThis.controlIndex
+                      ]
                     : componentThis.formControl.filename;
 
                   setTimeout(() => {
@@ -1035,21 +1021,6 @@ window.onload = function () {
     `,
 
     methods: {
-      ajaxBitrix() {
-        //AXAJ Bitrix
-        if (window.BX) {
-          BX.ajax.post(
-            '/local/ajax/logs.php',
-            {
-              id: 6,
-              el: this.$store.state.APPEAL_ID,
-              message: `${this.formControl.label}: ${this.controlValue}`,
-              level: 1,
-            },
-            function (result) {}
-          );
-        }
-      },
       clickLink() {
         this.controlValue = this.formControl.completeBlock.value;
         this.isActive = true;
@@ -1058,7 +1029,7 @@ window.onload = function () {
         //autosave
         this.$emit('autosave');
 
-        this.ajaxBitrix();
+        bitrixLogs(6, `${this.formControl.label}: ${this.controlValue}`);
       },
       inputControl() {
         //validate
@@ -1258,19 +1229,10 @@ window.onload = function () {
         });
         this.autosave();
 
-        //AXAJ Bitrix
-        if (window.BX) {
-          BX.ajax.post(
-            '/local/ajax/logs.php',
-            {
-              id: this.formControl.type === 'file' ? 9 : 7,
-              el: this.$store.state.APPEAL_ID,
-              message: `${this.formControl.label}:`,
-              level: 1,
-            },
-            function (result) {}
-          );
-        }
+        bitrixLogs(
+          this.formControl.type === 'file' ? 9 : 7,
+          `${this.formControl.label}:`
+        );
       },
       remove(idx) {
         //find control
@@ -1294,19 +1256,10 @@ window.onload = function () {
           index: idx,
         });
 
-        //AXAJ Bitrix
-        if (window.BX) {
-          BX.ajax.post(
-            '/local/ajax/logs.php',
-            {
-              id: this.formControl.type === 'file' ? 10 : 8,
-              el: this.$store.state.APPEAL_ID,
-              message: `${this.formControl.label}: ${controlValue}`,
-              level: 1,
-            },
-            function (result) {}
-          );
-        }
+        bitrixLogs(
+          this.formControl.type === 'file' ? 10 : 8,
+          `${this.formControl.label}: ${controlValue}`
+        );
       },
     },
     beforeMount() {
@@ -1456,19 +1409,7 @@ window.onload = function () {
     emits: ['autosave'],
     watch: {
       date(val) {
-        //AXAJ Bitrix
-        if (window.BX) {
-          BX.ajax.post(
-            '/local/ajax/logs.php',
-            {
-              id: 6,
-              el: this.$store.state.APPEAL_ID,
-              message: `${this.formControl.label} ${val}`,
-              level: 1,
-            },
-            function (result) {}
-          );
-        }
+        bitrixLogs(6, `${this.formControl.label} ${val}`);
       },
     },
     methods: {
@@ -1544,26 +1485,14 @@ window.onload = function () {
         </div>
         <hr class="hr--lg">
         <div class="b-appeal-new-change-form__submit">
-          <a href="#" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#submitConfirmModal" :disabled="isDisabled">Отправить</a>
+          <a href="#" class="btn btn-secondary btn-lg" data-toggle="modal" data-target="#submitConfirmModal" :disabled="isDisabled" @click="clickSubmit($event)">Отправить</a>
           <small class="text-muted" v-if="isDisabled">Вы не закончили заполнение обязательных полей. <a href="#" @click.prevent="clickContinue">Продолжить</a></small>
         </div>
       </div>
     `,
     watch: {
       checked(val) {
-        //AXAJ Bitrix
-        if (window.BX) {
-          BX.ajax.post(
-            '/local/ajax/logs.php',
-            {
-              id: 12,
-              el: this.$store.state.APPEAL_ID,
-              message: `${this.$store.state.agreement.text}: ${val}`,
-              level: 1,
-            },
-            function (result) {}
-          );
-        }
+        bitrixLogs(12, `${this.$store.state.agreement.text}: ${val}`);
       },
     },
     computed: {
@@ -1643,6 +1572,10 @@ window.onload = function () {
       },
     },
     methods: {
+      clickSubmit(e) {
+        this.ajaxBitrix(e.target.innerHTML);
+        bitrixLogs(13, e.target.innerHTML);
+      },
       clickContinue() {
         const control = Array.from(
           document.querySelector('.b-appeal-new-change-form form').elements
