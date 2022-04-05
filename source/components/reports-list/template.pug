@@ -27,7 +27,7 @@ else
         | <!--[if lte IE 9]><a class="btn btn-secondary btn-md" data-toggle="modal" data-target="#ieAlertModal">Необходимо сдать</a><![endif]-->
         |	<!--[if gt IE 9]><a class="btn btn-secondary btn-md" href="/profile/reports/auditor/edit.php?edit=Y">Необходимо сдать</a><![endif]-->
         |	<!--[if !IE]>-->
-        <a class="btn btn-secondary btn-md" href="/profile/reports/auditor/edit.php?edit=Y">Необходимо сдать</a>
+        <a class="btn btn-secondary btn-md" href="/profile/reports/auditor/edit.php?edit=Y">Сдать отчет</a>
         | <!--<![endif]-->
 
         #ieAlertModal.modal--text.modal--alert.modal.fade(tabindex="-1" aria-labelledby="editConfirmModalLabel" aria-hidden="true")
@@ -56,32 +56,45 @@ else
       a.b-reports-list__title( href="/pages/report-form/" ) Отчет 2020
       .b-reports-list__data
         span Крайний срок: 22 марта 2021 (56 дней)
-        a.btn.btn-secondary.btn-md( href="/pages/report-form/" ) Необходимо сдать
+        a.btn.btn-secondary.btn-md( href="/pages/report-form/" ) Сдать отчет
 
     .b-reports-list__item
       a.b-reports-list__title( href="/pages/report/" ) Отчет 2019 и очень длинное название отчёта за 2019 год
       .b-reports-list__data
         span Крайний срок: 18 марта 2020
-        a.btn.btn-success.btn-md( href="/pages/report/" ) Cдан
-        a.btn.btn-secondary.btn-md( data-toggle="modal" data-target="#editConfirmModal" ) Редактировать
+        a.text-success.b-reports-list__status( href="/pages/report/" ) Cдан
+        //-
+          a.btn.btn-secondary.btn-md( data-toggle="modal" data-target="#editConfirmModal" ) Редактировать
 
-        #editConfirmModal.modal--text.modal.fade(tabindex="-1" aria-labelledby="editConfirmModalLabel" aria-hidden="true")
-          .modal-dialog
-            .modal-content
-              button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
-              .modal-body( data-hint-url="/components/report-form/hint-response.json" data-info-url="/components/report-form/info-response.json" data-method="GET" )
-                h3.text-center Вы хотите отредактировать отчет?
+          #editConfirmModal.modal--text.modal.fade(tabindex="-1" aria-labelledby="editConfirmModalLabel" aria-hidden="true")
+            .modal-dialog
+              .modal-content
+                button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
+                .modal-body( data-hint-url="/components/report-form/hint-response.json" data-info-url="/components/report-form/info-response.json" data-method="GET" )
+                  h3.text-center Вы хотите отредактировать отчет?
 
-                hr
+                  hr
 
-                p Вы переходите в режим редактирования отчета. После внесения изменений в отчет вам необходимо сдать его, нажав на кнопку «Сдать отчет».
-                
-                p До тех пор, пока вы повторно не отправите отчет, он будет находиться в статусе «Необходимо сдать».
+                  p Вы переходите в режим редактирования отчета. После внесения изменений в отчет вам необходимо сдать его, нажав на кнопку «Сдать отчет».
+                  
+                  p До тех пор, пока вы повторно не отправите отчет, он будет находиться в статусе «Необходимо сдать».
 
-                hr
+                  hr
 
-                .text-center.modal-buttons
-                  a.btn.btn-lg.btn-secondary( href="/pages/report-form/" ) Отредактировать
-                  button.btn.btn-lg.btn-light( data-dismiss="modal" ) Отменить
+                  .text-center.modal-buttons
+                    a.btn.btn-lg.btn-secondary( href="/pages/report-form/" ) Отредактировать
+                    button.btn.btn-lg.btn-light( data-dismiss="modal" ) Отменить
+
+    .b-reports-list__item
+      a.b-reports-list__title( href="/pages/report/" ) Отчет 2019 и очень длинное название отчёта за 2019 год
+      .b-reports-list__data
+        span Крайний срок: 18 марта 2020
+        a.text-warning.b-reports-list__status( href="/pages/report/" ) Жёлтый
+
+    .b-reports-list__item
+      a.b-reports-list__title( href="/pages/report/" ) Отчет 2019 и очень длинное название отчёта за 2019 год
+      .b-reports-list__data
+        span Крайний срок: 18 марта 2020
+        a.text-danger.b-reports-list__status( href="/pages/report/" ) Красный
 
 // end /components/reports-list/
