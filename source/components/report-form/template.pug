@@ -104,6 +104,39 @@ else
           span Загрузить данные из отчета 2НДФЛ
           .btn.btn-dark.btn-md( data-toggle="modal" data-target="#uploadModal" ) Загрузить файл
 
+        div
+
+          .b-report-form__buttons
+            div
+              a.btn.btn-primary.btn-sm( href="" )
+                span.icon( style="background-image: url( '/template/images/copywhite.svg' );" )
+                | Заполнить из реестра
+              a.btn.btn-light.btn-sm( href="" )
+                span Очистить поля
+                span Вернуть поля
+            div
+              small.text-muted Вы можете использовать данные, уже указанные в реестре, и автоматически заполнить поля форм.
+                
+          hr.hr--lg
+
+          .row.align-items-center
+
+            .col-lg-6.col-12
+
+              .b-float-label.active
+
+                input#COMPANYNAME( type="text" name="COMPANYNAME" value="ООО «Компания + Я»" required autocomplete="off" )
+                label( for="COMPANYNAME" ) Наименование организации *
+
+            hr.hr--xs.d-block.d-lg-none.w-100
+
+            .col-lg-6.col-12.small
+              span.text-muted Данные из реестра: 
+              a.b-complete-link( href="" ) ООО &laquo;Компания + Я&raquo;
+                span.icon( style="background-image: url( '/template/images/copy.svg' );" )
+                
+          hr
+
         .b-collapse-block.open.slide
           .b-collapse-block__head
             a( href="" )
