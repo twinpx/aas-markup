@@ -11,7 +11,7 @@
 
   &__body
     display flex
-    align-items center
+    align-items flex-start
     
     @media( max-width 767px )
       align-items flex-start
@@ -76,6 +76,21 @@
     @media( max-width 767px )
       display inline-block
       margin-top 7px
+
+  &.b-docs-block--small
+    padding 0
+    border none
+    font-size $11px
+
+    .b-docs-block__icon
+      width 30px
+      height 40px
+      margin-right 20px
+
+    .b-docs-block__data
+
+      span
+        font-size $11px
       
   &__collapsed
     margin-top 15px
