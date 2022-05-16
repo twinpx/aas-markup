@@ -430,7 +430,7 @@ module.exports = function (grunt) {
     'concat:js',
     'copy:devComponents',
     /*'jshint:dev',*/ 'concat:pluginsJS',
-    'uglify:devTemplate',
+    /*'uglify:devTemplate',*/
     /*'uglify:devComponents',*/ 'clean:js',
   ]);
   grunt.registerTask('html', ['copy:images', 'pug:dev']);
@@ -444,9 +444,9 @@ module.exports = function (grunt) {
     'concat:prod',
     'copy:prodComponents',
     //'jshint:prod',
-    'uglify:prodTemplate',
+    //'uglify:prodTemplate',
     'concat:prodPluginsJS',
-    'uglify:prodComponents',
+    //'uglify:prodComponents',
     //images
     'clean:images',
     'copy:tempImages',
