@@ -294,6 +294,25 @@ h2,.h2
   &:first-child
     margin-top 0
 
+.h1-flex-wrapper
+  display flex
+  justify-content space-between
+  align-items center
+  margin-bottom $16px
+
+  h1
+    margin-right $16px
+    margin-bottom 0 !important
+
+  .btn
+    display inline-block
+
+  @media(max-width 767px)
+    display block
+
+    .btn
+      display none
+
 .b-h-badges
   display flex
   justify-content space-between
@@ -522,6 +541,33 @@ h2,.h2
         &:focus
           box-shadow none
   
+  &-serve
+    
+    &,
+    &:hover,
+    &.focus,
+    &:focus,
+    &.disabled,
+    &:disabled
+      color #5F7696
+      background-color $form-control-color
+      border-color $form-control-color
+      
+    &.focus,
+    &:focus
+      box-shadow none
+
+    &:not(:disabled):not(.disabled)
+
+      &.active,
+      &:active
+        color #fff
+        background-color $form-control-color
+        border-color $form-control-color
+
+        &:focus
+          box-shadow none
+  
   &[disabled],
   &.disabled
     pointer-events none
@@ -637,6 +683,39 @@ h2,.h2
   
 .bg-success
   background-color $success-color !important
+
+[class^="label-"]
+  text-align center
+  line-height 1
+
+  span
+    border-radius 1px
+    display inline
+    font-size $14px
+
+.label-green span
+  color #74C37A
+  background-color #EFFFF0
+
+.label-red span
+  color #FF0000
+  background-color #FFF4F4
+
+.label-gray span
+  color #9B9B9B
+  background-color #F2F2F2
+
+.label-lightblue span
+  color #5F7696
+  background-color #F2F7FF
+
+.label-blue span
+  color #4375D8
+  background-color #F0F5FF
+
+.label-orange span
+  color #F2762E
+  background-color #FFF7F2
 
 label
   font-family $roboto
