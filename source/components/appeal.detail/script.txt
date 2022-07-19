@@ -143,7 +143,10 @@ window.addEventListener('load', () => {
             (result.CURRENT || result.CURRENT === '')
           ) {
             this.isLoading = false;
-            if (result.CURRENT === this.initialCode) {
+            if (
+              this.initialCode === '' ||
+              result.CURRENT === this.initialCode
+            ) {
               //show confirm modal
               $('#changeStatusConfirmModal').modal('show');
             } else {

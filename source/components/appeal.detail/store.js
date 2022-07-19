@@ -8,10 +8,6 @@ window.appealDetailData = {
     name: 'STATUS',
     options: [
       {
-        label: 'Ожидает проверки',
-        code: '',
-      },
-      {
         label: 'В работе',
         code: 'prop1',
       },
@@ -21,11 +17,11 @@ window.appealDetailData = {
       },
       {
         label: 'Выполнено',
-        code: 'prop3',
+        code: 'prop4',
       },
     ],
     selectedOption: {
-      label: 'Ожидает проверки',
+      label: '-',
       code: '',
     },
     label: 'Статус обращения',
