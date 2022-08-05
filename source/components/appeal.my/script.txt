@@ -392,6 +392,12 @@ window.addEventListener('load', () => {
         this.$emit('seturl');
       },
       clickTr(event) {
+        if (
+          event.target.classList.contains('.btn-remove') ||
+          event.target.closest('.btn-remove')
+        ) {
+          return;
+        }
         event.preventDefault();
         let url = event.target.closest('tr').getAttribute('data-url');
         let target = event.target.closest('tr').getAttribute('data-target');
