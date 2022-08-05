@@ -371,17 +371,25 @@ h2,.h2
   padding-bottom 0
   min-width 158px
   transition( all .5s ease )
+  display inline-flex
+  align-items center
+  justify-content center
+  white-space nowrap
     
   &:hover
     opacity .7
 
   .icon
     display inline-block
-    width 16px
-    height 16px
+    width 24px
+    height 24px
     background-bg()
     margin-right 10px
     vertical-align text-bottom
+
+  &.btn-sm .icon
+    width 16px
+    height 16px
   
   &-primary
     
@@ -586,6 +594,18 @@ h2,.h2
     &.focus,
     &:focus
       box-shadow none
+
+  &-link-color
+
+    &,
+    &:hover,
+    &.focus,
+    &:focus,
+    &.disabled,
+    &:disabled
+    &.btn-light:not(:disabled):not(.disabled).active,
+    &.btn-light:not(:disabled):not(.disabled):active
+      color #F2762E
     
   &-lg
     line-height 60px

@@ -9,13 +9,16 @@
   margin-bottom: 0;
 }
 .b-float-label--file.progressing {
-  pointer-events none
+  pointer-events: none;
 }
 .b-float-label--file svg {
   position: absolute;
   top: 12px;
   left: 20px;
   z-index: 10;
+}
+.b-float-label--file.progressing svg {
+  display: none;
 }
 .b-float-label--file input {
   position absolute
@@ -41,11 +44,23 @@
   margin-bottom: 0;
   text-overflow: ellipsis;
   white-space: nowrap;
+  -webkit-transition: background-color .3s ease, color .3s ease;
+  transition: background-color .3s ease, color .3s ease;
+}
+.b-float-label--file.clearable label {
+  padding-right: 40px;
 }
 .b-float-label--file label a {
   pointer-events: none;
   -webkit-transition: none;
   transition: none;
+}
+.b-float-label--file .a,
+.b-float-label--file .b,
+.b-float-label--file .c,
+.b-float-label--file .d {
+  -webkit-transition: fill .3s ease;
+  transition: fill .3s ease;
 }
 .b-float-label--file .a {
   fill: #c3cfdd;
@@ -73,26 +88,22 @@
 }
 .b-float-label--file:active .a,
 .b-float-label--file.dragover .a,
-.b-float-label--file.filled .a,
-.b-float-label--file.progressing .a {
+.b-float-label--file.filled .a {
   fill: #fff;
 }
 .b-float-label--file:active .b,
 .b-float-label--file.dragover .b,
-.b-float-label--file.filled .b,
-.b-float-label--file.progressing .b {
+.b-float-label--file.filled .b {
   fill: #a7bde8;
 }
 .b-float-label--file:active .c,
 .b-float-label--file.dragover .c,
-.b-float-label--file.filled .c,
-.b-float-label--file.progressing .c {
+.b-float-label--file.filled .c {
   fill: #d0e0ff;
 }
 .b-float-label--file:active .d,
 .b-float-label--file.dragover .d,
-.b-float-label--file.filled .d,
-.b-float-label--file.progressing .d {
+.b-float-label--file.filled .d {
   fill: #4375d8;
 }
 .b-float-label--file:active label,

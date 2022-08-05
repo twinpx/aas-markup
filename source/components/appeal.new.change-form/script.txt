@@ -1,6 +1,6 @@
 window.onload = function () {
   function bitrixLogs(id, message) {
-    //AXAJ Bitrix
+    //AJAX Bitrix
     if (window.BX) {
       BX.ajax.post(
         '/local/ajax/logs.php',
@@ -300,7 +300,6 @@ window.onload = function () {
   Vue.component('formControl', {
     data() {
       return {
-        
         controlValue: this.formControl.multy
           ? this.formControl.value[this.controlIndex].val
           : this.formControl.value,
@@ -343,8 +342,12 @@ window.onload = function () {
     </div>
     `,
     computed: {
-      id() { return `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`},
-      name() {return `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`},
+      id() {
+        return `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`;
+      },
+      name() {
+        return `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`;
+      },
     },
     watch: {
       controlValue(val) {
@@ -443,8 +446,12 @@ window.onload = function () {
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
 
     computed: {
-      id() {return `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`},
-      name() {return `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`},
+      id() {
+        return `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`;
+      },
+      name() {
+        return `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`;
+      },
       isClearable() {
         return this.controlValue !== '' && this.hover ? true : false;
       },
@@ -639,13 +646,19 @@ window.onload = function () {
   Vue.component('formControlFile', {
     data() {
       return {
+        minimalLoading: false,
         loading: false,
+        percentage: 0, //%
+        isFileLoaded: false,
+        xhrStatus: '', //'Y', 'E'
         isActive: true,
         files: [],
         filenameLocal: this.formControl.multy
           ? this.formControl.filename[this.controlIndex]
           : this.formControl.filename,
         required: this.formControl.required,
+        name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
+        id: `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`,
         icon: `<g transform="translate(-4.461)">
           <g transform="translate(4.461)">
             <g>
@@ -663,12 +676,16 @@ window.onload = function () {
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
           <span class="b-float-label-file__clear" @click.prevent="clearInputFile" v-if="isClearable"></span>
-          <div class="b-float-label--file" :class="{'filled': isFilled, 'invalid': !!invalid, 'btn--load-circle': isLoading }" ref="controlFile" >
+          <div class="b-float-label--file" :class="{'filled': isFilled, 'progressing': isProgressing, 'invalid': !!isInvalid, 'clearable': isClearable }" ref="controlFile" >
             <span class="b-float-label-file__label">{{ formControl.label }}</span>
-
+  
             <svg xmlns="http://www.w3.org/2000/svg" width="17.383" height="24" viewBox="0 0 17.383 24" v-html="icon"></svg>
-
+  
             <input type="file" :data-value="fileid" :data-required="required" :name="name" :id="id" @change="uploadFile($refs.inputFile.files)" ref="inputFile" />
+            <div class="b-float-label__progressbar" v-show="isProgressing && !isInvalid" ref="progressbar" :class="{'minimal': minimalLoading}">
+              <span v-html="label" v-show="isFileLoaded"></span>
+              <span v-show="!isFileLoaded">{{percentage}}%</span>
+            </div>
             <label :for="id" class="active" v-html="label" ref="dropzone" ></label>
           </div>
         </div>
@@ -693,10 +710,20 @@ window.onload = function () {
       controlId: [Number, String],
     },
     emits: ['autosave', 'timeoutAutosave'],
+    watch: {
+      percentage(val) {
+        if (val === 100) {
+          setTimeout(() => {
+            this.isFileLoaded = true;
+          }, 600);
+        }
+      },
+    },
     computed: {
-      id() {return `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`},
-      name() {return `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`},
-      isLoading() {
+      isInvalid() {
+        return !!this.invalidString;
+      },
+      isProgressing() {
         if (this.formControl.multy) {
           return (
             this.loading || this.formControl.value[this.controlIndex].loading
@@ -705,7 +732,7 @@ window.onload = function () {
         return this.loading;
       },
       isClearable() {
-        return !!this.filenameLocal && !this.isLoading;
+        return !!this.filenameLocal && !this.isProgressing;
       },
       isFilled() {
         return !!this.filenameLocal;
@@ -715,8 +742,10 @@ window.onload = function () {
           ? this.formControl.value[this.controlIndex].val
           : this.formControl.value;
       },
-      invalid() {
-        if (this.files[0] && this.files[0].size && this.files[0].name) {
+      invalidString() {
+        if (this.xhrStatus === 'E') {
+          return 'Ошибка загрузки';
+        } else if (this.files[0] && this.files[0].size && this.files[0].name) {
           if (this.files[0].size >= this.formControl.maxSize) {
             this.files = [];
             return `Размер файла превышает ${this.formatSize(
@@ -738,8 +767,11 @@ window.onload = function () {
         return '';
       },
       label() {
-        if (this.invalid) {
-          return this.invalid;
+        if (this.isProgressing) {
+          return '';
+        }
+        if (this.isInvalid) {
+          return this.invalidString;
         }
         if (this.files[0] && this.files[0].name) {
           return this.files[0].name;
@@ -761,36 +793,32 @@ window.onload = function () {
     methods: {
       uploadFile(files) {
         this.files = files;
+        this.xhrStatus = '';
+        this.percentage = 0;
         //invalid and label change
         setTimeout(() => {
-          if (this.invalid) {
+          if (this.isInvalid) {
             this.$refs.inputFile.value = '';
-            //this.files = [];
-
-            //set value
-            /*store.commit('setFile', {
-              id: this.controlId,
-              property: this.formControl.property,
-              filename: '',
-              controlIndex: this.controlIndex,
-              value: '',
-            });*/
 
             this.filenameLocal = this.formControl.multy
               ? this.formControl.filename[this.controlIndex]
               : this.formControl.filename;
           } else {
-            this.sendData({
-              [this.name]: this.files[0],
-              FILEID:
-                typeof this.formControl.value === 'object'
-                  ? this.formControl.value[this.controlIndex].val
-                  : this.formControl.value,
-            });
+            let data = {};
+            data[this.name] = this.files[0];
+            data.FILEID =
+              typeof this.formControl.value === 'object'
+                ? this.formControl.value[this.controlIndex].val
+                : this.formControl.value;
+
+            this.sendData(data);
           }
         }, 0);
+
+        bitrixLogs(11, `${this.formControl.label}: ${this.label}`);
       },
       clearInputFile() {
+        this.percentage = 0;
         this.files = [];
         this.$refs.inputFile.value = '';
         this.sendData({
@@ -836,49 +864,104 @@ window.onload = function () {
           this.loading = true;
           const url = this.$store.state.url.fileUpload;
           const formData = new FormData();
+
           Object.keys(data).forEach((key) => {
             formData.append(key, data[key]);
           });
 
-          const response = await fetch(url, {
-            method: 'POST',
-            body: formData,
-            headers: {
-              Authentication: 'secret',
-            },
+          let xhr = new XMLHttpRequest();
+          xhr.open('POST', url);
+          //xhr.setRequestHeader('Content-Type', 'multipart/form-data');
+          xhr.setRequestHeader('Authentication', 'secret');
+          let first = true;
+          xhr.upload.addEventListener('progress', ({ loaded, total }) => {
+            if (first && loaded === total) {
+              //loaded too fast, show minimal animation 1s
+              let counter = 0,
+                minimalTime = 1000,
+                intervalId;
+
+              this.minimalLoading = true;
+              this.$refs.progressbar.style.width = `100%`;
+
+              intervalId = setInterval(() => {
+                if (++counter === 11) {
+                  clearInterval(intervalId);
+                  loadingReady();
+                  this.minimalLoading = false;
+                  return;
+                }
+                this.percentage = Math.floor((counter * 100) / 10);
+              }, minimalTime / 10);
+            } else {
+              this.percentage = Math.floor((loaded / total) * 100);
+              this.$refs.progressbar.style.width = `calc(46px + (100% - 46px ) * ${this.percentage} / 100)`;
+              if (this.percentage === 100) {
+                loadingReady();
+              }
+            }
+            first = false;
           });
-          const fileObject = /*{
-            STATUS: 'Y',
-            ID: '123',
-          };
-          //*/ await response.json();
-          if (fileObject && fileObject.STATUS === 'Y') {
-            //set value
-            store.commit('setFile', {
-              id: this.controlId,
-              property: this.formControl.property,
-              filename: this.files[0] ? this.files[0].name : '',
-              controlIndex: this.controlIndex,
-              value: this.files[0] ? fileObject.ID : '',
-            });
+          xhr.send(formData);
 
-            this.filenameLocal = this.formControl.multy
-              ? this.formControl.filename[this.controlIndex]
-              : this.formControl.filename;
+          let componentThis = this;
+          let timeoutId;
 
-            setTimeout(() => {
-              this.$refs.inputFile.value = '';
-            }, 100);
+          function loadingReady() {
+            if (xhr.readyState != 4) {
+              timeoutId = setTimeout(loadingReady, 100);
+              return;
+            } else {
+              clearTimeout(timeoutId);
+            }
 
-            this.loading = false;
+            const fileObject = JSON.parse(xhr.response);
+
+            if (fileObject) {
+              componentThis.xhrStatus = fileObject.STATUS;
+
+              switch (fileObject.STATUS) {
+                case 'Y':
+                  //set value
+                  store.commit('setFile', {
+                    id: componentThis.controlId,
+                    property: componentThis.formControl.property,
+                    filename: componentThis.files[0]
+                      ? componentThis.files[0].name
+                      : '',
+                    controlIndex: componentThis.controlIndex,
+                    value: componentThis.files[0] ? fileObject.ID : '',
+                  });
+
+                  componentThis.filenameLocal = componentThis.formControl.multy
+                    ? componentThis.formControl.filename[
+                        componentThis.controlIndex
+                      ]
+                    : componentThis.formControl.filename;
+
+                  setTimeout(() => {
+                    componentThis.$refs.inputFile.value = '';
+                  }, 100);
+
+                  break;
+
+                case 'E':
+                  break;
+              }
+              componentThis.percentage = 0;
+              componentThis.loading = false;
+            }
+            componentThis.$emit('timeoutAutosave');
           }
-          this.$emit('timeoutAutosave');
+
+          /*xhr.onreadystatechange = function () {
+            if (this.readyState != 4) return;
+          };*/
         } catch (err) {
           throw err;
         }
       },
     },
-
     mounted() {
       //drag&drop file
       const dropZone = this.$refs.dropzone;
@@ -968,8 +1051,12 @@ window.onload = function () {
     `,
 
     computed: {
-      id() {return `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`},
-      name() {return `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`},
+      id() {
+        return `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`;
+      },
+      name() {
+        return `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`;
+      },
     },
     methods: {
       clickLink() {
@@ -1072,8 +1159,12 @@ window.onload = function () {
         <hr class="hr--sl">
       </div>`,
     computed: {
-      id() {return `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`},
-      name() {return `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`},
+      id() {
+        return `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`;
+      },
+      name() {
+        return `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`;
+      },
     },
     methods: {
       onSelect() {
@@ -1357,12 +1448,12 @@ window.onload = function () {
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
     emits: ['autosave'],
     computed: {
-        inputAttr() {
-          return {
-            id: `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`,
-            name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
-          }
-        },
+      inputAttr() {
+        return {
+          id: `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`,
+          name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
+        };
+      },
     },
     watch: {
       date(val) {

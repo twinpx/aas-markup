@@ -2,7 +2,7 @@ Vue.component('formControlFile', {
   data() {
     return {
       loading: false,
-      fileLoaded: 0, //%
+      percentage: 0, //%
       isFileLoaded: false,
       xhrStatus: '', //'Y', 'E'
       isActive: true,
@@ -38,7 +38,7 @@ Vue.component('formControlFile', {
           <input type="file" :data-value="fileid" :data-required="required" :name="name" :id="id" @change="uploadFile($refs.inputFile.files)" ref="inputFile" />
           <div class="b-float-label__progressbar" v-show="isLoading && !invalid" ref="progressbar">
             <span v-html="label" v-show="isFileLoaded"></span>
-            <span v-show="!isFileLoaded">{{fileLoaded}}%</span>
+            <span v-show="!isFileLoaded">{{percentage}}%</span>
           </div>
           <label :for="id" class="active" v-html="label" ref="dropzone" ></label>
         </div>
@@ -65,7 +65,7 @@ Vue.component('formControlFile', {
   },
   emits: ['autosave', 'timeoutAutosave'],
   watch: {
-    fileLoaded(val) {
+    percentage(val) {
       if (val === 100) {
         setTimeout(() => {
           this.isFileLoaded = true;
@@ -142,7 +142,7 @@ Vue.component('formControlFile', {
     uploadFile(files) {
       this.files = files;
       this.xhrStatus = '';
-      this.fileLoaded = 0;
+      this.percentage = 0;
       //invalid and label change
       setTimeout(() => {
         if (this.invalid) {
@@ -176,7 +176,7 @@ Vue.component('formControlFile', {
       bitrixLogs(11, `${this.formControl.label}: ${this.label}`);
     },
     clearInputFile() {
-      this.fileLoaded = 0;
+      this.percentage = 0;
       this.files = [];
       this.$refs.inputFile.value = '';
       this.sendData({
@@ -241,8 +241,8 @@ Vue.component('formControlFile', {
         xhr.setRequestHeader('Authentication', 'secret');
         xhr.upload.addEventListener('progress', ({ loaded, total }) => {
           console.log(loaded, total);
-          this.fileLoaded = Math.floor((loaded / total) * 100);
-          this.$refs.progressbar.style.width = `calc(20px + (100% - 20px ) * ${this.fileLoaded} / 100)`;
+          this.percentage = Math.floor((loaded / total) * 100);
+          this.$refs.progressbar.style.width = `calc(20px + (100% - 20px ) * ${this.percentage} / 100)`;
         });
         xhr.send(formData);
 
@@ -286,7 +286,7 @@ Vue.component('formControlFile', {
               case 'E':
                 break;
             }
-            componentThis.fileLoaded = 0;
+            componentThis.percentage = 0;
           }
           componentThis.$emit('timeoutAutosave');
         };
