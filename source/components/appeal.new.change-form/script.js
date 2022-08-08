@@ -648,6 +648,7 @@ window.onload = function () {
       return {
         minimalLoading: false,
         loading: false,
+        deleting: false,
         percentage: 0, //%
         isFileLoaded: false,
         xhrStatus: '', //'Y', 'E'
@@ -675,14 +676,14 @@ window.onload = function () {
     <div>
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
-          <span class="b-float-label-file__clear" @click.prevent="clearInputFile" v-if="isClearable"></span>
-          <div class="b-float-label--file" :class="{'filled': isFilled, 'progressing': isProgressing, 'invalid': !!isInvalid, 'clearable': isClearable }" ref="controlFile" >
+          <span class="b-float-label-file__clear" :class="{'btn--load-circle': deleting}" @click.prevent="clearInputFile" v-if="isClearable"></span>
+          <div class="b-float-label--file" :class="{'filled': isFilled, 'progressing': isProgressing, 'deleting': deleting, 'invalid': !!isInvalid, 'clearable': isClearable }" ref="controlFile" >
             <span class="b-float-label-file__label">{{ formControl.label }}</span>
   
             <svg xmlns="http://www.w3.org/2000/svg" width="17.383" height="24" viewBox="0 0 17.383 24" v-html="icon"></svg>
   
             <input type="file" :data-value="fileid" :data-required="required" :name="name" :id="id" @change="uploadFile($refs.inputFile.files)" ref="inputFile" />
-            <div class="b-float-label__progressbar" v-show="isProgressing && !isInvalid" ref="progressbar" :class="{'minimal': minimalLoading}">
+            <div class="b-float-label__progressbar" v-show="(isProgressing || deleting) && !isInvalid" ref="progressbar" :class="{'minimal': minimalLoading}">
               <span v-html="label" v-show="isFileLoaded"></span>
               <span v-show="!isFileLoaded">{{percentage}}%</span>
             </div>
@@ -811,6 +812,7 @@ window.onload = function () {
                 ? this.formControl.value[this.controlIndex].val
                 : this.formControl.value;
 
+            this.loading = true;
             this.sendData(data);
           }
         }, 0);
@@ -818,7 +820,9 @@ window.onload = function () {
         bitrixLogs(11, `${this.formControl.label}: ${this.label}`);
       },
       clearInputFile() {
+        this.deleting = true;
         this.percentage = 0;
+        this.loading = false;
         this.files = [];
         this.$refs.inputFile.value = '';
         this.sendData({
@@ -859,9 +863,86 @@ window.onload = function () {
         }
         return parseInt(length) + ' ' + type[i];
       },
+      progressAnimation(xhr) {
+        let first = true;
+        xhr.upload.addEventListener('progress', ({ loaded, total }) => {
+          if (first && loaded === total) {
+            //loaded too fast, show minimal animation 1s
+            let counter = 0,
+              minimalTime = 1000,
+              intervalId;
+
+            this.minimalLoading = true;
+            this.$refs.progressbar.style.width = `100%`;
+
+            intervalId = setInterval(() => {
+              if (++counter === 11) {
+                clearInterval(intervalId);
+                this.dataLoaded(xhr);
+                this.minimalLoading = false;
+                return;
+              }
+              this.percentage = Math.floor((counter * 100) / 10);
+            }, minimalTime / 10);
+          } else {
+            this.percentage = Math.floor((loaded / total) * 100);
+            this.$refs.progressbar.style.width = `calc(46px + (100% - 46px ) * ${this.percentage} / 100)`;
+            if (this.percentage === 100) {
+              this.dataLoaded(xhr);
+            }
+          }
+          first = false;
+        });
+      },
+      dataLoaded(xhr) {
+        let timeoutId;
+
+        if (xhr.readyState != 4) {
+          timeoutId = setTimeout(() => {
+            this.dataLoaded(xhr);
+          }, 100);
+          return;
+        } else {
+          clearTimeout(timeoutId);
+        }
+
+        const fileObject = JSON.parse(xhr.response);
+
+        if (fileObject) {
+          this.xhrStatus = fileObject.STATUS;
+
+          switch (fileObject.STATUS) {
+            case 'Y':
+              //set value
+              store.commit('setFile', {
+                id: this.controlId,
+                property: this.formControl.property,
+                filename: this.files[0] ? this.files[0].name : '',
+                controlIndex: this.controlIndex,
+                value: this.files[0] ? fileObject.ID : '',
+              });
+
+              this.filenameLocal = this.formControl.multy
+                ? this.formControl.filename[this.controlIndex]
+                : this.formControl.filename;
+
+              setTimeout(() => {
+                this.$refs.inputFile.value = '';
+              }, 100);
+
+              break;
+
+            case 'E':
+              break;
+          }
+          this.percentage = 0;
+          this.loading = false;
+          this.deleting = false;
+        }
+        this.$emit('timeoutAutosave');
+      },
       async sendData(data) {
         try {
-          this.loading = true;
           const url = this.$store.state.url.fileUpload;
           const formData = new FormData();
 
@@ -873,86 +954,8 @@ window.onload = function () {
           xhr.open('POST', url);
           //xhr.setRequestHeader('Content-Type', 'multipart/form-data');
           xhr.setRequestHeader('Authentication', 'secret');
-          let first = true;
-          xhr.upload.addEventListener('progress', ({ loaded, total }) => {
-            if (first && loaded === total) {
-              //loaded too fast, show minimal animation 1s
-              let counter = 0,
-                minimalTime = 1000,
-                intervalId;
-
-              this.minimalLoading = true;
-              this.$refs.progressbar.style.width = `100%`;
-
-              intervalId = setInterval(() => {
-                if (++counter === 11) {
-                  clearInterval(intervalId);
-                  loadingReady();
-                  this.minimalLoading = false;
-                  return;
-                }
-                this.percentage = Math.floor((counter * 100) / 10);
-              }, minimalTime / 10);
-            } else {
-              this.percentage = Math.floor((loaded / total) * 100);
-              this.$refs.progressbar.style.width = `calc(46px + (100% - 46px ) * ${this.percentage} / 100)`;
-              if (this.percentage === 100) {
-                loadingReady();
-              }
-            }
-            first = false;
-          });
+          this.progressAnimation(xhr);
           xhr.send(formData);
-
-          let componentThis = this;
-          let timeoutId;
-
-          function loadingReady() {
-            if (xhr.readyState != 4) {
-              timeoutId = setTimeout(loadingReady, 100);
-              return;
-            } else {
-              clearTimeout(timeoutId);
-            }
-
-            const fileObject = JSON.parse(xhr.response);
-
-            if (fileObject) {
-              componentThis.xhrStatus = fileObject.STATUS;
-
-              switch (fileObject.STATUS) {
-                case 'Y':
-                  //set value
-                  store.commit('setFile', {
-                    id: componentThis.controlId,
-                    property: componentThis.formControl.property,
-                    filename: componentThis.files[0]
-                      ? componentThis.files[0].name
-                      : '',
-                    controlIndex: componentThis.controlIndex,
-                    value: componentThis.files[0] ? fileObject.ID : '',
-                  });
-
-                  componentThis.filenameLocal = componentThis.formControl.multy
-                    ? componentThis.formControl.filename[
-                        componentThis.controlIndex
-                      ]
-                    : componentThis.formControl.filename;
-
-                  setTimeout(() => {
-                    componentThis.$refs.inputFile.value = '';
-                  }, 100);
-
-                  break;
-
-                case 'E':
-                  break;
-              }
-              componentThis.percentage = 0;
-              componentThis.loading = false;
-            }
-            componentThis.$emit('timeoutAutosave');
-          }
 
           /*xhr.onreadystatechange = function () {
             if (this.readyState != 4) return;
