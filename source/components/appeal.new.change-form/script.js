@@ -648,15 +648,12 @@ window.onload = function () {
       return {
         minimalLoading: false,
         loading: false,
-        deleting: false,
+        loadCircle: false,
         percentage: 0, //%
         isFileLoaded: false,
         xhrStatus: '', //'Y', 'E'
         isActive: true,
         files: [],
-        filenameLocal: this.formControl.multy
-          ? this.formControl.filename[this.controlIndex]
-          : this.formControl.filename,
         required: this.formControl.required,
         name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
         id: `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`,
@@ -676,14 +673,14 @@ window.onload = function () {
     <div>
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
-          <span class="b-float-label-file__clear" :class="{'btn--load-circle': deleting}" @click.prevent="clearInputFile" v-if="isClearable"></span>
-          <div class="b-float-label--file" :class="{'filled': isFilled, 'progressing': isProgressing, 'deleting': deleting, 'invalid': !!isInvalid, 'clearable': isClearable }" ref="controlFile" >
+          <span class="b-float-label-file__clear" :class="{'btn--load-circle': loadCircle}" @click.prevent="clearInputFile" v-if="isClearable"></span>
+          <div class="b-float-label--file" :class="{'filled': isFilled, 'progressing': isProgressing, 'deleting': loadCircle, 'invalid': !!isInvalid, 'clearable': isClearable }" ref="controlFile" >
             <span class="b-float-label-file__label">{{ formControl.label }}</span>
   
             <svg xmlns="http://www.w3.org/2000/svg" width="17.383" height="24" viewBox="0 0 17.383 24" v-html="icon"></svg>
   
             <input type="file" :data-value="fileid" :data-required="required" :name="name" :id="id" @change="uploadFile($refs.inputFile.files)" ref="inputFile" />
-            <div class="b-float-label__progressbar" v-show="(isProgressing || deleting) && !isInvalid" ref="progressbar" :class="{'minimal': minimalLoading}">
+            <div class="b-float-label__progressbar" v-show="(isProgressing || loadCircle) && !isInvalid" ref="progressbar" :class="{'minimal': minimalLoading}">
               <span v-html="label" v-show="isFileLoaded"></span>
               <span v-show="!isFileLoaded">{{percentage}}%</span>
             </div>
@@ -713,11 +710,13 @@ window.onload = function () {
     emits: ['autosave', 'timeoutAutosave'],
     watch: {
       percentage(val) {
-        if (val === 100) {
-          setTimeout(() => {
+        setTimeout(() => {
+          if (val === 100) {
             this.isFileLoaded = true;
-          }, 600);
-        }
+          } else if (val === 0) {
+            this.isFileLoaded = false;
+          }
+        }, 600);
       },
     },
     computed: {
@@ -733,10 +732,10 @@ window.onload = function () {
         return this.loading;
       },
       isClearable() {
-        return !!this.filenameLocal && !this.isProgressing;
+        return this.loadCircle || (!!this.filename && !this.isProgressing);
       },
       isFilled() {
-        return !!this.filenameLocal;
+        return !!this.filename;
       },
       fileid() {
         return typeof this.formControl.value === 'object'
@@ -788,11 +787,21 @@ window.onload = function () {
         return this.formControl.default;
       },
       filename() {
-        return this.filenameLocal;
+        return this.formControl.multy
+          ? this.formControl.filename[this.controlIndex]
+          : this.formControl.filename;
       },
     },
     methods: {
       uploadFile(files) {
+        store.commit('setFile', {
+          id: this.controlId,
+          property: this.formControl.property,
+          filename: '',
+          controlIndex: undefined,
+          value: '',
+        });
+
         this.files = files;
         this.xhrStatus = '';
         this.percentage = 0;
@@ -800,10 +809,6 @@ window.onload = function () {
         setTimeout(() => {
           if (this.isInvalid) {
             this.$refs.inputFile.value = '';
-
-            this.filenameLocal = this.formControl.multy
-              ? this.formControl.filename[this.controlIndex]
-              : this.formControl.filename;
           } else {
             let data = {};
             data[this.name] = this.files[0];
@@ -820,7 +825,7 @@ window.onload = function () {
         bitrixLogs(11, `${this.formControl.label}: ${this.label}`);
       },
       clearInputFile() {
-        this.deleting = true;
+        this.loadCircle = true;
         this.percentage = 0;
         this.loading = false;
         this.files = [];
@@ -898,11 +903,13 @@ window.onload = function () {
         let timeoutId;
 
         if (xhr.readyState != 4) {
+          this.loadCircle = true;
           timeoutId = setTimeout(() => {
             this.dataLoaded(xhr);
           }, 100);
           return;
         } else {
+          this.loadCircle = false;
           clearTimeout(timeoutId);
         }
 
@@ -922,10 +929,6 @@ window.onload = function () {
                 value: this.files[0] ? fileObject.ID : '',
               });
 
-              this.filenameLocal = this.formControl.multy
-                ? this.formControl.filename[this.controlIndex]
-                : this.formControl.filename;
-
               setTimeout(() => {
                 this.$refs.inputFile.value = '';
               }, 100);
@@ -935,9 +938,10 @@ window.onload = function () {
             case 'E':
               break;
           }
+          this.$refs.progressbar.style = '';
           this.percentage = 0;
           this.loading = false;
-          this.deleting = false;
+          this.loadCircle = false;
         }
         this.$emit('timeoutAutosave');
       },
