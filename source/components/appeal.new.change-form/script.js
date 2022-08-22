@@ -655,8 +655,6 @@ window.onload = function () {
         isActive: true,
         files: [],
         required: this.formControl.required,
-        name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
-        id: `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`,
         icon: `<g transform="translate(-4.461)">
           <g transform="translate(4.461)">
             <g>
@@ -720,6 +718,12 @@ window.onload = function () {
       },
     },
     computed: {
+      name() {
+        return `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`;
+      },
+      id() {
+        return `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`;
+      },
       isInvalid() {
         return !!this.invalidString;
       },
@@ -798,7 +802,7 @@ window.onload = function () {
           id: this.controlId,
           property: this.formControl.property,
           filename: '',
-          controlIndex: undefined,
+          controlIndex: this.controlIndex,
           value: '',
         });
 

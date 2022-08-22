@@ -76,13 +76,13 @@ window.checkPlanStore = {
   },
   table: {
     html: '',
-    PAGEN_1: 1,
+    locationSearch: '',
     sortField: '',
     sortType: '',
   },
   query: {
     sortField: '',
     sortType: '',
-    PAGEN_1: '',
+    locationSearch: '',
   },
 };

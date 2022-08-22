@@ -28,8 +28,8 @@ window.addEventListener('load', () => {
             break;
         }
       },
-      changePage(state, payload) {
-        state.table.PAGEN_1 = payload;
+      changeLocationSearch(state, payload) {
+        state.table.locationSearch = payload;
       },
       changeSorting(state, payload) {
         state.table.sortField = payload.sortField;
@@ -70,7 +70,11 @@ window.addEventListener('load', () => {
 
         Object.keys(state.query).forEach((q) => {
           if (state.table[q]) {
-            requestObj[q] = state.table[q];
+            if (q === 'locationSearch') {
+              Object.assign(requestObj, parseQuery(state.table[q]));
+            } else {
+              requestObj[q] = state.table[q];
+            }
           }
         });
 
@@ -81,10 +85,12 @@ window.addEventListener('load', () => {
       },
     },
     actions: {
-      renderTable({ state, commit, getters }) {
+      renderTable({ state, commit, getters }, href) {
         (async () => {
           const response = await fetch(
-            `${state.paths.getTable}${getQuery(getters.requestObj)}`,
+            href
+              ? `${state.paths.getTable}?${href.split('?')[1]}`
+              : `${state.paths.getTable}${getQuery(getters.requestObj)}`,
             {
               headers: {
                 Authentication: 'secret',
@@ -98,6 +104,8 @@ window.addEventListener('load', () => {
             let result = await response.json();
             //table data
             commit('changeTableHtml', result);
+            //scroll
+            window.scrollTo({ top: 0, behavior: 'smooth' });
           }
         })();
       },
@@ -234,7 +242,7 @@ window.addEventListener('load', () => {
       },
       inputDateRange() {
         //reset page
-        store.commit('changePage', 1);
+        store.commit('changeLocationSearch', '');
         //render table
         this.$store.dispatch('renderTable');
         //set URL
@@ -264,7 +272,7 @@ window.addEventListener('load', () => {
     methods: {
       onSelect() {
         //reset page
-        store.commit('changePage', 1);
+        store.commit('changeLocationSearch', '');
         //render table
         this.$store.dispatch('renderTable');
         //set URL
@@ -320,7 +328,7 @@ window.addEventListener('load', () => {
       },
       getTableData() {
         //reset page
-        store.commit('changePage', 1);
+        store.commit('changeLocationSearch', '');
         //render Table
         this.$store.dispatch('renderTable');
         //set URL
@@ -418,14 +426,14 @@ window.addEventListener('load', () => {
       },
       clickPagination(e) {
         e.preventDefault();
-        if (e.target.getAttribute('href')) {
+
+        let href = e.target.getAttribute('href');
+
+        if (href) {
           //reset page
-          let page = parseQuery(
-            e.target.getAttribute('href').split('?')[1]
-          ).PAGEN_1;
-          store.commit('changePage', 1 * page);
+          store.commit('changeLocationSearch', href.split('?')[1]);
           //render Table
-          this.$store.dispatch('renderTable');
+          this.$store.dispatch('renderTable', href);
           //set URL
           this.$store.dispatch('seturl');
           //set sessionStorage
@@ -494,9 +502,9 @@ window.addEventListener('load', () => {
                 sortType: queryObject.sortType || '',
               });
               break;
-            case 'PAGEN_1':
+            /*case 'PAGEN_1':
               store.commit('changePage', queryObject[key] || '');
-              break;
+              break;*/
           }
         }
       });
