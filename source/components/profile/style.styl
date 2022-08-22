@@ -98,7 +98,7 @@
       padding 0 0 10px !important
 
       a
-        text-decoration none !important
+        text-underlineation none !important
         color #000 !important
         opacity 1 !important
         line-height 1
@@ -151,3 +151,38 @@
     font-size .9rem
     color #000 !important
     margin-bottom 20px !important
+
+.b-tabs
+
+  &__nav
+    border-bottom 1px solid #f2f2f2
+    font-size $14px
+    display flex
+    padding-bottom 14px
+    position relative
+
+    &__underline
+      position absolute
+      bottom -1px
+      left 0
+      width auto
+      border-top 1px solid #6F6F6F
+      transition(all .3s ease)
+
+    &__item
+      margin-right 40px
+      cursor pointer
+
+      &:last-child
+        margin-right 0
+
+      &.b-tab__nav__item--active
+        color #6F6F6F
+
+  &__tabs
+
+    &__item
+      display none
+
+      &.b-tabs__tabs__item--active
+        display block
