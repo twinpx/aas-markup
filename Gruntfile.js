@@ -137,7 +137,7 @@ module.exports = function (grunt) {
       },
       pluginsJS: {
         files: {
-          '<%= source %>js/script.js': [
+          '<%= dest%>template/script.js': [
             '<%= source %>js/script.js',
             '<%= source %>js/src/plugins/**/*.js',
           ],
