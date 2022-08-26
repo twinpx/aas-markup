@@ -1,6 +1,6 @@
 @import '../../styl/component-include.styl'
 
-.b-appeal-history
+.b-study-courses-list
 
   &.ph-block
     
@@ -19,7 +19,10 @@
         opacity 0
         z-index -1
     
-.b-appeal-history
+.b-study-courses-list
+
+  .btn-remove
+    margin-left 20px
   
   &__form
 
@@ -110,6 +113,7 @@
 
       &:first-child
         padding-left 1.5rem
+        text-align left
 
       &.asc,
       &.desc
@@ -151,10 +155,14 @@
 
       &.normal
         color $secondary-color-2
+
+      &:first-child
+        text-align left
         
       &:last-child
         padding-left 0
-        padding-right 0
+        padding-right 20px
+        white-space nowrap
 
     tbody
 

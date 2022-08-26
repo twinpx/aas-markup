@@ -2,10 +2,12 @@
   'use strict';
 
   $(function () {
+    if (window.studyCoursesListReady) return;
+    window.studyCoursesListReady = true;
     //on load hightlight the sorted column
     var urlQuery = parseQuery(window.location.search);
     if (urlQuery.field && urlQuery.sort) {
-      var $thElements = $('.b-appeal-history th');
+      var $thElements = $('.b-study-courses-list th');
       var $th = $('[data-field=' + urlQuery.field + ']');
 
       $th.data({ sort: urlQuery.sort });
@@ -13,7 +15,7 @@
       var index = $thElements.index($th);
       $thElements.removeClass('asc').removeClass('desc');
       $th.addClass(urlQuery.sort);
-      $('.b-appeal-history tbody')
+      $('.b-study-courses-list tbody')
         .find('tr')
         .each(function () {
           $(this)
@@ -25,12 +27,12 @@
     }
 
     //tr click
-    // $( '.b-appeal-history' ).delegate( 'tbody tr', 'click', function() {
+    // $( '.b-study-courses-list' ).delegate( 'tbody tr', 'click', function() {
     //   window.location = $( this ).data( 'url' );
     // });
 
     //th click, sorting
-    $('.b-appeal-history th').click(function () {
+    $('.b-study-courses-list th').click(function () {
       var $th = $(this);
       var $table = $th.closest('table');
       var $thElements = $table.find('th');
@@ -69,7 +71,7 @@
             $tbody.html(json.TBODY);
 
             //set pagination
-            var $pagination = $('.b-appeal-history .b-pagination-block');
+            var $pagination = $('.b-study-courses-list .b-pagination-block');
             $pagination.after(json.PAGINATION);
             $pagination.remove();
 

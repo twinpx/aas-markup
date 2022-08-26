@@ -168,7 +168,7 @@ window.addEventListener('load', () => {
             code: '',
           },
         ],
-        selectedOption: store.state.selectedOptionType ||
+        selectedOption: this.$store.state.selectedOptionType ||
           window.selectTypeData.selected || {
             label: 'Все',
             code: '',
@@ -183,9 +183,9 @@ window.addEventListener('load', () => {
     methods: {
       onSelect() {
         //reset page
-        store.commit('changeProp', { prop: 'page', value: 1 });
+        this.$store.commit('changeProp', { prop: 'page', value: 1 });
         //set status
-        store.commit('changeProp', {
+        this.$store.commit('changeProp', {
           prop: 'type',
           value: this.selectedOption.code,
         });
@@ -365,7 +365,7 @@ window.addEventListener('load', () => {
     </div>`,
     computed: {
       tableHtml() {
-        const tableHtml = store.state.tableHtml;
+        const tableHtml = this.$store.state.tableHtml;
         if (typeof tableHtml === 'object') {
           const sortedCol = tableHtml.cols.filter((col) => col.sortType);
           if (sortedCol.length) {
@@ -381,7 +381,7 @@ window.addEventListener('load', () => {
     methods: {
       sortTable(e, field, sortType) {
         sortType = sortType === 'asc' ? 'desc' : 'asc';
-        store.commit('changeProp', {
+        this.$store.commit('changeProp', {
           prop: 'sorting',
           value: { field, sortType },
         });
@@ -413,7 +413,7 @@ window.addEventListener('load', () => {
         if (e.target.getAttribute('href')) {
           //reset page
           let page = parseQuery(e.target.getAttribute('href')).PAGEN_1;
-          store.commit('changeProp', { prop: 'page', value: 1 * page });
+          this.$store.commit('changeProp', { prop: 'page', value: 1 * page });
           //render Table
           this.$emit('rendertable');
           //set URL
@@ -430,29 +430,29 @@ window.addEventListener('load', () => {
       renderTable() {
         (async () => {
           const requestObj = {};
-          if (store.state.id) {
-            requestObj.id = store.state.id;
+          if (this.$store.state.id) {
+            requestObj.id = this.$store.state.id;
           }
-          if (store.state.type) {
-            requestObj[window.selectTypeData.name] = store.state.type;
+          if (this.$store.state.type) {
+            requestObj[window.selectTypeData.name] = this.$store.state.type;
           }
-          if (store.state.status) {
-            requestObj[window.selectStatusData.name] = store.state.status;
+          if (this.$store.state.status) {
+            requestObj[window.selectStatusData.name] = this.$store.state.status;
           }
-          if (store.state.start) {
-            requestObj.start = store.state.start;
+          if (this.$store.state.start) {
+            requestObj.start = this.$store.state.start;
           }
-          if (store.state.end) {
-            requestObj.end = store.state.end;
+          if (this.$store.state.end) {
+            requestObj.end = this.$store.state.end;
           }
-          if (store.state.sorting.field) {
-            requestObj.sortField = store.state.sorting.field;
+          if (this.$store.state.sorting.field) {
+            requestObj.sortField = this.$store.state.sorting.field;
           }
-          if (store.state.sorting.sortType) {
-            requestObj.sortType = store.state.sorting.sortType;
+          if (this.$store.state.sorting.sortType) {
+            requestObj.sortType = this.$store.state.sorting.sortType;
           }
-          if (store.state.page) {
-            requestObj.PAGEN_1 = store.state.page;
+          if (this.$store.state.page) {
+            requestObj.PAGEN_1 = this.$store.state.page;
           }
 
           const response = await fetch(
@@ -469,7 +469,7 @@ window.addEventListener('load', () => {
           } else {
             let result = await response.json();
             //table data
-            store.commit('changeProp', { prop: 'tableHtml', value: result });
+            this.$store.commit('changeProp', { prop: 'tableHtml', value: result });
             //scroll
             window.scrollTo({
               top:
@@ -484,29 +484,29 @@ window.addEventListener('load', () => {
       },
       seturl() {
         const queryObj = {};
-        if (store.state.id) {
-          queryObj.id = store.state.id;
+        if (this.$store.state.id) {
+          queryObj.id = this.$store.state.id;
         }
-        if (store.state.type) {
-          queryObj[window.selectTypeData.name] = store.state.type;
+        if (this.$store.state.type) {
+          queryObj[window.selectTypeData.name] = this.$store.state.type;
         }
-        if (store.state.status) {
-          queryObj[window.selectStatusData.name] = store.state.status;
+        if (this.$store.state.status) {
+          queryObj[window.selectStatusData.name] = this.$store.state.status;
         }
-        if (store.state.start) {
-          queryObj.start = store.state.start;
+        if (this.$store.state.start) {
+          queryObj.start = this.$store.state.start;
         }
-        if (store.state.end) {
-          queryObj.end = store.state.end;
+        if (this.$store.state.end) {
+          queryObj.end = this.$store.state.end;
         }
-        if (store.state.sorting.field) {
-          queryObj.sortField = store.state.sorting.field;
+        if (this.$store.state.sorting.field) {
+          queryObj.sortField = this.$store.state.sorting.field;
         }
-        if (store.state.sorting.sortType) {
-          queryObj.sortType = store.state.sorting.sortType;
+        if (this.$store.state.sorting.sortType) {
+          queryObj.sortType = this.$store.state.sorting.sortType;
         }
-        if (store.state.page) {
-          queryObj.PAGEN_1 = store.state.page;
+        if (this.$store.state.page) {
+          queryObj.PAGEN_1 = this.$store.state.page;
         }
 
         window.history.pushState('', '', getQuery(queryObj));
@@ -519,37 +519,37 @@ window.addEventListener('load', () => {
       for (let key in queryObject) {
         switch (key) {
           case 'id':
-            store.commit('changeProp', {
+            this.$store.commit('changeProp', {
               prop: key,
               value: queryObject[key] || undefined,
             });
             break;
           case window.selectTypeData.name:
-            store.commit('changeProp', {
+            this.$store.commit('changeProp', {
               prop: 'type',
               value: queryObject[key] || '',
             });
             break;
           case window.selectStatusData.name:
-            store.commit('changeProp', {
+            this.$store.commit('changeProp', {
               prop: 'status',
               value: queryObject[key] || '',
             });
             break;
           case 'start':
-            store.commit('changeProp', {
+            this.$store.commit('changeProp', {
               prop: 'start',
               value: queryObject[key] || '',
             });
             break;
           case 'end':
-            store.commit('changeProp', {
+            this.$store.commit('changeProp', {
               prop: 'end',
               value: queryObject[key] || '',
             });
             break;
           case 'sortField':
-            store.commit('changeProp', {
+            this.$store.commit('changeProp', {
               prop: 'sorting',
               value: {
                 field: queryObject.sortField || '',
@@ -558,7 +558,7 @@ window.addEventListener('load', () => {
             });
             break;
           case 'sortType':
-            store.commit('changeProp', {
+            this.$store.commit('changeProp', {
               prop: 'sorting',
               value: {
                 field: queryObject.sortField || '',
@@ -567,7 +567,7 @@ window.addEventListener('load', () => {
             });
             break;
           case 'PAGEN_1':
-            store.commit('changeProp', {
+            this.$store.commit('changeProp', {
               prop: 'page',
               value: queryObject[key] || '',
             });
@@ -577,17 +577,17 @@ window.addEventListener('load', () => {
 
       //set status to the status select
       const selectedStatus = window.selectStatusData.options.filter(
-        (optionObj) => optionObj.code === store.state.status
+        (optionObj) => optionObj.code === this.$store.state.status
       );
-      store.commit('changeSelectedOption', {
+      this.$store.commit('changeSelectedOption', {
         type: 'Status',
         label: selectedStatus[0].label,
       });
       //set type to the type select
       const selectedType = window.selectTypeData.options.filter(
-        (optionObj) => optionObj.code === store.state.type
+        (optionObj) => optionObj.code === this.$store.state.type
       );
-      store.commit('changeSelectedOption', {
+      this.$store.commit('changeSelectedOption', {
         type: 'Type',
         label: selectedType[0].label,
       });
@@ -595,8 +595,8 @@ window.addEventListener('load', () => {
     mounted() {
       const textInputs = ['id'];
       textInputs.forEach((code) => {
-        if (store.state[code]) {
-          this.$refs.filter.$refs[code].inputText = store.state[code];
+        if (this.$store.state[code]) {
+          this.$refs.filter.$refs[code].inputText = this.$store.state[code];
           this.$refs.filter.$refs[code].isActive = true;
         }
       });
