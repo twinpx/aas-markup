@@ -610,7 +610,7 @@ window.addEventListener('load', () => {
     for (var k in queryObject) {
       result.push(k + '=' + queryObject[k]);
     }
-    return '?' + result.join('&');
+    return '&' + result.join('&');
   }
 
   function parseQuery(queryString) {
