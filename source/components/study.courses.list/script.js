@@ -2,6 +2,112 @@
   'use strict';
 
   $(function () {
+    //tabs
+    document.querySelectorAll('.b-study-courses-list').forEach(function (elem) {
+      var nav = elem.querySelector('.b-study-courses-list__tabs');
+      var menuLinks = nav.querySelectorAll('a');
+      var tabsItems = elem.querySelectorAll('.b-study-courses-list__item');
+
+      //swiper menu
+      if (window.matchMedia('(max-width: 600px)').matches) {
+        var slidesPerView = 2.5;
+
+        if (window.matchMedia('(min-width: 500px)').matches) {
+          slidesPerView = 3;
+        }
+
+        //init swiper
+        new Swiper(
+          elem.querySelector('.b-study-courses-list__tabs .swiper-container'),
+          {
+            slidesPerView: slidesPerView,
+            spaceBetween: 30,
+            freeMode: true,
+          }
+        );
+
+        //scroll
+        window.addEventListener('scroll', function () {
+          if (
+            elem
+              .querySelector('.b-study-courses-list__tabs')
+              .className.search('animate') !== -1
+          ) {
+            return;
+          }
+
+          if (
+            $(elem).offset().top <=
+            window.scrollY + window.outerHeight - 250
+          ) {
+            elem
+              .querySelector('.b-study-courses-list__tabs')
+              .classList.add('animate');
+          }
+        });
+
+        setTimeout(function () {
+          window.dispatchEvent(new Event('scroll'));
+        }, 500);
+      }
+
+      //decor line
+      var decorLine = elem.querySelector('.b-study-courses-list__decor');
+      var swiperWrapper = elem.querySelector(
+        '.b-study-courses-list__tabs .swiper-wrapper'
+      );
+      var trans = swiperWrapper.style.transform;
+      var pos = trans.indexOf('(');
+      setTimeout(function () {
+        decorLine.style.left =
+          menuLinks[0].offsetLeft +
+          parseInt(trans.substr(pos + 1) || 0, 10) +
+          'px';
+        decorLine.style.width = menuLinks[0].offsetWidth + 'px';
+      }, 500);
+
+      menuLinks.forEach(function (menuLink) {
+        menuLink.addEventListener('click', function (e) {
+          e.preventDefault();
+
+          var tab = menuLink.getAttribute('data-tab');
+
+          //highlight nav
+          menuLinks.forEach(function (m) {
+            m.classList.remove('active');
+          });
+          menuLink.classList.add('active');
+
+          //highlight tabs
+          tabsItems.forEach(function (t) {
+            t.classList.remove('active');
+          });
+          elem
+            .querySelector(`.b-study-courses-list__item[data-tab=${tab}]`)
+            .classList.add('active');
+
+          //underline
+          decorLine.style.width = `${menuLink.clientWidth}px`;
+          decorLine.style.left = `${
+            menuLink.getBoundingClientRect().left -
+            nav.getBoundingClientRect().left
+          }px`;
+
+          //url
+          var query = parseQuery(window.location.search);
+          query.tab = tab;
+          history.replaceState({}, '', getQuery(query));
+        });
+      });
+
+      //on load
+      var tab = parseQuery(window.location.search).tab;
+      setTimeout(function () {
+        nav.querySelector(`[data-tab=${tab}]`).click();
+      }, 500);
+    });
+
+    //table
     if (window.studyCoursesListReady) return;
     window.studyCoursesListReady = true;
     //on load hightlight the sorted column

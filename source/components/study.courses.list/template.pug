@@ -5,111 +5,67 @@ if componentsArray
   - componentsArray[ componentsArray.length ] = 'study.courses.list'
 else
   - var componentsArray = [ 'study.courses.list' ]
+
+link( rel="stylesheet", href="/template/css/swiper.min.css" )
+script( src="/template/js/swiper.min.js" )
   
 .b-study-courses-list.ph-block
 
   .ph
-    .ph__table
-      div
-      div
-      div
-      div
-      div
+    div
+    div
+    div
+    div
+    div
 
   .ph-content
 
-    table.table( data-result="/components/study.courses.list/result.json" )
-      thead
-        tr
-          th( data-field="title" ) Название курса
-          th( data-field="id" ) Id
-          th( data-field="start" ) Дата начала
-          th( data-field="programms" ) Программы
-          th( data-field="status" ) Статус курса
-          th
-      tbody
-        tr( data-url="/pages/appeal-detail-public/" data-target="_self" )
-          td Бухгалтерский учет и отчетность
-          td 156
-          td 27 сентября 2021
-          td 6-2-24, 6-2-36
-          td 
-            .label-gray
-              span Черновик
-          td
-            a.btn-edit( href="" )
-              svg(xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24")
-                g
-                  path(d="M9.263,1.439l-8.21,8.69a3.05,3.05,0,0,0-.67,1.43L.013,14.8a1.527,1.527,0,0,0,1.87,1.77l3.22-.55a2.871,2.871,0,0,0,1.39-.75l8.21-8.69c1.42-1.5,2.06-3.21-.15-5.3C12.353-.791,10.683-.061,9.263,1.439Z" transform="translate(4.002 3.701)")
-                  path(d="M0,0A6.126,6.126,0,0,0,5.45,5.15" transform="translate(11.895 6.59)")
-                  path(d="M0,0H24V24H0Z" fill="none" opacity="0")
-            a.btn-remove( href="" )
-              svg(xmlns="http://www.w3.org/2000/svg" width="16.251" height="20" viewBox="0 0 16.251 20")
-                path(d="M24.7,11.1H21.264v-.626A1.875,1.875,0,0,0,19.39,8.6h-2.5a1.875,1.875,0,0,0-1.874,1.874V11.1H11.576a1.562,1.562,0,0,0-1.561,1.563v1.25a.624.624,0,0,0,.624.624h15a.625.625,0,0,0,.626-.624v-1.25A1.563,1.563,0,0,0,24.7,11.1Zm-8.438-.626a.625.625,0,0,1,.624-.624h2.5a.625.625,0,0,1,.624.624V11.1h-3.75Z" transform="translate(-10.015 -8.601)")
-                path(d="M10.941,13.909a.2.2,0,0,0-.2.2l.516,10.822a1.873,1.873,0,0,0,1.873,1.786h9.492A1.873,1.873,0,0,0,24.5,24.935l.516-10.822a.2.2,0,0,0-.2-.2Zm9.44,1.561a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Zm-3.126,0a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Zm-3.126,0a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Z" transform="translate(-9.823 -6.721)")
+    .h1-flex-wrapper
+      h2 Список курсов УМЦ Название
+      a.btn.btn-secondary.btn-md.hidden-sm.hidden-xs( href="" ) Создать курс
 
-        tr( data-url="/pages/appeal-detail-public/" data-target="_self" )
-          td Бухгалтерский учет и отчетность
-          td 156
-          td 27 сентября 2021
-          td 6-2-24, 6-2-36
-          td 
-            .label-blue
-              span Ожидает рассмотрения
-          td
-            a.btn-edit( href="" )
-              svg(xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24")
-                g
-                  path(d="M9.263,1.439l-8.21,8.69a3.05,3.05,0,0,0-.67,1.43L.013,14.8a1.527,1.527,0,0,0,1.87,1.77l3.22-.55a2.871,2.871,0,0,0,1.39-.75l8.21-8.69c1.42-1.5,2.06-3.21-.15-5.3C12.353-.791,10.683-.061,9.263,1.439Z" transform="translate(4.002 3.701)")
-                  path(d="M0,0A6.126,6.126,0,0,0,5.45,5.15" transform="translate(11.895 6.59)")
-                  path(d="M0,0H24V24H0Z" fill="none" opacity="0")
-            a.btn-remove( href="" )
-              svg(xmlns="http://www.w3.org/2000/svg" width="16.251" height="20" viewBox="0 0 16.251 20")
-                path(d="M24.7,11.1H21.264v-.626A1.875,1.875,0,0,0,19.39,8.6h-2.5a1.875,1.875,0,0,0-1.874,1.874V11.1H11.576a1.562,1.562,0,0,0-1.561,1.563v1.25a.624.624,0,0,0,.624.624h15a.625.625,0,0,0,.626-.624v-1.25A1.563,1.563,0,0,0,24.7,11.1Zm-8.438-.626a.625.625,0,0,1,.624-.624h2.5a.625.625,0,0,1,.624.624V11.1h-3.75Z" transform="translate(-10.015 -8.601)")
-                path(d="M10.941,13.909a.2.2,0,0,0-.2.2l.516,10.822a1.873,1.873,0,0,0,1.873,1.786h9.492A1.873,1.873,0,0,0,24.5,24.935l.516-10.822a.2.2,0,0,0-.2-.2Zm9.44,1.561a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Zm-3.126,0a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Zm-3.126,0a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Z" transform="translate(-9.823 -6.721)")
-              
-        tr( data-url="/pages/appeal-detail-public/" data-target="_self" )
-          td Бухгалтерский учет и отчетность
-          td 156
-          td 27 сентября 2021
-          td 6-2-24, 6-2-36
-          td 
-            .label-green
-              span Опубликован
-          td
-            a.btn-edit( href="" )
-              svg(xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24")
-                g
-                  path(d="M9.263,1.439l-8.21,8.69a3.05,3.05,0,0,0-.67,1.43L.013,14.8a1.527,1.527,0,0,0,1.87,1.77l3.22-.55a2.871,2.871,0,0,0,1.39-.75l8.21-8.69c1.42-1.5,2.06-3.21-.15-5.3C12.353-.791,10.683-.061,9.263,1.439Z" transform="translate(4.002 3.701)")
-                  path(d="M0,0A6.126,6.126,0,0,0,5.45,5.15" transform="translate(11.895 6.59)")
-                  path(d="M0,0H24V24H0Z" fill="none" opacity="0")
-            a.btn-remove( href="" )
-              svg(xmlns="http://www.w3.org/2000/svg" width="16.251" height="20" viewBox="0 0 16.251 20")
-                path(d="M24.7,11.1H21.264v-.626A1.875,1.875,0,0,0,19.39,8.6h-2.5a1.875,1.875,0,0,0-1.874,1.874V11.1H11.576a1.562,1.562,0,0,0-1.561,1.563v1.25a.624.624,0,0,0,.624.624h15a.625.625,0,0,0,.626-.624v-1.25A1.563,1.563,0,0,0,24.7,11.1Zm-8.438-.626a.625.625,0,0,1,.624-.624h2.5a.625.625,0,0,1,.624.624V11.1h-3.75Z" transform="translate(-10.015 -8.601)")
-                path(d="M10.941,13.909a.2.2,0,0,0-.2.2l.516,10.822a1.873,1.873,0,0,0,1.873,1.786h9.492A1.873,1.873,0,0,0,24.5,24.935l.516-10.822a.2.2,0,0,0-.2-.2Zm9.44,1.561a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Zm-3.126,0a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Zm-3.126,0a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Z" transform="translate(-9.823 -6.721)")
-              
-        tr( data-url="/pages/appeal-detail-public/" data-target="_self" )
-          td Бухгалтерский учет и отчетность
-          td 156
-          td 27 сентября 2021
-          td 6-2-24, 6-2-36
-          td 
-            .label-green
-              span Опубликован
-          td
-            a.btn-edit( href="" )
-              svg(xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24")
-                g
-                  path(d="M9.263,1.439l-8.21,8.69a3.05,3.05,0,0,0-.67,1.43L.013,14.8a1.527,1.527,0,0,0,1.87,1.77l3.22-.55a2.871,2.871,0,0,0,1.39-.75l8.21-8.69c1.42-1.5,2.06-3.21-.15-5.3C12.353-.791,10.683-.061,9.263,1.439Z" transform="translate(4.002 3.701)")
-                  path(d="M0,0A6.126,6.126,0,0,0,5.45,5.15" transform="translate(11.895 6.59)")
-                  path(d="M0,0H24V24H0Z" fill="none" opacity="0")
-            a.btn-remove( href="" )
-              svg(xmlns="http://www.w3.org/2000/svg" width="16.251" height="20" viewBox="0 0 16.251 20")
-                path(d="M24.7,11.1H21.264v-.626A1.875,1.875,0,0,0,19.39,8.6h-2.5a1.875,1.875,0,0,0-1.874,1.874V11.1H11.576a1.562,1.562,0,0,0-1.561,1.563v1.25a.624.624,0,0,0,.624.624h15a.625.625,0,0,0,.626-.624v-1.25A1.563,1.563,0,0,0,24.7,11.1Zm-8.438-.626a.625.625,0,0,1,.624-.624h2.5a.625.625,0,0,1,.624.624V11.1h-3.75Z" transform="translate(-10.015 -8.601)")
-                path(d="M10.941,13.909a.2.2,0,0,0-.2.2l.516,10.822a1.873,1.873,0,0,0,1.873,1.786h9.492A1.873,1.873,0,0,0,24.5,24.935l.516-10.822a.2.2,0,0,0-.2-.2Zm9.44,1.561a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Zm-3.126,0a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Zm-3.126,0a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Z" transform="translate(-9.823 -6.721)")
+    hr
+
+    .b-study-courses-list__tabs
+
+      .swiper-container
+        .swiper-wrapper
+          a.swiper-slide.active( href="" data-tab="tab1" ) Все
+          a.swiper-slide( href="" data-tab="tab2" ) Активные
+          a.swiper-slide( href="" data-tab="tab3" ) Архивные
+          a.swiper-slide( href="" data-tab="tab4" ) На проверке
+          a.swiper-slide( href="" data-tab="tab5" ) Черновики
+      .b-study-courses-list__decor
+
+    hr
+    
+    .b-study-courses-list__block
+      .b-study-courses-list__item.active(data-tab="tab1")
+        hr
+        include ../../components/study.courses.list/all
+
+      .b-study-courses-list__item(data-tab="tab2")
+        hr
+        include ../../components/study.courses.list/active
+
+      .b-study-courses-list__item(data-tab="tab3")
+        hr
+        include ../../components/study.courses.list/archive
+
+      .b-study-courses-list__item(data-tab="tab4")
+        hr
+        include ../../components/study.courses.list/check
+
+      .b-study-courses-list__item(data-tab="tab5")
+        hr
+        include ../../components/study.courses.list/draft
 
     hr.hr--lg
 
-    include ../../modules/pagination/include
+    .b-button-block
+      .b-button-block__text
+        h4 Создать новый курс
+        p Используйте мастер создания нового курса для быстро добавления и публикации учебного курса.
+      a.btn.btn-secondary.btn-lg(href="") Создать курс
 
 // end /components/study.courses.list/

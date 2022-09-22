@@ -20,56 +20,63 @@
         z-index -1
     
 .b-study-courses-list
+  display block
+  overflow hidden
+
+  &__item
+    display none
+
+    &.active
+      display block
+
+  &__tabs
+    position relative
+    border-bottom 1px solid $line-color
+    padding-bottom 14px
+    font-size $14px
+    font-family $roboto
+
+    @media( max-width 650px )
+      transform( translateX( 100px ))
+      opacity 0
+      transition( all .5s ease )
+      
+      &.animate
+        opacity 1
+        transform( translate(0))
+    
+    a.swiper-slide
+      display inline-block
+      margin-right 30px
+      white-space nowrap
+      width auto !important
+
+      &,
+      &:hover,
+      &:focus,
+      &:active
+        color #6f6f6f
+
+      &.active
+        color #3b3b3b
+        pointer-events none
+
+    .swiper-container-initialized
+
+      a
+
+        &:hover
+          opacity 1
+
+  &__decor
+    position absolute
+    bottom -1px
+    left 0
+    border-top 1px solid #999
+    transition( all .5s ease )
 
   .btn-remove
     margin-left 20px
-  
-  &__form
-
-    form
-      display flex
-      justify-content space-between
-      align-items flex-end
-
-      @media( max-width 575px )
-        display block
-
-  .b-form
-
-    &-field
-      width calc( 100% - 178px )
-
-      label
-        font-size $10px
-        display block
-        margin-bottom 8px
-
-      @media( max-width 575px )
-        width 100%
-
-  input.b-form-input
-    background-color $line-color
-    border-radius 5px
-    padding 10px 15px
-    height 48px
-    line-height 28px
-    font-size $14px
-    border 0
-    width 100%
-
-    &::selection
-      background-color $secondary-color
-      color #fff
-    
-    &[type=search]:focus
-      outline none
-      border-bottom 0
-
-  input[type="search"]
-    -webkit-appearance textfield
-    -moz-box-sizing border-box
-    -webkit-box-sizing border-box
-    box-sizing border-box
 
   table.table
     font-family $roboto
