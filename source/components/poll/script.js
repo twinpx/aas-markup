@@ -10,7 +10,9 @@ window.onload = function () {
     window.pollStore.groups.forEach(function (group) {
       group.questions.forEach(function (question) {
         question.answers.forEach(function (answer) {
-          answer.checked = storageObj[answer.value];
+          if (storageObj[answer.value] !== undefined) {
+            answer.checked = storageObj[answer.value];
+          }
         });
       });
     });
@@ -95,31 +97,25 @@ window.onload = function () {
 
         //change local storage
         let storageObj = {};
-        if (window.localStorage.getItem(this.$store.state.pollId)) {
+        if (window.localStorage.getItem(store.state.pollId)) {
           storageObj = JSON.parse(
-            window.localStorage.getItem(this.$store.state.pollId)
+            window.localStorage.getItem(store.state.pollId)
           );
         }
 
         storageObj[this.answer.value] = this.checked;
         window.localStorage.setItem(
-          this.$store.state.pollId,
+          store.state.pollId,
           JSON.stringify(storageObj)
         );
-
-        //autosave
-        document.querySelector('.b-poll form').getAttribute;
-        $('.b-poll form').serialize();
       },
       getDisabledClass() {
         return (
           this.checked === false &&
-          this.$store.state.groups[this.groupIndex].questions[
-            this.questionIndex
-          ].allowed ===
-            this.$store.state.groups[this.groupIndex].questions[
-              this.questionIndex
-            ].checkedNum
+          store.state.groups[this.groupIndex].questions[this.questionIndex]
+            .allowed ===
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .checkedNum
         );
       },
       getStyle() {
@@ -164,9 +160,9 @@ window.onload = function () {
 
         //change local storage
         let storageObj = {};
-        if (window.localStorage.getItem(this.$store.state.pollId)) {
+        if (window.localStorage.getItem(store.state.pollId)) {
           storageObj = JSON.parse(
-            window.localStorage.getItem(this.$store.state.pollId)
+            window.localStorage.getItem(store.state.pollId)
           );
         }
 
@@ -182,9 +178,9 @@ window.onload = function () {
           storageObj[this.answer.value] = this.checked;
         }
 
-        window.localStorage.removeItem(this.$store.state.pollId);
+        window.localStorage.removeItem(store.state.pollId);
         window.localStorage.setItem(
-          this.$store.state.pollId,
+          store.state.pollId,
           JSON.stringify(storageObj)
         );
       },
@@ -224,19 +220,15 @@ window.onload = function () {
       getInfoClass() {
         return {
           'i-show':
-            this.$store.state.groups[this.groupIndex].questions[
-              this.questionIndex
-            ].checkedNum > 0 &&
-            this.$store.state.groups[this.groupIndex].questions[
-              this.questionIndex
-            ].isActive,
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .checkedNum > 0 &&
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .isActive,
           'bg-success':
-            this.$store.state.groups[this.groupIndex].questions[
-              this.questionIndex
-            ].allowed ===
-            this.$store.state.groups[this.groupIndex].questions[
-              this.questionIndex
-            ].checkedNum,
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .allowed ===
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .checkedNum,
           animate__animated: true,
           animate__pulse: this.animatePulse,
         };
@@ -244,16 +236,13 @@ window.onload = function () {
       getNoteClass() {
         return {
           'text-success':
-            this.$store.state.groups[this.groupIndex].questions[
-              this.questionIndex
-            ].allowed ===
-            this.$store.state.groups[this.groupIndex].questions[
-              this.questionIndex
-            ].checkedNum,
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .allowed ===
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .checkedNum,
           'text-danger':
-            this.$store.state.groups[this.groupIndex].questions[
-              this.questionIndex
-            ].checkedNum === 0,
+            store.state.groups[this.groupIndex].questions[this.questionIndex]
+              .checkedNum === 0,
         };
       },
       formControlChange(obj) {
@@ -275,7 +264,7 @@ window.onload = function () {
       },
       changeCheckedNum() {
         let num = 0;
-        this.$store.state.groups[this.groupIndex].questions[
+        store.state.groups[this.groupIndex].questions[
           this.questionIndex
         ].answers.forEach(function (answer) {
           if (answer.checked === true) {
@@ -304,7 +293,7 @@ window.onload = function () {
       };
     },
     template: `
-      <div class="b-poll__groups" :data-id="store.state.pollId">
+      <div class="b-poll__groups" :data-id="$store.state.pollId">
         <div class="b-poll__groups__item" v-for="(group, groupIndex) in pollData.groups">
           <h3>{{group.title}}</h3>
           <p v-html="group.description"></p>
