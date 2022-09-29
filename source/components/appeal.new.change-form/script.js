@@ -803,7 +803,7 @@ window.onload = function () {
           property: this.formControl.property,
           filename: '',
           controlIndex: this.controlIndex,
-          value: '',
+          value: this.fileid,
         });
 
         this.files = files;
@@ -816,10 +816,7 @@ window.onload = function () {
           } else {
             let data = {};
             data[this.name] = this.files[0];
-            data.FILEID =
-              typeof this.formControl.value === 'object'
-                ? this.formControl.value[this.controlIndex].val
-                : this.formControl.value;
+            data.FILEID = this.fileid;
 
             this.loading = true;
             this.sendData(data);
@@ -836,10 +833,7 @@ window.onload = function () {
         this.$refs.inputFile.value = '';
         this.sendData({
           [this.name]: 'DELETE',
-          FILEID:
-            typeof this.formControl.value === 'object'
-              ? this.formControl.value[this.controlIndex].val
-              : this.formControl.value,
+          FILEID: this.fileid,
         });
         //set value
         store.commit('setFile', {
