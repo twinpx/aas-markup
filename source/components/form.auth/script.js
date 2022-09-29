@@ -5,7 +5,10 @@ window.addEventListener('load', () => {
       passwordInput = form.querySelector('input[ type="password" ]'),
       checkboxBlock = form.querySelector('.b-checkbox'),
       checkboxInput = form.querySelector('input[ type="checkbox" ]'),
+      submitButton = form.querySelector('button[type=submit]'),
       modal = form.querySelector('#docToSignModal');
+
+    let agreementCompletedFlag;
 
     form.addEventListener('submit', (e) => {
       let errorFlag = false;
@@ -45,6 +48,9 @@ window.addEventListener('load', () => {
           checkboxBlock.classList.add('b-checkbox--loading');
           //send request
           sendRequest();
+        } else if (!checkboxInput.checked) {
+          //disable submit button
+          submitButton.setAttribute('disabled', 'disabled');
         }
       });
 
@@ -58,9 +64,7 @@ window.addEventListener('load', () => {
             //change login or password - reset checkbox
             checkboxInput.checked = false;
             //disable submit button
-            form
-              .querySelector('button[type=submit]')
-              .setAttribute('disabled', 'disabled');
+            submitButton.setAttribute('disabled', 'disabled');
           }
         });
       });
@@ -78,46 +82,72 @@ window.addEventListener('load', () => {
           sendRequest(e.target.getAttribute('data-id'));
         }
       });
+
+      $('#docToSignModal').on('hide.bs.modal', function (event) {
+        if (!agreementCompletedFlag) {
+          checkboxInput.checked = false;
+        }
+        agreementCompletedFlag = false;
+      });
     }
 
-    async function sendRequest(docId) {
-      let formData = new FormData();
-      formData.set('login', loginInput.value);
+    function sendRequest(docId) {
+      let dataObj = {
+          login: loginInput.value,
+          password: passwordInput.value,
+        },
+        method = 'chechAgreement';
+
       if (docId) {
-        formData.set('docId', docId);
+        dataObj.id = docId;
+        method = 'setAgreement';
       }
 
-      let response = await fetch(
-        '/components/form.auth/doc-to-sign.json' /*{
-          method: 'POST',
-          body: formData
-        }*/
-      );
-      let result = await response.json();
+      BX.ajax
+        .runComponentAction('twinpx:agreements', method, {
+          mode: 'class',
+          data: dataObj,
+        })
+        .then(response);
+    }
 
-      //hide preloader
-      checkboxBlock.classList.remove('b-checkbox--loading');
+    function response(response) {
+      if (response.status === 'success') {
+        //hide preloader
+        checkboxBlock.classList.remove('b-checkbox--loading');
 
-      if (result.STATUS !== 'Y' || result.ERROR) {
-        //show error
-        let errorBlock = document.createElement('p');
-        errorBlock.classList.add('text-center', 'invalid');
-        errorBlock.textContent = result.ERROR || 'Server error.';
-        document.querySelector('.b-form-auth__block').prepend(errorBlock);
-
-        //close popup window
-        $('#docToSignModal').modal('hide');
-      } else if (result.DATA && result.DATA.html) {
-        //open popup window
-        $('#docToSignModal').modal('show');
-        //set modal content
-        document.querySelector('#docToSignModal .modal-dialog').innerHTML =
-          result.DATA.html;
-      } else {
-        //enable submit button
-        form.querySelector('button[type=submit]').removeAttribute('disabled');
-        //close popup window
-        $('#docToSignModal').modal('hide');
+        if (response.data && response.data.html) {
+          //open popup window
+          $('#docToSignModal').modal('show');
+          //set modal content
+          document.querySelector('#docToSignModal .modal-dialog').innerHTML =
+            response.data.html;
+        } else if (response.data && response.data.errors) {
+          //remove previous error
+          let errorBlock = document.querySelector('.b-form-auth__error');
+          if (!errorBlock) {
+            //show error
+            errorBlock = document.createElement('p');
+            errorBlock.classList.add(
+              'text-center',
+              'invalid',
+              'b-form-auth__error'
+            );
+            document.querySelector('.b-form-auth__block').prepend(errorBlock);
+          }
+          errorBlock.textContent = response.data.errors || 'Server error.';
+          //remove checkbox
+          checkboxInput.checked = false;
+          //close popup window
+          $('#docToSignModal').modal('hide');
+        } else {
+          //enable submit button
+          submitButton.removeAttribute('disabled');
+          //don`t remove checkbox
+          agreementCompletedFlag = true;
+          //close popup window
+          $('#docToSignModal').modal('hide');
+        }
       }
     }
   });
