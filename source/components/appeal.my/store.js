@@ -54,7 +54,7 @@ window.selectStatusData = {
 };
 
 window.myScriptURL = {
-  getTable: '/components/appeal.my/table.json',
+  getTable: '/components/appeal.my/table.json?test=45',
 };
 
 window.inboxSrcPath = '/template/images/';

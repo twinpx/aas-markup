@@ -199,8 +199,7 @@ window.onload = function () {
     },
     props: ['groupIndex', 'questionIndex', 'question'],
     template: `
-    <div class="b-poll__questions__item">
-
+    <div class="b-poll__questions__item" :id="'item_' + groupIndex + '_' + questionIndex">
       <div class="b-poll__questions__info" :class="getInfoClass()" v-if="question.allowed">{{question.checkedNum}} из {{question.allowed}}</div>
 
       <h3>{{question.title}}</h3>
@@ -281,6 +280,21 @@ window.onload = function () {
     },
     mounted() {
       this.changeCheckedNum();
+
+      /*let observer = new IntersectionObserver((entries, observer) => {
+        //console.log('item_' + this.questionIndex, observer);
+        let entry = entries[0];
+
+        if (entry.intersectionRatio > 0) {
+          entry.target.classList.add('b-poll__questions__item--fixed');
+        } else {
+          entry.target.classList.remove('b-poll__questions__item--fixed');
+        }
+      });
+
+      observer.observe(
+        document.querySelector(`#item_${this.groupIndex}_${this.questionIndex}`)
+      );*/
     },
   });
 

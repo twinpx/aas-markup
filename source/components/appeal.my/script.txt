@@ -456,7 +456,10 @@ window.addEventListener('load', () => {
           }
 
           const response = await fetch(
-            `${window.myScriptURL.getTable}${getQuery(requestObj)}`,
+            `${window.myScriptURL.getTable.split('?')[0]}${getQuery(
+              requestObj,
+              window.myScriptURL.getTable
+            )}`,
             {
               headers: {
                 Authentication: 'secret',
@@ -469,7 +472,10 @@ window.addEventListener('load', () => {
           } else {
             let result = await response.json();
             //table data
-            this.$store.commit('changeProp', { prop: 'tableHtml', value: result });
+            this.$store.commit('changeProp', {
+              prop: 'tableHtml',
+              value: result,
+            });
             //scroll
             window.scrollTo({
               top:
@@ -509,7 +515,11 @@ window.addEventListener('load', () => {
           queryObj.PAGEN_1 = this.$store.state.page;
         }
 
-        window.history.pushState('', '', getQuery(queryObj));
+        window.history.pushState(
+          '',
+          '',
+          getQuery(queryObj, window.location.href)
+        );
       },
     },
 
@@ -605,19 +615,28 @@ window.addEventListener('load', () => {
     },
   });
 
-  function getQuery(queryObject) {
+  function getQuery(queryObject, url) {
     var result = [];
-    for (var k in queryObject) {
-      result.push(k + '=' + queryObject[k]);
+    var urlQueryObject = {};
+    var assignedObject;
+
+    if (url.split('?')[1] !== undefined) {
+      urlQueryObject = parseQuery(url.split('?')[1]);
     }
-    return '&' + result.join('&');
+
+    assignedObject = Object.assign(urlQueryObject, queryObject);
+
+    for (var k in assignedObject) {
+      result.push(k + '=' + assignedObject[k]);
+    }
+    return '?' + result.join('&');
   }
 
   function parseQuery(queryString) {
     var query = {};
-    var pairs = (
-      queryString[0] === '?' ? queryString.substr(1) : queryString
-    ).split('&');
+
+    var arr = queryString.split('?');
+    var pairs = arr[arr.length - 1].split('&');
     for (var i = 0; i < pairs.length; i++) {
       var pair = pairs[i].split('=');
       query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
