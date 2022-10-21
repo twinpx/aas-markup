@@ -1,4 +1,54 @@
 window.addEventListener('load', function () {
+  //docs to sign modal window
+  const modal = document.getElementById('docToSignModal');
+  const profileId = modal.getAttribute('data-profileid');
+  if (modal) {
+    $('#docToSignModal').modal('show');
+
+    modal.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (e.target.id === 'docToSignButton') {
+        //send id, login
+        modal.querySelector('.modal-body').classList.add('modal-body--loading');
+        sendRequest(e.target.getAttribute('data-id'));
+      }
+    });
+  }
+
+  function sendRequest(docId) {
+    let dataObj = {
+        profileId,
+      },
+      method = 'checkAgreementProfile';
+
+    if (docId) {
+      dataObj.docId = docId;
+      method = 'setAgreementProfile';
+    }
+
+    BX.ajax
+      .runComponentAction('twinpx:agreements', method, {
+        mode: 'class',
+        data: dataObj,
+      })
+      .then(response);
+  }
+
+  function response(response) {
+    if (response.status === 'success') {
+      if (response.data && response.data.html) {
+        //open popup window
+        $('#docToSignModal').modal('show');
+        //set modal content
+        modal.querySelector('.modal-dialog').innerHTML = response.data.html;
+      } else if (response.data && response.data.errors) {
+      } else {
+        //close popup window
+        $('#docToSignModal').modal('hide');
+      }
+    }
+  }
+
   //button
   let interval = 5 * 1000,
     closeInterval = 5 * 60 * 1000,

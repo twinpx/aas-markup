@@ -17,7 +17,7 @@ hr
 
   .b-poll-result__groups__item(v-for="group in $store.state.groups")
 
-    h3 {{group.title}}
+    h3( v-text="group.title" )
     p( v-html="group.description" )
 
     hr.hr--xl
