@@ -10,11 +10,15 @@
   padding 20px
   width calc(100% - 30px)
   font-family $roboto
+  transition( opacity .3s ease )
 
   @media(max-width 575px)
 
     &.i-visible
       display block
+
+    &.i-hide
+      opacity 0
 
   svg
     margin 0 auto 20px
@@ -26,3 +30,6 @@
 
   .btn
     width 100%
+
+    &:first-of-type
+      margin-bottom 10px
