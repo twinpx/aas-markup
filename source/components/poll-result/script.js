@@ -3,178 +3,186 @@ String.prototype.deformat = function () {
 };
 
 window.onload = function () {
-  //tabs
-  document.querySelectorAll('.b-poll-result').forEach(function (elem) {
-    var nav = elem.querySelector('.b-poll-result__tabs');
-    var menuLinks = nav.querySelectorAll('a');
-    var tabsItems = elem.querySelectorAll('.b-poll-result__item');
+  if (window.jQuery) {
+    //tabs
+    document.querySelectorAll('.b-poll-result').forEach(function (elem) {
+      var nav = elem.querySelector('.b-poll-result__tabs');
+      var menuLinks = nav.querySelectorAll('a');
+      var tabsItems = elem.querySelectorAll('.b-poll-result__item');
 
-    //swiper menu
-    if (window.matchMedia('(max-width: 600px)').matches) {
-      var slidesPerView = 2.5;
+      //swiper menu
+      if (window.matchMedia('(max-width: 600px)').matches) {
+        var slidesPerView = 2.5;
 
-      if (window.matchMedia('(min-width: 500px)').matches) {
-        slidesPerView = 3;
+        if (window.matchMedia('(min-width: 500px)').matches) {
+          slidesPerView = 3;
+        }
+
+        //init swiper
+        new Swiper(
+          elem.querySelector('.b-poll-result__tabs .swiper-container'),
+          {
+            slidesPerView: slidesPerView,
+            spaceBetween: 30,
+            freeMode: true,
+          }
+        );
+
+        //scroll
+        window.addEventListener('scroll', function () {
+          if (
+            elem
+              .querySelector('.b-poll-result__tabs')
+              .className.search('animate') !== -1
+          ) {
+            return;
+          }
+
+          if (
+            $(elem).offset().top <=
+            window.scrollY + window.outerHeight - 250
+          ) {
+            elem.querySelector('.b-poll-result__tabs').classList.add('animate');
+          }
+        });
+
+        setTimeout(function () {
+          window.dispatchEvent(new Event('scroll'));
+        }, 500);
       }
 
-      //init swiper
-      new Swiper(elem.querySelector('.b-poll-result__tabs .swiper-container'), {
-        slidesPerView: slidesPerView,
-        spaceBetween: 30,
-        freeMode: true,
-      });
-
-      //scroll
-      window.addEventListener('scroll', function () {
-        if (
-          elem
-            .querySelector('.b-poll-result__tabs')
-            .className.search('animate') !== -1
-        ) {
-          return;
-        }
-
-        if ($(elem).offset().top <= window.scrollY + window.outerHeight - 250) {
-          elem.querySelector('.b-poll-result__tabs').classList.add('animate');
-        }
-      });
-
+      //decor line
+      var decorLine = elem.querySelector('.b-poll-result__decor');
+      var swiperWrapper = elem.querySelector(
+        '.b-poll-result__tabs .swiper-wrapper'
+      );
+      var trans = swiperWrapper.style.transform;
+      var pos = trans.indexOf('(');
       setTimeout(function () {
-        window.dispatchEvent(new Event('scroll'));
+        decorLine.style.left =
+          menuLinks[0].offsetLeft +
+          parseInt(trans.substr(pos + 1) || 0, 10) +
+          'px';
+        decorLine.style.width = menuLinks[0].offsetWidth + 'px';
       }, 500);
-    }
 
-    //decor line
-    var decorLine = elem.querySelector('.b-poll-result__decor');
-    var swiperWrapper = elem.querySelector(
-      '.b-poll-result__tabs .swiper-wrapper'
-    );
-    var trans = swiperWrapper.style.transform;
-    var pos = trans.indexOf('(');
-    setTimeout(function () {
-      decorLine.style.left =
-        menuLinks[0].offsetLeft +
-        parseInt(trans.substr(pos + 1) || 0, 10) +
-        'px';
-      decorLine.style.width = menuLinks[0].offsetWidth + 'px';
-    }, 500);
+      menuLinks.forEach(function (menuLink) {
+        menuLink.addEventListener('click', function (e) {
+          e.preventDefault();
 
-    menuLinks.forEach(function (menuLink) {
-      menuLink.addEventListener('click', function (e) {
-        e.preventDefault();
+          let tab = menuLink.getAttribute('data-tab');
 
-        let tab = menuLink.getAttribute('data-tab');
+          //highlight nav
+          menuLinks.forEach(function (m) {
+            m.classList.remove('active');
+          });
+          menuLink.classList.add('active');
 
-        //highlight nav
-        menuLinks.forEach(function (m) {
-          m.classList.remove('active');
+          //highlight tabs
+          tabsItems.forEach(function (t) {
+            t.classList.remove('active');
+          });
+          elem
+            .querySelector(`.b-poll-result__item[data-tab=${tab}]`)
+            .classList.add('active');
+
+          //underline
+          decorLine.style.width = `${menuLink.clientWidth}px`;
+          decorLine.style.left = `${
+            menuLink.getBoundingClientRect().left -
+            nav.getBoundingClientRect().left
+          }px`;
+
+          //url
+          let query = parseQuery(window.location.search);
+          query.tab = tab;
+          history.replaceState({}, '', getQuery(query));
         });
-        menuLink.classList.add('active');
-
-        //highlight tabs
-        tabsItems.forEach(function (t) {
-          t.classList.remove('active');
-        });
-        elem
-          .querySelector(`.b-poll-result__item[data-tab=${tab}]`)
-          .classList.add('active');
-
-        //underline
-        decorLine.style.width = `${menuLink.clientWidth}px`;
-        decorLine.style.left = `${
-          menuLink.getBoundingClientRect().left -
-          nav.getBoundingClientRect().left
-        }px`;
-
-        //url
-        let query = parseQuery(window.location.search);
-        query.tab = tab;
-        history.replaceState({}, '', getQuery(query));
       });
+
+      //on load
+      let tab = parseQuery(window.location.search).tab;
+      if (tab) {
+        setTimeout(function () {
+          nav.querySelector(`[data-tab=${tab}]`).click();
+        }, 500);
+      }
     });
 
-    //on load
-    let tab = parseQuery(window.location.search).tab;
-    if (tab) {
-      setTimeout(function () {
-        nav.querySelector(`[data-tab=${tab}]`).click();
-      }, 500);
-    }
-  });
+    //th click, sorting
+    $('.b-poll-result th').click(function () {
+      var $th = $(this);
+      var $table = $th.closest('table');
+      var $thElements = $table.find('th');
+      var $tbody = $table.find('tbody');
+      var url = $table.data('result');
 
-  //th click, sorting
-  $('.b-poll-result th').click(function () {
-    var $th = $(this);
-    var $table = $th.closest('table');
-    var $thElements = $table.find('th');
-    var $tbody = $table.find('tbody');
-    var url = $table.data('result');
+      //set field and sort variables
+      var field = $th.data('field'),
+        sort;
 
-    //set field and sort variables
-    var field = $th.data('field'),
-      sort;
-
-    //set sort
-    if (!$th.data('sort')) {
-      $thElements.data({ sort: undefined });
-      $th.data({ sort: 'asc' });
-    } else {
-      if ($th.data('sort') === 'asc') {
-        $thElements.data({ sort: undefined });
-        $th.data({ sort: 'desc' });
-      } else {
+      //set sort
+      if (!$th.data('sort')) {
         $thElements.data({ sort: undefined });
         $th.data({ sort: 'asc' });
+      } else {
+        if ($th.data('sort') === 'asc') {
+          $thElements.data({ sort: undefined });
+          $th.data({ sort: 'desc' });
+        } else {
+          $thElements.data({ sort: undefined });
+          $th.data({ sort: 'asc' });
+        }
       }
-    }
 
-    sort = $th.data('sort');
+      sort = $th.data('sort');
 
-    //send ajax
-    $.ajax({
-      url: url,
-      type: 'GET',
-      dataType: 'json',
-      data: { field: field, sort: sort },
-      success: function (json) {
-        if (typeof json === 'object' && json.TBODY && json.PAGINATION) {
-          //set tbody
-          $tbody.html(json.TBODY);
+      //send ajax
+      $.ajax({
+        url: url,
+        type: 'GET',
+        dataType: 'json',
+        data: { field: field, sort: sort },
+        success: function (json) {
+          if (typeof json === 'object' && json.TBODY && json.PAGINATION) {
+            //set tbody
+            $tbody.html(json.TBODY);
 
-          //set pagination
-          var $pagination = $('.b-study-courses-list .b-pagination-block');
-          $pagination.after(json.PAGINATION);
-          $pagination.remove();
+            //set pagination
+            var $pagination = $('.b-study-courses-list .b-pagination-block');
+            $pagination.after(json.PAGINATION);
+            $pagination.remove();
 
-          //hightlight column
-          var index = $table.find('th').index($th);
-          $thElements.removeClass('asc').removeClass('desc');
-          $th.addClass(sort);
-          $tbody.find('tr').each(function () {
-            $(this)
-              .find('td:eq(' + index + ')')
-              .removeClass('asc')
-              .removeClass('desc')
-              .addClass(sort);
-          });
+            //hightlight column
+            var index = $table.find('th').index($th);
+            $thElements.removeClass('asc').removeClass('desc');
+            $th.addClass(sort);
+            $tbody.find('tr').each(function () {
+              $(this)
+                .find('td:eq(' + index + ')')
+                .removeClass('asc')
+                .removeClass('desc')
+                .addClass(sort);
+            });
 
-          //set URL
-          var urlQuery = parseQuery(window.location.search);
-          urlQuery.field = field;
-          urlQuery.sort = sort;
-          delete urlQuery.PAGEN_1;
-          window.history.replaceState({}, '', getQuery(urlQuery));
-        }
-      },
-      error: function (a, b, c) {
-        if (window.console) {
-          console.log(a);
-          console.log(b);
-          console.log(c);
-        }
-      },
+            //set URL
+            var urlQuery = parseQuery(window.location.search);
+            urlQuery.field = field;
+            urlQuery.sort = sort;
+            delete urlQuery.PAGEN_1;
+            window.history.replaceState({}, '', getQuery(urlQuery));
+          }
+        },
+        error: function (a, b, c) {
+          if (window.console) {
+            console.log(a);
+            console.log(b);
+            console.log(c);
+          }
+        },
+      });
     });
-  });
+  }
 
   function getQuery(queryObject) {
     var result = [];
@@ -318,7 +326,7 @@ window.onload = function () {
     props: ['answer', 'index'],
     template: `
       <div class="b-poll-result__answers__item" :data-percentage="answer.percentage" @showeffect="showEffect()">
-        <div class="b-poll-result__answer-title" v-html="index+1+'. '+answer.title"></div>
+        <div class="b-poll-result__answer-title" v-html="'<span>'+(index+1)+'. </span>'+answer.title"></div>
         <div class="b-poll-result__answer-graph b-graph">
           <div class="b-graph__wrapper">
             <div class="b-graph__img"></div>

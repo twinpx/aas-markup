@@ -242,3 +242,31 @@
     white-space nowrap
     margin-left 8px
     line-height normal
+
+.b-poll-result-screen
+
+  .b-switch-button
+    display none
+
+  .b-poll-result__answers__item
+    justify-content flex-start
+    margin-bottom 25px
+
+  .b-poll-result__questions__header
+    width 100%
+    margin-bottom 160px
+
+  .b-poll-result__answer-title
+    width calc((100% - 30px) / 12 * 3)
+    font-size $24px
+    font-weight $bold
+    font-family $roboto
+    margin-right 10px
+    height auto
+    line-height normal
+
+    span
+      display none
+
+    @media(max-width 767px)
+      width calc((100% - 30px) / 12 * 6.5)

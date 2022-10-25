@@ -1,0 +1,27 @@
+// start /components/poll-result/
+
+script( src="/components/poll-result/store-screen.js" )
+
+//- push style and script file to the end of the page
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'poll-result'
+else
+  - var componentsArray = [ 'poll-result' ]
+  
+.b-poll-result.ph-block
+
+  .ph
+
+    .ph__text
+      .ph__ill
+        div
+        div
+        div
+        div
+        div
+
+  .ph-content
+  
+    include ./result
+
+// end /components/poll/
