@@ -1,4 +1,4 @@
-const staticCacheName = 'static-cache-v2';
+/*const staticCacheName = 'static-cache-v2';
 const dynamicCacheName = 'dynamic-cache-v0';
 
 const staticAssets = [
@@ -14,28 +14,28 @@ const staticAssets = [
   'https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js',
   'https://unpkg.com/vuex@3',
   '/components/poll/store.js',
-];
+];*/
 
 self.addEventListener('install', async (e) => {
-  const cache = await caches.open(staticCacheName);
-  await cache.addAll(staticAssets);
+  //const cache = await caches.open(staticCacheName);
+  //await cache.addAll(staticAssets);
 });
 
 self.addEventListener('activate', async (e) => {
-  const cachesKeys = await caches.keys();
+  /*const cachesKeys = await caches.keys();
   const checkKeys = cachesKeys.map(async (key) => {
     if (staticCacheName !== key) {
       await caches.delete(key);
     }
   });
-  await Promise.all(checkKeys);
+  await Promise.all(checkKeys);*/
 });
 
 self.addEventListener('fetch', async (e) => {
-  e.respondWith(checkCache(e.request));
+  //e.respondWith(checkCache(e.request));
 });
 
-async function checkCache(req) {
+/*async function checkCache(req) {
   const cachedResponse = await caches.match(req);
   return cachedResponse || checkOnline(req);
 }
@@ -49,4 +49,4 @@ async function checkOnline(req) {
   } catch (error) {
     return await cache.match(req);
   }
-}
+}*/
