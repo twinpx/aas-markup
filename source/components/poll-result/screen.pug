@@ -1,6 +1,15 @@
 // start /components/poll-result/
 
-script( src="/components/poll-result/store-screen.js" )
+style 
+  | .container-fluid {padding-top: 25px !important;}
+  | .b-poll-result__questions {display: grid !important; grid-template-columns: 1fr 1fr 1fr; column-gap: 32px;}
+  | .b-poll-result__questions__header {margin-bottom: 0 !important;}
+  | .b-poll-result__questions__header h3 {font-size: 1.1rem !important;}
+  | .b-screen-logo {margin-bottom: 40px !important;}
+  | .b-poll-result-screen .b-poll-result__answer-title {overflow: initial !important; text-overflow: initial !important; white-space: normal !important; font-size: .8rem !important; font-weight: 400 !important; width: 50% !important; line-height: .8 !important;}
+  | .b-poll-result-screen .b-poll-result__answers__item {margin-bottom: 0 !important;}
+
+script( src="/components/poll-result/store-screen-3-cols.js" )
 
 //- push style and script file to the end of the page
 if componentsArray

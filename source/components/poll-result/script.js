@@ -3,7 +3,10 @@ String.prototype.deformat = function () {
 };
 
 window.onload = function () {
-  if (window.jQuery) {
+  if (
+    window.jQuery &&
+    document.querySelectorAll('.b-poll-result .b-poll-result__tabs').length
+  ) {
     //tabs
     document.querySelectorAll('.b-poll-result').forEach(function (elem) {
       var nav = elem.querySelector('.b-poll-result__tabs');
@@ -355,6 +358,15 @@ window.onload = function () {
       };
     },
     methods: {},
+    beforeMount() {
+      window.pollResultStore.groups[0].questions.forEach((q) => {
+        if (q.sort === 'rating') {
+          q.answers.sort((a, b) => {
+            return String(b.votes).deformat() - String(a.votes).deformat();
+          });
+        }
+      });
+    },
     mounted() {
       document
         .querySelectorAll('.b-poll-result__answers__item')
