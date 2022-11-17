@@ -27,6 +27,89 @@
 
 .b-appeal-inbox
 
+  &-profiles
+    position relative
+
+    &__container
+      background $bg-color
+      padding 25px
+      border-radius 10px
+      font-size $14px
+      transition(all .3s ease)
+      opacity 0
+      overflow hidden
+      margin-bottom calc(-2rem - 50px)
+
+      @media(max-width 767px)
+        margin-bottom -2rem
+
+      .h3
+        font-size $20px
+        margin-top 0
+
+      .b-float-label
+        max-width 530px
+      
+    &__button
+      position absolute
+      top 0
+      right 0
+      display flex
+      align-items center
+      transition(all .3s ease)
+      z-index 10
+
+      span
+        display inline-block
+        width 32px
+        height 32px
+        background-color #F1F5FB
+        border-radius 5px
+        position relative
+        cursor pointer
+
+        &:before,
+        &:after
+          content ''
+          position absolute
+          top 8px
+          left 15px
+          width 0
+          height 16px
+          border-right 1px solid #666666
+          transition( transform .5s ease )
+
+        &:before
+
+          .b-appeal-inbox-profiles--open &
+            transform( rotate( 270 deg ))
+
+        &:after
+          transform( rotate( 90deg ))
+
+          .b-appeal-inbox-profiles--open &
+            transform( rotate( 450 deg ))
+
+    i
+      color #8393AA
+      font-size $12px
+      margin-right 10px
+      font-style normal
+      transition(opacity .3s ease)
+
+    &.b-appeal-inbox-profiles--open
+
+      .b-appeal-inbox-profiles__container
+        opacity 1
+        margin-bottom 0
+
+      .b-appeal-inbox-profiles__button
+        top 24px
+        right 24px
+      
+        i
+          opacity 0
+
   h3
     margin-top 0
     margin-bottom 40px

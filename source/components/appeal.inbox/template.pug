@@ -30,6 +30,24 @@ script( src="/components/appeal.inbox/store.js" )
 
   .ph-content
 
+    .b-appeal-inbox-profiles
+      .b-appeal-inbox-profiles__button
+        i Профили обращений
+        span
+      .b-appeal-inbox-profiles__container(style="height: 0;")
+        .h3 Профили обращений
+        p Вы работает сразу с несколькими типами обращений, поэтому по умолчанию видите «Общий» вид таблицы. Выберите тот профильно который удобен для вас.
+
+        hr
+
+        .b-float-label
+          label.active Выберите профиль таблицы обращений
+          select
+            option( value="/" ) Общий
+            option( value="/pages/appeal-inbox/" ) Отдел по работе с жалобами
+
+    hr
+
     h3 Заявки на изменения в реестре
 
     #appealInbox

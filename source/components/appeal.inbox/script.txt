@@ -108,8 +108,10 @@ window.addEventListener('load', () => {
             commit('changeTableHtml', result);
             //scroll
             $.scrollTo(
-              document.querySelector('.b-num-blocks').getBoundingClientRect()
-                .top +
+              document
+                .querySelector('.b-num-blocks')
+                .closest('article')
+                .getBoundingClientRect().top +
                 scrollY -
                 190,
               500
@@ -715,5 +717,107 @@ window.addEventListener('load', () => {
       }
     }
     return query;
+  }
+
+  //profiles
+  let profilesSelect = document.querySelector(
+    '.b-appeal-inbox-profiles select'
+  );
+
+  let profilesSelectValue = window.localStorage.getItem(
+    'aasAppealInboxProfileSelect'
+  );
+
+  profilesSelect.addEventListener('change', (e) => {
+    window.location.href = profilesSelect.value;
+    window.localStorage.setItem(
+      'aasAppealInboxProfileSelect',
+      profilesSelect.value
+    );
+  });
+
+  setTimeout(() => {
+    profilesSelect
+      .closest('.b-float-label')
+      .querySelector('.ik-custom-class')
+      .addEventListener('click', (e) => {
+        window.location.href = profilesSelect.value;
+        window.localStorage.setItem(
+          'aasAppealInboxProfileSelect',
+          profilesSelect.value
+        );
+      });
+  }, 0);
+
+  let profilesButton = document.querySelector(
+    '.b-appeal-inbox-profiles__button'
+  );
+
+  profilesButton.addEventListener('click', (e) => {
+    profilesButton
+      .closest('.b-appeal-inbox-profiles')
+      .classList.toggle('b-appeal-inbox-profiles--open');
+
+    let mode = profilesButton
+      .closest('.b-appeal-inbox-profiles')
+      .classList.contains('b-appeal-inbox-profiles--open')
+      ? 'open'
+      : 'closed';
+
+    //height
+    let container = profilesButton
+      .closest('.b-appeal-inbox-profiles')
+      .querySelector('.b-appeal-inbox-profiles__container');
+    let height = container.clientHeight;
+
+    if (mode === 'closed') {
+      container.style.height = `${height}px`;
+      container.setAttribute('data-height', height);
+      setTimeout(() => {
+        container.style.height = 0;
+      }, 0);
+    } else {
+      container.style.height = 0;
+      setTimeout(() => {
+        container.style.height = `${
+          container.setAttribute('data-height', height) || 217
+        }px`;
+      }, 0);
+
+      setTimeout(() => {
+        container.removeAttribute('style');
+      }, 500);
+    }
+
+    //storage
+    window.localStorage.setItem('aasAppealInboxProfilesButton', mode);
+  });
+
+  let profilesButtonValue = window.localStorage.getItem(
+    'aasAppealInboxProfilesButton'
+  );
+  if (profilesSelectValue) {
+    profilesSelect.value = profilesSelectValue;
+  }
+  if (profilesButtonValue) {
+    if (profilesButtonValue === 'open') {
+      profilesButton
+        .closest('.b-appeal-inbox-profiles')
+        .classList.add('b-appeal-inbox-profiles--open');
+
+      profilesButton
+        .closest('.b-appeal-inbox-profiles')
+        .querySelector('.b-appeal-inbox-profiles__container')
+        .removeAttribute('style');
+    } else {
+      profilesButton
+        .closest('.b-appeal-inbox-profiles')
+        .classList.remove('b-appeal-inbox-profiles--open');
+
+      profilesButton
+        .closest('.b-appeal-inbox-profiles')
+        .querySelector('.b-appeal-inbox-profiles__container').style.height =
+        '0px';
+    }
   }
 });
