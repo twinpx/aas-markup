@@ -1,0 +1,134 @@
+@import '../../styl/component-include.styl'
+
+.b-study-courses-detail
+
+  &.ph-block
+    
+    &.ph-block--animated
+      
+      .ph-content
+        position static
+        width auto
+        opacity 1
+        
+      .ph
+        position absolute
+        top 0
+        left 0
+        width 100%
+        opacity 0
+        z-index -1
+    
+.b-study-courses-detail
+  display block
+  overflow hidden
+
+  &__item
+    display none
+
+    &.active
+      display block
+
+  &__tabs
+    position relative
+    border-bottom 1px solid $line-color
+    padding-bottom 14px
+    font-size $14px
+    font-family $roboto
+
+    @media( max-width 650px )
+      transform( translateX( 100px ))
+      opacity 0
+      transition( all .5s ease )
+      
+      &.animate
+        opacity 1
+        transform( translate(0))
+    
+    a.swiper-slide
+      display inline-block
+      margin-right 30px
+      white-space nowrap
+      width auto !important
+
+      &,
+      &:hover,
+      &:focus,
+      &:active
+        color #6f6f6f
+
+      &.active
+        color #3b3b3b
+        pointer-events none
+
+    .swiper-container-initialized
+
+      a
+
+        &:hover
+          opacity 1
+    
+  &__decor
+    position absolute
+    bottom -1px
+    left 0
+    border-top 1px solid #999
+    transition( all .5s ease )
+
+.b-scd
+
+  &-buttons 
+
+    .btn
+      min-width 0
+      margin-right 10px
+
+      &:last-child
+        margin-right 0
+
+  &-form
+    display grid
+    grid-template-columns 1fr 38px
+    gap 1rem
+    padding 1rem 0
+    border-top 1px solid #f2f2f2
+
+    &-text
+      display flex
+      justify-content space-between
+      align-items center
+      font-size $14px
+
+      div
+
+        &:first-child
+          text-align center
+          width calc(100% / 6)
+          flex-shrink 0
+
+        &:nth-child(2)
+          margin 0 1rem
+
+        &:last-child
+          text-align center
+          width calc(100% / 6)
+          flex-shrink 0
+      
+    &-icon
+      text-align center
+
+  &-history
+
+    &__item
+      display flex
+      font-size $14px
+      margin-bottom 1.5rem
+
+      &:last-child
+        margin-bottom 0
+
+      div:first-child
+        width 200px
+        margin-right 2rem
+        flex-shrink 0
+
