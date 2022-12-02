@@ -22,6 +22,7 @@
 .b-study-courses-detail
   display block
   overflow hidden
+  position relative
 
   &__item
     display none
@@ -77,14 +78,38 @@
 
 .b-scd
 
-  &-buttons 
+  &-status
+    position absolute
+    top 10px
+    right 0
+    z-index 10
+
+    .label-gray
+      display inline-block
+
+    @media(max-width 575px)
+      position static
+      margin-bottom 1rem
+
+  &-buttons
+    padding-right 80px
+
+    @media(max-width 575px)
+      padding-right 0
 
     .btn
-      min-width 0
+      min-width 200px
       margin-right 10px
+      margin-bottom 10px
 
       &:last-child
         margin-right 0
+
+      @media(max-width 575px)
+
+        &
+          margin-right 0
+          width 100%
 
   &-form
     display grid
@@ -96,26 +121,45 @@
     &-text
       display flex
       justify-content space-between
-      align-items center
       font-size $14px
+      font-family $roboto
 
-      div
+      @media(max-width 575px)
+        display block
 
-        &:first-child
-          text-align center
-          width calc(100% / 6)
-          flex-shrink 0
+    &-info
+      width calc(100% / 7)
+      min-width 125px
+      flex-shrink 0
 
-        &:nth-child(2)
-          margin 0 1rem
+      @media(max-width 575px)
+        margin-bottom 1rem
 
-        &:last-child
-          text-align center
-          width calc(100% / 6)
-          flex-shrink 0
+    &-date
+      margin-bottom 10px
+      
+    &-time
+      margin-bottom 10px
+
+    &-type
+      font-size $11px
+      color #9B9B9B
+
+    &-about
+      margin 0 1rem
+
+      @media(max-width 575px)
+        margin 0
+
+    &-description
+      font-size $16px
+      font-weight $bold
+      margin-bottom 12px
       
     &-icon
-      text-align center
+      display flex
+      justify-content center
+      align-items center
 
   &-history
 
@@ -124,6 +168,9 @@
       font-size $14px
       margin-bottom 1.5rem
 
+      @media(max-width 575px)
+        display block
+
       &:last-child
         margin-bottom 0
 
@@ -131,4 +178,7 @@
         width 200px
         margin-right 2rem
         flex-shrink 0
+
+        @media(max-width 575px)
+          width auto
 
