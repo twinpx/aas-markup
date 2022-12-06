@@ -1,37 +1,34 @@
-( function($) {
+window.addEventListener('load', () => {
+  const bxPanel = document.getElementById('bx-panel');
+  const fixedWrapper = document.querySelector('.b-header-fixed-wrapper');
 
-  'use strict';
-  
-  $( function() {
-    
-    if ( document.getElementById( 'bx-panel' )) {
-      $( '#bx-panel-hider' ).bind( 'click', function() {
-        var $headerPanel = $( '.b-header-panel' );
-        $header.data( 'topBorder', $header.offset().top );
-      });
-      
-      document.querySelector( '.b-header-fixed-wrapper' ).style.top = document.getElementById( 'bx-panel' ).offsetHeight + 'px';
-      
-      window.addEventListener( 'scroll', function(e) {
-        
-        if ( document.getElementById( 'bx-panel' ).className.search( 'bx-panel-fixed' ) === -1 ) {
-          if (( document.getElementById( 'bx-panel' ).offsetHeight - window.scrollY ) >= 0) {
-            document.querySelector( '.b-header-fixed-wrapper' ).style.top = ( document.getElementById( 'bx-panel' ).offsetHeight - window.scrollY ) + 'px';
-          } else {
-            document.querySelector( '.b-header-fixed-wrapper' ).style.top = 0;
-          }
+  if (bxPanel) {
+    document.getElementById('bx-panel-hider').addEventListener('click', (e) => {
+      let header = document.querySelector('header');
+      header.setAttribute('data-topBorder', header.getBoundingClientRect().top);
+    });
+
+    fixedWrapper.style.top = bxPanel.offsetHeight + 'px';
+
+    window.addEventListener('scroll', (e) => {
+      if (bxPanel.className.search('bx-panel-fixed') === -1) {
+        //the panel is not fixed
+        if (bxPanel.offsetHeight - window.scrollY >= 0) {
+          fixedWrapper.style.top = bxPanel.offsetHeight - window.scrollY + 'px';
         } else {
-          if ( window.scrollY < 58) {
-            document.querySelector( '.b-header-fixed-wrapper' ).style.top = ( document.getElementById( 'bx-panel' ).offsetHeight - window.scrollY ) + 'px';
-          } else {
-            document.querySelector( '.b-header-fixed-wrapper' ).style.top = ( document.getElementById( 'bx-panel' ).offsetHeight - 58 ) + 'px';
-          }
+          fixedWrapper.style.top = 0;
         }
-      });
-      
-      window.dispatchEvent( new Event( 'scroll' ));
-    }
-    
-  });
+      } else {
+        //the panel is fixed
+        fixedWrapper.style.top = bxPanel.offsetHeight + 'px';
+        /*if (window.scrollY < 58) {
+          fixedWrapper.style.top = bxPanel.offsetHeight - window.scrollY + 'px';
+        } else {
+          fixedWrapper.style.top = bxPanel.offsetHeight - 58 + 'px';
+        }*/
+      }
+    });
 
-}( jQuery ));
+    window.dispatchEvent(new Event('scroll'));
+  }
+});
