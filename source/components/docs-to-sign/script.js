@@ -1,6 +1,10 @@
 window.addEventListener('load', () => {
   const modal = document.getElementById('docToSignModal');
 
+  $('#docToSignModal').on('show.bs.modal', function () {
+    $('.modal-backdrop').addClass('no-events');
+  });
+
   sendRequest();
 
   if (modal) {

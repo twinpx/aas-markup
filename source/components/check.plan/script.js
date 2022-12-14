@@ -28,6 +28,9 @@ window.addEventListener('load', () => {
             break;
         }
       },
+      changePage(state, payload) {
+        state.table.PAGEN_1 = payload;
+      },
       changeLocationSearch(state, payload) {
         state.table.locationSearch = payload;
       },
@@ -121,6 +124,109 @@ window.addEventListener('load', () => {
 
   Vue.component('v-select', VueSelect.VueSelect);
   Vue.component('date-picker', DatePicker);
+
+  Vue.component('quickFilterBlocks', {
+    template: `<div class="b-num-blocks" v-if="$store.state.quickFilterBlocks">
+      <div class="b-num-block b-num-block--counter" v-for="block in $store.state.quickFilterBlocks" @click="click(block)">
+        <div class="b-num-block__data">
+          <i>{{ block.title }}</i>
+          <b :class="{'b-num-block__b': block.new}">{{ block.num }}</b>
+        </div>
+      </div>
+    </div>`,
+    data() {
+      return {};
+    },
+    methods: {
+      click(block) {
+        let { start, end } = this.getStartEnd(block);
+        this.getPeriod(start, end);
+      },
+      getStartEnd(block) {
+        let current = new Date(),
+          start,
+          end;
+
+        switch (block.code) {
+          case 'current-month':
+            start = new Date(current.getFullYear(), current.getMonth(), 1);
+            end = new Date(current.getFullYear(), current.getMonth() + 1, 0);
+            break;
+
+          case 'current-week':
+            start = new Date(
+              current.getFullYear(),
+              current.getMonth(),
+              current.getDate() - current.getDay() + 1
+            );
+            end = new Date(
+              current.getFullYear(),
+              current.getMonth(),
+              current.getDate() + (7 - current.getDay())
+            );
+            break;
+
+          case 'today':
+            start = end = current;
+            break;
+
+          case 'last-month':
+            start = new Date(current.getFullYear(), current.getMonth() - 1, 1);
+            end = new Date(current.getFullYear(), current.getMonth(), 0);
+            break;
+
+          case 'last-week':
+            start = new Date(
+              current.getFullYear(),
+              current.getMonth(),
+              current.getDate() - current.getDay() + 1 - 7
+            );
+            end = new Date(
+              current.getFullYear(),
+              current.getMonth(),
+              current.getDate() + (7 - current.getDay()) - 7
+            );
+            break;
+        }
+
+        return { start: this.getSeconds(start), end: this.getSeconds(end) };
+      },
+      getSeconds(number) {
+        return Math.floor(number / 1000);
+      },
+      getPeriod(start, end) {
+        //reset values
+        this.$store.state.filter.controls.forEach((control) => {
+          if (control.newOptionCode) return;
+          //control value
+          let controlValue = '';
+          if (control.type === 'select' && control.options) {
+            controlValue = control.options[0];
+          }
+          //commit reset
+          this.$store.commit('changeControlValue', {
+            controlCode: control.code,
+            controlValue: controlValue,
+          });
+        });
+
+        //set date value
+        this.$store.commit('changeControlValue', {
+          controlCode: 'date',
+          controlValue: [start, end],
+        });
+
+        //set url, render table
+        //this.$store.commit('changePage', 1);
+        //render table
+        this.$store.dispatch('renderTable');
+        //set URL
+        this.$store.dispatch('seturl');
+        //set sessionStorage
+        this.$store.dispatch('setSessionStorage');
+      },
+    },
+  });
 
   Vue.component('formControlDate', {
     template: `<div class="b-float-label" data-src="${window.checkPlanStore.paths.src}calendar.svg">
@@ -448,6 +554,8 @@ window.addEventListener('load', () => {
     store,
     template: `
       <div class="b-registry-report">
+        <quick-filter-blocks></quick-filter-blocks>
+        <hr>
         <inbox-filter ref="filter"></inbox-filter>
         <hr>
         <inbox-table></inbox-table>

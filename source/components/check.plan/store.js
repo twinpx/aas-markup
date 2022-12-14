@@ -6,6 +6,33 @@ window.checkPlanStore = {
     getSelected: '/components/check.plan/selected.json',
     src: '/template/images/',
   },
+  quickFilterBlocks: [
+    {
+      code: 'current-month',
+      title: 'Текущий месяц',
+      num: 185,
+    },
+    {
+      code: 'current-week',
+      title: 'Текущая неделя',
+      num: 23,
+    },
+    {
+      code: 'today',
+      title: 'Сегодня',
+      num: 2,
+    },
+    {
+      code: 'last-week',
+      title: 'Прошлая неделя',
+      num: 2,
+    },
+    {
+      code: 'last-month',
+      title: 'Прошлый месяц',
+      num: 2,
+    },
+  ],
   filter: {
     controls: [
       {
@@ -79,10 +106,12 @@ window.checkPlanStore = {
     locationSearch: '',
     sortField: '',
     sortType: '',
+    PAGEN_1: 1,
   },
   query: {
     sortField: '',
     sortType: '',
     locationSearch: '',
+    PAGEN_1: '',
   },
 };
