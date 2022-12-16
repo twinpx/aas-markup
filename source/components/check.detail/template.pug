@@ -1,0 +1,59 @@
+// start /components/check.detail/
+
+//- push style and script file to the end of the page
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'check.detail'
+else
+  - var componentsArray = [ 'check.detail' ]
+
+link( rel="stylesheet", href="/template/css/swiper.min.css" )
+script( src="/template/js/swiper.min.js" )
+  
+.b-check-detail.ph-block
+
+  .ph
+    div
+    div
+    div
+    div
+    div
+
+  .ph-content 
+
+    .b-check-detail__tabs
+
+      .swiper-container
+        .swiper-wrapper
+          a.swiper-slide.active( href="" data-tab="tab1" ) Общие данные
+          a.swiper-slide( href="" data-tab="tab2" ) Отчеты
+          a.swiper-slide( href="" data-tab="tab3" ) Реестр
+          a.swiper-slide( href="" data-tab="tab4" ) Изменения в реестре
+          a.swiper-slide( href="" data-tab="tab5" ) Жалобы
+
+      .b-check-detail__decor
+
+    hr
+    
+    .b-check-detail__block
+      .b-check-detail__item.active(data-tab="tab1")
+        hr
+        include data
+
+      .b-check-detail__item(data-tab="tab2")
+        hr
+        include reports
+
+      .b-check-detail__item(data-tab="tab3")
+        hr
+        include registry
+
+      .b-check-detail__item(data-tab="tab4")
+        hr
+        include changes
+
+      .b-check-detail__item(data-tab="tab5")
+        hr
+        include appeals
+
+
+// end /components/check.detail/
