@@ -140,7 +140,7 @@
     .table thead
 
       th
-        text-align center
+        text-align center !important
         width 200px
 
         &:nth-child(2)
@@ -195,7 +195,7 @@
     .table thead
 
       th
-        text-align center
+        text-align center !important
 
         &:first-child,
         &:last-child
@@ -206,6 +206,7 @@
 
     td
       text-align center
+
 
 
 
@@ -330,3 +331,7 @@
   margin-top: -8px;
   z-index: 1;
 }
+
+.table
+  font-family $roboto
+  font-size $14px
