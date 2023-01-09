@@ -1,0 +1,24 @@
+// start /components/left-menu/
+
+//- push style and script file to the end of the page
+if componentsArray
+  - componentsArray[ componentsArray.length ] = 'left-menu'
+else
+  - var componentsArray = [ 'left-menu' ]
+  
+.b-left-menu.ph-block
+
+  .ph
+    div
+    div
+    div
+    div
+    div
+
+  .ph-content 
+    .b-left-menu__item
+      a.active( href="/pages/payment-requisites/" ) Оплата взносов
+      .b-left-menu__sub
+        span Реквизиты для оплаты
+
+// end /components/left-menu/
