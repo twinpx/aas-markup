@@ -1,10 +1,6 @@
 window.addEventListener('load', () => {
   const modal = document.getElementById('docToSignModal');
 
-  $('#docToSignModal').on('show.bs.modal', function () {
-    $('.modal-backdrop').addClass('no-events');
-  });
-
   sendRequest();
 
   if (modal) {
@@ -39,7 +35,7 @@ window.addEventListener('load', () => {
         if (response.status === 'success') {
           if (response.data && response.data.html) {
             //open popup window
-            $('#docToSignModal').modal('show');
+            $('#docToSignModal').modal({ backdrop: 'static', show: true });
             //set modal content
             document.querySelector('#docToSignModal .modal-dialog').innerHTML =
               response.data.html;
