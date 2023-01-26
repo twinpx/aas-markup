@@ -7,73 +7,32 @@ window.onload = function () {
   Vue.use(VueScrollTo);
 
   const store = new Vuex.Store({
-    state: window.reportFormOZOStore,
+    state: window.editStudyCourseStore,
     mutations: {
-      changeChecked(state, payload) {
-        state.formBlocks[0].controls[payload.index].checked = payload.checked;
-      },
-      changeRadio(state, payload) {
-        state.formBlocks[1].controls.forEach(
-          (control) => (control.checked = false)
-        );
-        state.formBlocks[1].controls[payload.index].checked = true;
-      },
-      changeSelect2(state, payload) {
-        state.formBlocks[2].controls[payload.index].selected = payload.selected;
-      },
-      addCompany(state, payload) {
-        //add fields
-        let newCompany = {};
-        newCompany.id = payload.companyId;
-        newCompany.hidden = payload.hidden.map((elem) => {
-          return { name: elem.name, value: elem.value };
-        });
-        newCompany.controls = [];
-        state.audiOZOList.template.controls.forEach((control) => {
-          if (control.type === 'text' || control.type === 'date') {
-            newCompany.controls.push({
-              name: control.name,
-              label: control.label,
-              value: '',
-              type: control.type,
-            });
-          } else if (control.type === 'select') {
-            let v = [];
-            control.value.forEach((val) => {
-              v.push({
-                label: val.label,
-                code: val.code,
-              });
-            });
-
-            newCompany.controls.push({
-              name: control.name,
-              label: control.label,
-              value: v,
-              selected: v[0],
-              type: control.type,
-            });
-          }
-        });
-        state.audiOZOList.companies.push(newCompany);
-      },
-      removeCompany(state, payload) {
-        state.audiOZOList.companies.splice(payload.index, 1);
-      },
       changeSelect(state, payload) {
-        state.audiOZOList.companies[payload.fieldsetBlockIndex].controls[
-          payload.controlIndex
-        ].selected = payload.selected;
+        state.controls[payload.controlIndex].selected = payload.selected;
       },
       changeDate(state, payload) {
-        state.audiOZOList.companies[payload.fieldsetBlockIndex].controls[
-          payload.controlIndex
-        ].value = payload.value;
+        state.controls[payload.controlIndex].value = payload.value;
       },
       changeTextControl(state, payload) {
-        state.audiOZOList.companies[payload.fieldsetBlockIndex].controls[
-          payload.controlIndex
-        ].value = payload.value;
+        if (
+          state.controls[payload.controlIndex].type === 'time' &&
+          payload.time
+        ) {
+          switch (payload.time) {
+            case 'start':
+              state.controls[payload.controlIndex].controls[0].value =
+                payload.value;
+              break;
+            case 'end':
+              state.controls[payload.controlIndex].controls[1].value =
+                payload.value;
+              break;
+          }
+        } else {
+          state.controls[payload.controlIndex].value = payload.value;
+        }
       },
       setInvalid(state, payload) {
         switch (payload) {
@@ -113,64 +72,6 @@ window.onload = function () {
       },
       generateKey() {
         return Date.now() * Math.random();
-      },
-    },
-  });
-
-  //checkbox
-  Vue.component('formControlCheckbox', {
-    data() {
-      return {
-        checked: this.control.checked,
-      };
-    },
-    props: ['index', 'control'],
-    template: `<label class="b-form-control-vc" :class="{'i-active': checked}">
-      <div class="b-form-control-vc__content">
-        <div class="b-form-control-vc__text"><b v-html="control.title"></b><span v-html="control.text"></span></div>
-      </div>
-      <div class="b-checkbox-vc"><input type="checkbox" :name="control.name" v-model="checked" class="filled-in" @change="change()"><span></span></div>
-    </label>`,
-    methods: {
-      change() {
-        //set control change
-        store.commit('changeChecked', {
-          index: this.index,
-          checked: this.checked,
-        });
-      },
-    },
-  });
-
-  //select
-  Vue.component('formControlSelect2', {
-    data() {
-      return {
-        options: this.control.value || [
-          {
-            label: '',
-            code: '',
-          },
-        ],
-        selectedOption: this.control.selected || {
-          label: '',
-          code: '',
-        },
-      };
-    },
-    template: `<div class="b-float-label-select-vc">
-      <v-select :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="selectedOption"></v-select>
-      <input type="hidden" :name="control.name" :value="selectedOption.code" ref="hiddenInput">
-    </div>`,
-    props: ['control', 'index'],
-    methods: {
-      onSelect() {
-        //set select
-        store.commit('changeSelect2', {
-          index: this.index,
-          selected: this.selectedOption,
-        });
-        this.$refs.hiddenInput.value = this.selectedOption.code;
       },
     },
   });
@@ -244,7 +145,7 @@ window.onload = function () {
         isInvalid: false,
       };
     },
-    props: ['formControl'],
+    props: ['formControl', 'formControlIndex', 'time'],
     template: `
       <div class="b-float-label" :class="{invalid: isInvalid}">
         <input :id="'PROPERTY_'+formControl.name" type="text" :name="'PROPERTY['+formControl.name+']'" autocomplete="off" required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue">
@@ -259,8 +160,9 @@ window.onload = function () {
         }
         //set value
         store.commit('changeTextControl', {
-          name: this.formControl.name,
+          controlIndex: this.formControlIndex,
           value: this.controlValue,
+          time: this.time,
         });
       },
       blurControl() {
@@ -288,11 +190,11 @@ window.onload = function () {
         isInvalid: false,
       };
     },
-    props: ['formControl'],
+    props: ['formControl', 'formControlIndex'],
     template: `
       <div class="b-float-label" :class="{invalid: isInvalid}">
         <textarea :id="'PROPERTY_'+formControl.name" :name="'PROPERTY['+formControl.name+']'" autocomplete="off" required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue"></textarea>
-        <label :for="'PROPERTY_'+formControl.name" :class="{active: isActive}">{{formControl.label}}</label>
+        <label :for="'PROPERTY_'+formControl.name" :class="{active: isActive}">{{formControl.label}} *</label>
       </div>
     `,
     methods: {
@@ -303,7 +205,7 @@ window.onload = function () {
         }
         //set value
         store.commit('changeTextControl', {
-          name: this.formControl.name,
+          controlIndex: this.formControlIndex,
           value: this.controlValue,
         });
       },
@@ -344,12 +246,12 @@ window.onload = function () {
       <v-select :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="selectedOption"></v-select>
       <input type="hidden" :name="'PROPERTY['+formControl.name+']'" :value="selectedOption.code" ref="hiddenInput">
     </div>`,
-    props: ['formControl'],
+    props: ['formControl', 'formControlIndex'],
     methods: {
       onSelect() {
         //set select
         store.commit('changeSelect', {
-          name: this.formControl.name,
+          controlIndex: this.formControlIndex,
           selected: this.selectedOption,
         });
         this.$refs.hiddenInput.value = this.selectedOption.code;
@@ -461,7 +363,7 @@ window.onload = function () {
         },
       };
     },
-    props: ['formControl'],
+    props: ['formControl', 'formControlIndex'],
     methods: {
       openInput() {
         this.isActive = true;
@@ -485,7 +387,7 @@ window.onload = function () {
           this.isInvalid = false;
         }
         store.commit('changeDate', {
-          name: this.formControl.name,
+          controlIndex: this.formControlIndex,
           value: this.date,
         });
       },
@@ -495,77 +397,33 @@ window.onload = function () {
   //submit button
   Vue.component('submitButton', {
     data() {
-      return {
-        checked: store.state.agreement.checked,
-      };
+      return {};
     },
     template: `
-      <div class="b-report-form-ozo__submit">
-        <input type="submit" name="iblock_submit" class="btn btn-secondary btn-lg" value="Сдать отчет" :disabled="isDisabled">
+      <div class="b-edit-study-course-modal__submit row">
+        <div class="col-sm-6">
+          <input type="submit" name="iblock_submit" class="btn btn-secondary btn-lg" value="Сохранить" :disabled="isDisabled">
+        </div>
+        <div class="col-sm-6">
+          <div class="btn btn-lg btn-light" data-dismiss="modal">Отменить</div>
+        </div>
       </div>
     `,
     computed: {
       isDisabled() {
-        return false;
         let requireds = true;
-        if (store.state.formBlocks[1].controls[0].checked === true) {
-          requireds = store.state.audiOZOList.companies.every((company) => {
-            return company.controls.every((control) => !!control.value);
-          });
-        }
 
-        return !(
-          store.state.formBlocks[0].controls.some(
-            (control) => control.checked === true
-          ) &&
-          store.state.formBlocks[1].controls.some(
-            (control) => control.checked === true
-          ) &&
-          requireds &&
-          this.checked
-        );
+        requireds = this.$store.state.controls.every((control) => {
+          if (control.type === 'time') {
+            return control.controls.every((c) => !!c.value);
+          }
+          return !!control.value;
+        });
+
+        return !requireds;
       },
     },
-    methods: {
-      clickContinue() {
-        let elem;
-        if (
-          !store.state.formBlocks[0].controls.some(
-            (control) => control.checked === true
-          )
-        ) {
-          elem = '#collapse1';
-        } else if (
-          !store.state.formBlocks[1].controls.some(
-            (control) => control.checked === true
-          )
-        ) {
-          elem = '#collapse2';
-        } else {
-          store.state.audiOZOList.companies.forEach((company, index) => {
-            company.controls.forEach((control) => {
-              if (!control.value && !elem) {
-                elem = `#company${index}`;
-              }
-            });
-          });
-        }
-
-        if (!elem && !store.state.agreement.checked) {
-          elem = '#agreement';
-        }
-
-        //scroll to
-        if (elem && document.querySelector(elem)) {
-          this.$scrollTo(elem, 500, {
-            offset: -180,
-          });
-
-          //highlight invalid
-          store.commit('setInvalid', elem);
-        }
-      },
-    },
+    methods: {},
   });
 
   const App = {
@@ -575,16 +433,24 @@ window.onload = function () {
       <div>
         <hidden-fields></hidden-fields>
 
-        <div v-for="formControl in $store.state.controls">
-          <form-control-textarea v-if="formControl.type==='textarea'" :formControl="formControl"></form-control-textarea>
-          <form-control-date v-if="formControl.type==='date'" :formControl="formControl"></form-control-date>
-          <form-control-select v-else-if="formControl.type==='select'" :formControl="formControl"></form-control-select>
-          <form-control v-else :formControl="formControl"></form-control>
+        <div v-for="(formControl, formControlIndex) in $store.state.controls">
+          <form-control-textarea v-if="formControl.type==='textarea'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-textarea>
+          <form-control-date v-else-if="formControl.type==='date'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-date>
+          <form-control-select v-else-if="formControl.type==='select'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-select>
+          <div class="row" v-else-if="formControl.type==='time'">
+            <div class="col-sm-4">
+              <form-control :formControl="formControl.controls[0]" :formControlIndex="formControlIndex" time="start"></form-control>
+            </div>
+            <div class="col-sm-4">
+              <form-control :formControl="formControl.controls[1]" :formControlIndex="formControlIndex" time="end"></form-control>
+            </div>
+          </div>
+          <form-control v-else :formControl="formControl" :formControlIndex="formControlIndex"></form-control>
         </div>
 
         <!--<collapse-block-2></collapse-block-2>-->
 
-        <hr class="hr--lg">
+        <hr>
 
         <submit-button></submit-button>
 

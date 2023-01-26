@@ -142,9 +142,11 @@
 
         //on load
         var tab = parseQuery(window.location.search).tab;
-        setTimeout(function () {
-          nav.querySelector(`[data-tab=${tab}]`).click();
-        }, 500);
+        if (tab) {
+          setTimeout(function () {
+            nav.querySelector(`[data-tab=${tab}]`).click();
+          }, 500);
+        }
       });
 
     //table
