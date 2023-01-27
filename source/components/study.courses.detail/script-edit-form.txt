@@ -7,31 +7,55 @@ window.onload = function () {
   Vue.use(VueScrollTo);
 
   const store = new Vuex.Store({
-    state: window.editStudyCourseStore,
+    state: {
+      ...window.studyCourseStore,
+      modal: {
+        hidden: [],
+        controls: [],
+      },
+      loading: false,
+      error: '',
+    },
     mutations: {
+      changeTask(state, payload) {
+        state.blocks.forEach((block) => {
+          block.tasks.forEach((task, i) => {
+            if (payload.id === task.id) {
+              Vue.set(block.tasks, i, payload);
+            }
+          });
+        });
+      },
+      changeModal(state, payload) {
+        Vue.set(state.modal, 'hidden', payload.hidden);
+        Vue.set(state.modal, 'controls', payload.controls);
+      },
+      changeProp(state, payload) {
+        state[payload.prop] = payload.value;
+      },
       changeSelect(state, payload) {
-        state.controls[payload.controlIndex].selected = payload.selected;
+        state.modal.controls[payload.controlIndex].selected = payload.selected;
       },
       changeDate(state, payload) {
-        state.controls[payload.controlIndex].value = payload.value;
+        state.modal.controls[payload.controlIndex].value = payload.value;
       },
       changeTextControl(state, payload) {
         if (
-          state.controls[payload.controlIndex].type === 'time' &&
+          state.modal.controls[payload.controlIndex].type === 'time' &&
           payload.time
         ) {
           switch (payload.time) {
             case 'start':
-              state.controls[payload.controlIndex].controls[0].value =
+              state.modal.controls[payload.controlIndex].controls[0].value =
                 payload.value;
               break;
             case 'end':
-              state.controls[payload.controlIndex].controls[1].value =
+              state.modal.controls[payload.controlIndex].controls[1].value =
                 payload.value;
               break;
           }
         } else {
-          state.controls[payload.controlIndex].value = payload.value;
+          state.modal.controls[payload.controlIndex].value = payload.value;
         }
       },
       setInvalid(state, payload) {
@@ -51,7 +75,13 @@ window.onload = function () {
     getters: {
       fields(state) {
         let result = '';
-        state.controls.forEach((control) => {
+        state.modal.hidden.forEach((control) => {
+          if (result) {
+            result += '&';
+          }
+          result += `${control.name}=${control.value}`;
+        });
+        state.modal.controls.forEach((control) => {
           if (result) {
             result += '&';
           }
@@ -78,7 +108,7 @@ window.onload = function () {
     },
     template: `
       <div>
-        <input v-for="field in $store.state.hidden" :key="generateKey()" type="hidden" :name="field.name" :value="field.value">
+        <input v-for="field in $store.state.modal.hidden" :key="generateKey()" type="hidden" :name="field.name" :value="field.value">
       </div>
     `,
     methods: {
@@ -95,34 +125,49 @@ window.onload = function () {
   });
 
   //collapse block 2
-  Vue.component('collapseBlock2', {
+  Vue.component('collapseBlock', {
     data() {
       return {
-        slide: true,
-        open: true,
-        formIsActive: store.state.formBlocks[1].controls[0].checked,
+        slide: false,
+        open: false,
       };
     },
+    props: ['block'],
     template: `
-    <div class="b-collapse-vc" :class="{slide: slide, open: open}" id="collapse2">
-        <div class="b-collapse-vc__body" v-if="slide">
-            <div v-show="formIsActive">
-                  <hr>
-                  <div class="b-add-fieldset-block__wrapper">
-
-                    <input v-for="(hiddenField, hiddenIndex) in company.hidden" :key="generateKey(hiddenIndex)" type="hidden" :name="hiddenField.name" :value="hiddenField.value">
-
-                    <div v-for="(formControl, controlIndex) in company.controls" class="b-add-fieldset-block__control" :key="generateKey(controlIndex)">
-                      <form-control-date v-if="formControl.type==='date'" :formControl="formControl" :fieldsetBlockIndex="0" :controlIndex="controlIndex" :required="formIsActive"></form-control-date>
-                      <form-control-select v-else-if="formControl.type==='select'" :formControl="formControl" :fieldsetBlockIndex="0" :controlIndex="controlIndex" :required="formIsActive"></form-control-select>
-                      <form-control v-else :formControl="formControl" :fieldsetBlockIndex="0" :controlIndex="controlIndex" :required="formIsActive" ></form-control>
-                    </div>
-
-                  </div>
-
-            </div>
+      <div class="b-collapse-vc" :class="{slide: slide, open: open}" id="collapse2">
+        <div class="b-collapse-vc__head" @click.stop.prevent="toggleBody()">
+          <a href="" @click.prevent>{{ block.title }}</a>
+          <span></span>
         </div>
-    </div>
+        <transition @enter="enter" @leave="leave" :css="false">
+          <div class="b-collapse-vc__body" v-if="slide">
+            <div class="b-scd-form" v-for="task in block.tasks">
+              <div class="b-scd-form-text">
+                <div class="b-scd-form-info">
+                  <div class="b-scd-form-date">{{ task.date }}<br>{{ task.start }}−{{ task.end }}</div>
+                  <div class="b-scd-form-time">{{ task.hours }}</div>
+                  <div class="b-scd-form-type">{{ task.type }}</div>
+                </div>
+                <div class="b-scd-form-about">
+                  <div class="b-scd-form-description">{{ task.description }}</div>
+                  <div class="b-scd-form-lecturer">{{ task.teacher }}</div>
+                </div>
+              </div>
+              <div class="b-scd-form-icon">
+                <button class="btn-edit" @click.prevent="clickEdit(task.id)">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
+                    <g>
+                      <path d="M9.263,1.439l-8.21,8.69a3.05,3.05,0,0,0-.67,1.43L.013,14.8a1.527,1.527,0,0,0,1.87,1.77l3.22-.55a2.871,2.871,0,0,0,1.39-.75l8.21-8.69c1.42-1.5,2.06-3.21-.15-5.3C12.353-.791,10.683-.061,9.263,1.439Z" transform="translate(4.002 3.701)"></path>
+                      <path d="M0,0A6.126,6.126,0,0,0,5.45,5.15" transform="translate(11.895 6.59)"></path>
+                      <path d="M0,0H24V24H0Z" fill="none" opacity="0"></path>
+                    </g>
+                  </svg>
+                </button>
+              </div>
+            </div>
+          </div>
+        </transition>
+      </div>
     `,
     methods: {
       //transition
@@ -145,11 +190,66 @@ window.onload = function () {
         //slide body
         this.open = !this.open;
       },
-      setFormActive(index) {
-        this.formIsActive = !index;
-      },
       generateKey(index) {
         return Date.now() * Math.random() + index;
+      },
+      clickEdit(taskId) {
+        //open modal
+        $('#editStudyCourseModal').modal('show');
+        store.commit('changeProp', { prop: 'loading', value: true });
+        this.loadData(taskId);
+      },
+      async loadData(taskId) {
+        let formData = new FormData(),
+          controller = new AbortController(),
+          response,
+          result;
+
+        formData.set('id', taskId);
+
+        setTimeout(() => {
+          if (!response) {
+            controller.abort();
+          }
+        }, 20000);
+
+        try {
+          response = await fetch(
+            this.$store.state.editURL /*, {
+              method: 'POST',
+              body: formData,
+              signal: controller.signal,
+            }*/
+          );
+
+          result = await response.json();
+
+          if (result && typeof result === 'object') {
+            if (result.status === 'Y') {
+              store.commit('changeModal', result.data.modal);
+              store.commit('changeProp', { prop: 'loading', value: false });
+            } else {
+              if (
+                typeof result.data === 'object' &&
+                result.data.errors &&
+                result.data.errors[0]
+              ) {
+                store.commit('changeProp', { prop: 'loading', value: false });
+                store.commit('changeProp', {
+                  prop: 'error',
+                  value: result.data.errors[0],
+                });
+              }
+            }
+          }
+        } catch (err) {
+          store.commit('changeProp', { prop: 'loading', value: false });
+          store.commit('changeProp', {
+            prop: 'error',
+            value: err,
+          });
+          throw err;
+        }
       },
     },
   });
@@ -166,7 +266,59 @@ window.onload = function () {
     props: ['formControl', 'formControlIndex', 'time'],
     template: `
       <div class="b-float-label" :class="{invalid: isInvalid}">
-        <input :id="'PROPERTY_'+formControl.name" type="text" :name="'PROPERTY['+formControl.name+']'" autocomplete="off" required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue">
+        <input :id="'PROPERTY_'+formControl.name" type="text" :name="'PROPERTY['+formControl.name+']'" autocomplete="off" required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue" ref="input">
+        <label :for="'PROPERTY_'+formControl.name" :class="{active: isActive}">{{formControl.label}} *</label>
+      </div>
+    `,
+    methods: {
+      inputControl() {
+        //validate
+        if (!!this.controlValue) {
+          this.isInvalid = false;
+        }
+        //set value
+        store.commit('changeTextControl', {
+          controlIndex: this.formControlIndex,
+          value: this.controlValue,
+          time: this.time,
+        });
+      },
+      blurControl() {
+        if (this.controlValue !== '') {
+          this.isActive = true;
+        } else {
+          this.isActive = false;
+        }
+        //validate
+        if (this.required && !this.controlValue) {
+          this.isInvalid = true;
+        } else {
+          this.isInvalid = false;
+        }
+      },
+    },
+    mounted() {
+      if (this.time) {
+        IMask(this.$refs.input, {
+          mask: '00:00',
+        });
+      }
+    },
+  });
+
+  //form control number
+  Vue.component('formControlNumber', {
+    data() {
+      return {
+        controlValue: this.formControl.value,
+        isActive: this.formControl.value === '' ? false : true,
+        isInvalid: false,
+      };
+    },
+    props: ['formControl', 'formControlIndex'],
+    template: `
+      <div class="b-float-label" :class="{invalid: isInvalid}">
+        <input :id="'PROPERTY_'+formControl.name" type="number" :name="'PROPERTY['+formControl.name+']'" autocomplete="off" required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue">
         <label :for="'PROPERTY_'+formControl.name" :class="{active: isActive}">{{formControl.label}} *</label>
       </div>
     `,
@@ -431,7 +583,7 @@ window.onload = function () {
       isDisabled() {
         let requireds = true;
 
-        requireds = this.$store.state.controls.every((control) => {
+        requireds = this.$store.state.modal.controls.every((control) => {
           if (control.type === 'time') {
             return control.controls.every((c) => !!c.value);
           }
@@ -443,11 +595,14 @@ window.onload = function () {
     },
     methods: {
       async submit() {
+        store.commit('changeProp', { prop: 'loading', value: true });
+
         let formData = new FormData(),
           controller = new AbortController(),
           response,
           result;
 
+        formData.set('id', 'taskID');
         formData.set('fields', this.$store.getters.fields);
 
         setTimeout(() => {
@@ -459,33 +614,82 @@ window.onload = function () {
         try {
           response = await fetch(
             this.$store.state.submitURL /*, {
-            method: 'POST',
-            body: formData,
-            signal: controller.signal,
-          }*/
+              method: 'POST',
+              body: formData,
+              signal: controller.signal,
+            }*/
           );
 
           result = await response.json();
 
           if (result && typeof result === 'object') {
             if (result.status === 'Y') {
+              $('#editStudyCourseModal').modal('hide');
+              store.commit('changeProp', { prop: 'loading', value: false });
+              store.commit('changeProp', { prop: 'error', value: '' });
+
+              if (result.data && result.data.task) {
+                store.commit('changeTask', result.data.task);
+              }
+            } else {
+              if (
+                typeof result.data === 'object' &&
+                result.data.errors &&
+                result.data.errors[0]
+              ) {
+                store.commit('changeProp', { prop: 'loading', value: false });
+                store.commit('changeProp', {
+                  prop: 'error',
+                  value: result.data.errors[0],
+                });
+              }
             }
           }
         } catch (err) {
+          store.commit('changeProp', { prop: 'loading', value: false });
+          store.commit('changeProp', {
+            prop: 'error',
+            value: err,
+          });
           throw err;
         }
       },
     },
   });
 
-  const App = {
-    el: '#editStudyCourseForm',
-    store,
+  //modal
+  Vue.component('editStudyCourseModal', {
+    data() {
+      return {};
+    },
     template: `
-      <div>
+      <div class="modal--text modal fade show" id="editStudyCourseModal" tabindex="-1" aria-labelledby="editStudyCourseModalLabel" aria-modal="true" role="dialog">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <button class="close" type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );"></button>
+            <div class="modal-body">
+              <h3 class="text-center">Изменить данные о занятии</h3>
+              <hr>
+              <edit-study-course-form></edit-study-course-form>
+            </div>
+          </div>
+        </div>
+      </div>`,
+  });
+
+  //form
+  Vue.component('editStudyCourseForm', {
+    data() {
+      return {};
+    },
+    template: `
+    <div>
+
+      <div :class="{'b--hidden': $store.state.loading || $store.state.error}">
+
         <hidden-fields></hidden-fields>
 
-        <div v-for="(formControl, formControlIndex) in $store.state.controls">
+        <div v-for="(formControl, formControlIndex) in $store.state.modal.controls">
           <form-control-textarea v-if="formControl.type==='textarea'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-textarea>
           <form-control-date v-else-if="formControl.type==='date'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-date>
           <form-control-select v-else-if="formControl.type==='select'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-select>
@@ -497,6 +701,7 @@ window.onload = function () {
               <form-control :formControl="formControl.controls[1]" :formControlIndex="formControlIndex" time="end"></form-control>
             </div>
           </div>
+          <form-control-number v-else-if="formControl.type==='number'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-number>
           <form-control v-else :formControl="formControl" :formControlIndex="formControlIndex"></form-control>
         </div>
 
@@ -504,6 +709,31 @@ window.onload = function () {
 
         <submit-button></submit-button>
 
+      </div>
+
+      <div :class="{'progress-indicator': true, 'b--hidden': !$store.state.loading}">
+        <div class="item item-1"></div>
+        <div class="item item-2"></div>
+        <div class="item item-3"></div>
+        <div class="item item-4"></div>
+        <div class="item item-5"></div>
+      </div>
+
+      <div :class="{'b-edit-study-course-form-error': true, 'b--hidden': !$store.state.error}">
+        {{$store.state.error}}
+      </div>
+
+    </div>
+  `,
+  });
+
+  const App = {
+    el: '#editStudyCourseBlocks',
+    store,
+    template: `
+      <div>
+        <edit-study-course-modal></edit-study-course-modal>
+        <collapse-block v-for="block in $store.state.blocks" :block="block"></collapse-block>
       </div>
     `,
     methods: {},
