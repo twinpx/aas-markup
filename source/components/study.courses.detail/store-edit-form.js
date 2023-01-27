@@ -1,4 +1,5 @@
 window.editStudyCourseStore = {
+  submitURL: '/components/study.courses.detail/submitResponse.json',
   hidden: [
     {
       name: 'element_id',

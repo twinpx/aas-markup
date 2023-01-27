@@ -48,6 +48,24 @@ window.onload = function () {
         }
       },
     },
+    getters: {
+      fields(state) {
+        let result = '';
+        state.controls.forEach((control) => {
+          if (result) {
+            result += '&';
+          }
+          if (control.type === 'time') {
+            result += `${control.controls[0].name}=${control.controls[0].value}&${control.controls[1].name}=${control.controls[1].value}`;
+          } else if (control.type === 'select') {
+            result += `${control.name}=${control.selected.code}`;
+          } else {
+            result += `${control.name}=${control.value}`;
+          }
+        });
+        return result;
+      },
+    },
   });
 
   Vue.component('v-select', VueSelect.VueSelect);
@@ -402,7 +420,7 @@ window.onload = function () {
     template: `
       <div class="b-edit-study-course-modal__submit row">
         <div class="col-sm-6">
-          <input type="submit" name="iblock_submit" class="btn btn-secondary btn-lg" value="Сохранить" :disabled="isDisabled">
+          <div name="iblock_submit" class="btn btn-secondary btn-lg" :disabled="isDisabled" @click="submit()">Сохранить</div>
         </div>
         <div class="col-sm-6">
           <div class="btn btn-lg btn-light" data-dismiss="modal">Отменить</div>
@@ -423,7 +441,41 @@ window.onload = function () {
         return !requireds;
       },
     },
-    methods: {},
+    methods: {
+      async submit() {
+        let formData = new FormData(),
+          controller = new AbortController(),
+          response,
+          result;
+
+        formData.set('fields', this.$store.getters.fields);
+
+        setTimeout(() => {
+          if (!response) {
+            controller.abort();
+          }
+        }, 20000);
+
+        try {
+          response = await fetch(
+            this.$store.state.submitURL /*, {
+            method: 'POST',
+            body: formData,
+            signal: controller.signal,
+          }*/
+          );
+
+          result = await response.json();
+
+          if (result && typeof result === 'object') {
+            if (result.status === 'Y') {
+            }
+          }
+        } catch (err) {
+          throw err;
+        }
+      },
+    },
   });
 
   const App = {
@@ -447,8 +499,6 @@ window.onload = function () {
           </div>
           <form-control v-else :formControl="formControl" :formControlIndex="formControlIndex"></form-control>
         </div>
-
-        <!--<collapse-block-2></collapse-block-2>-->
 
         <hr>
 
