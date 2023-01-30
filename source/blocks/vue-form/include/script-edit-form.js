@@ -243,7 +243,7 @@ window.onload = function () {
       };
     },
     template: `<div class="b-float-label-select-vc">
-      <v-select :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="selectedOption"></v-select>
+      <v-select :searchable="false" :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="selectedOption"></v-select>
       <input type="hidden" :name="control.name" :value="selectedOption.code" ref="hiddenInput">
     </div>`,
     props: ['control', 'index'],
@@ -496,7 +496,7 @@ window.onload = function () {
     },
     template: `<div class="b-float-label-select-vc" ref="selectTemplate">
       <label class="active">{{formControl.label}} *</label>
-      <v-select :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="selectedOption"></v-select>
+      <v-select :searchable="false" :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="selectedOption"></v-select>
       <input type="hidden" :name="'PROPERTY['+formControl.name+']['+fieldsetBlockIndex+']'" :value="selectedOption.code" ref="hiddenInput">
     </div>`,
     props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],

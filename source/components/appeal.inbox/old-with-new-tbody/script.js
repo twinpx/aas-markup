@@ -379,7 +379,7 @@ window.addEventListener('load', () => {
       };
     },
     template: `<div class="form-control-wrapper">
-      <v-select :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="$store.state.filter.controls[inputIndex].selected"></v-select>
+      <v-select :searchable="false" :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="$store.state.filter.controls[inputIndex].selected"></v-select>
       <label>{{ control.label }}</label>
     </div>`,
     props: {

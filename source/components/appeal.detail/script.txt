@@ -79,7 +79,7 @@ window.addEventListener('load', () => {
       <div>
         <form :action="this.form.action" :method="this.form.method">
           <div class="form-control-wrapper">
-            <v-select :options="select.options" :value="select.options[0]" class="form-control-select" @input="onSelect()" v-model="select.selectedOption"></v-select>
+            <v-select :searchable="false" :options="select.options" :value="select.options[0]" class="form-control-select" @input="onSelect()" v-model="select.selectedOption"></v-select>
             <label>{{select.label}}</label>
             <input type="hidden" :name="select.name" v-model="select.selectedOption.code">
           </div>

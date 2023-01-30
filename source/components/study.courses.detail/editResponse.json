@@ -1,5 +1,5 @@
 {
-  "status": "Y",
+  "status": "success",
   "data": {
     "errors": ["Error on server"],
     "modal": {

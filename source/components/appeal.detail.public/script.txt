@@ -4,7 +4,51 @@ window.addEventListener('load', () => {
     e.preventDefault();
     window.print();
   });
-  
+
+  //icon copy
+  const copyToClipboard = (str, elem) => {
+    if (navigator && navigator.clipboard && navigator.clipboard.writeText) {
+      str = str.trim();
+      navigator.clipboard.writeText(str);
+      if (elem) {
+        let span = document.createElement('span');
+        span.classList.add('b-copy-icon__note');
+        span.innerText = 'Скопировано в буфер';
+        elem.querySelector('.b-copy-icon').appendChild(span);
+        setTimeout(() => {
+          span.classList.add('b-copy-icon__note--show');
+        }, 0);
+        setTimeout(() => {
+          span.classList.remove('b-copy-icon__note--show');
+        }, 1000);
+        setTimeout(() => {
+          span.remove();
+        }, 1500);
+      }
+      return;
+    }
+    return Promise.reject('The Clipboard API is not available.');
+  };
+
+  if (window.matchMedia('(min-width: 768px)').matches) {
+    //table
+    document
+      .querySelectorAll('.b-appeal-detail table.table td')
+      .forEach((td) => {
+        td.addEventListener('click', () => {
+          copyToClipboard(td.textContent, td);
+        });
+      });
+
+    //data
+    document.querySelectorAll('.b-appeal-detail__data-item').forEach((item) => {
+      item.addEventListener('click', () => {
+        let span = item.querySelector('span');
+        copyToClipboard(span.textContent, item);
+      });
+    });
+  }
+
   //Vue app form
   if (!window.Vue) return;
 
@@ -16,7 +60,7 @@ window.addEventListener('load', () => {
       return {
         ...window.appealDetailData,
         isLoading: false,
-        initialCode: null
+        initialCode: null,
       };
     },
     computed: {
@@ -35,7 +79,7 @@ window.addEventListener('load', () => {
       <div>
         <form :action="this.form.action" :method="this.form.method">
           <div class="form-control-wrapper">
-            <v-select :options="select.options" :value="select.options[0]" class="form-control-select" @input="onSelect()" v-model="select.selectedOption"></v-select>
+            <v-select :searchable="false" :options="select.options" :value="select.options[0]" class="form-control-select" @input="onSelect()" v-model="select.selectedOption"></v-select>
             <label>{{select.label}}</label>
             <input type="hidden" :name="select.name" v-model="select.selectedOption.code">
           </div>
@@ -114,6 +158,6 @@ window.addEventListener('load', () => {
     },
     mounted() {
       this.initialCode = this.select.selectedOption.code;
-    }
+    },
   });
 });
