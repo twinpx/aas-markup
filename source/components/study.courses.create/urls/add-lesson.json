@@ -1,0 +1,73 @@
+{
+  "status": "success",
+  "errors": [{ "message": "Error on server" }],
+  "data": {
+    "lesson": {
+      "id": "lesson124",
+      "controls": [
+        {
+          "name": "LESSON_TITLE",
+          "label": "Название занятия",
+          "value": "",
+          "type": "textarea"
+        },
+        {
+          "name": "LESSON_DATE",
+          "label": "Выберите дату",
+          "value": "",
+          "type": "date"
+        },
+        {
+          "name": "TEACHER_NAME",
+          "label": "Преподаватель",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "LESSON_TYPE",
+          "label": "Тип занятия",
+          "value": [
+            {
+              "label": "Очное",
+              "code": "ochno"
+            },
+            {
+              "label": "Заочное",
+              "code": "zaochno"
+            },
+            {
+              "label": "Дистанционное",
+              "code": "distant"
+            }
+          ],
+          "selected": { "label": "Очное", "code": "ochno" },
+          "type": "select"
+        },
+        {
+          "name": "LESSON_ADDRESS",
+          "label": "Адрес занятия",
+          "value": "",
+          "type": "text"
+        },
+        {
+          "name": "LESSON_START",
+          "label": "Время начала",
+          "value": "",
+          "type": "time"
+        },
+        {
+          "name": "LESSON_END",
+          "label": "Время окончания",
+          "value": "",
+          "type": "time"
+        },
+        {
+          "name": "LESSON_HOURS",
+          "label": "Количество часов",
+          "value": "",
+          "type": "text"
+        }
+      ]
+    }
+  }
+}

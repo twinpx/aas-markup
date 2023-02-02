@@ -22,6 +22,13 @@
 .b-study-courses-create
   text-align left
 
+  &--loading
+    pointer-events none
+    filter blur(2px)
+
+  .b-float-label-select-vc
+    margin-bottom 2rem
+
 .b-scc
 
   &-nav
@@ -60,11 +67,16 @@
 
       &--active,
       &--visited&--active
+        pointer-events none
 
         a
           color #3B3B3B
 
   &-step
+
+    &__controls
+      width 100%
+      max-width 530px
 
     .b-float-label
       margin-bottom 2rem
@@ -76,3 +88,32 @@
       color $danger-color
       text-align center
       margin-bottom 2rem
+
+    &__block
+      background-color #FAFBFC
+      padding 1.25rem
+      border-radius 0.625rem
+      position relative
+
+      &-delete
+        position absolute
+        top 1.25rem
+        right 1.25rem
+
+      &-title
+        color #3B3B3B
+        font-size $18px
+        font-family $roboto
+        font-weight $bold
+        margin-bottom 2rem
+
+      &-controls
+        width 100%
+        max-width 530px
+
+@import './style/collapse-vue-component.styl'
+@import './style/checkbox-vue-component.styl'
+@import './style/add-fieldset-block.styl'
+@import './style/select.styl'
+@import './style/datepicker.styl'
+@import './style/transition.styl'

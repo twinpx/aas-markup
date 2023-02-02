@@ -354,6 +354,8 @@
 
 .btn--load-circle
   position relative
+  cursor default
+  pointer-events none
 
   &,
   &:hover,
@@ -396,6 +398,18 @@
 
   &:hover
     opacity .7
+
+  &.btn--load-circle
+    background-image none
+    background-color #e03e41
+    border-radius 10px
+
+    &:after
+      width 20px
+      height 20px
+      top calc(50% - 10px)
+      right calc(50% - 10px)
+
 
 //new style
 .btn-remove

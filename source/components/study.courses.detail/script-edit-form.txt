@@ -231,13 +231,13 @@ window.onload = function () {
             } else {
               if (
                 typeof result.data === 'object' &&
-                result.data.errors &&
-                result.data.errors[0]
+                result.errors &&
+                result.errors[0]
               ) {
                 store.commit('changeProp', { prop: 'loading', value: false });
                 store.commit('changeProp', {
                   prop: 'error',
-                  value: result.data.errors[0],
+                  value: result.errors[0],
                 });
               }
             }
@@ -634,13 +634,13 @@ window.onload = function () {
             } else {
               if (
                 typeof result.data === 'object' &&
-                result.data.errors &&
-                result.data.errors[0]
+                result.errors &&
+                result.errors[0]
               ) {
                 store.commit('changeProp', { prop: 'loading', value: false });
                 store.commit('changeProp', {
                   prop: 'error',
-                  value: result.data.errors[0],
+                  value: result.errors[0],
                 });
               }
             }

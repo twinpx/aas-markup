@@ -38,4 +38,21 @@ else
 
     #studyCoursesCreateWizard
 
+    #studyCoursesCreateModal.modal--text.modal.fade(tabindex="-1" aria-labelledby="studyCoursesCreateModalLabel" aria-hidden="true")
+      .modal-dialog
+        .modal-content
+          button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
+          .modal-body
+            h3.text-center Вы добавили курс
+
+            hr
+
+            p.text-center После добавления курса он появился в <a href="">списке ваших курсов</a> в статусе «Черновик», для публикации на страницах сайта СРО ААС, вам необходимо отправить курс на модерацию в отдел повышения и подтверждения квалификации. Для этого <a hre="">проверьте курс</a> и нажмите кнопку «Отправить на модерацию».
+
+            hr
+
+            .text-center.modal-buttons
+              button.btn.btn-lg.btn-primary( data-dismiss="modal" ) Понятно
+
+
 // end /components/study.courses.create/
