@@ -9,6 +9,7 @@ window.onload = function () {
   const store = new Vuex.Store({
     state: {
       ...window.studyCourseStore,
+      taskEditingId: undefined,
       modal: {
         hidden: [],
         controls: [],
@@ -197,6 +198,7 @@ window.onload = function () {
         //open modal
         $('#editStudyCourseModal').modal('show');
         store.commit('changeProp', { prop: 'loading', value: true });
+        store.commit('changeProp', { prop: 'taskEditingId', value: taskId });
         this.loadData(taskId);
       },
       async loadData(taskId) {
@@ -298,6 +300,7 @@ window.onload = function () {
       },
     },
     mounted() {
+      console.log('input mounted', this.formControl.name);
       if (this.time) {
         IMask(this.$refs.input, {
           mask: '00:00',
@@ -351,8 +354,56 @@ window.onload = function () {
     },
   });
 
-  //form control textarea
+  //textarea
   Vue.component('formControlTextarea', {
+    data() {
+      return {
+        controlValue: this.formControl.value,
+        isActive: this.formControl.value === '' ? false : true,
+        isInvalid: false,
+      };
+    },
+    props: ['formControl', 'formControlIndex', 'time'],
+    template: `
+      <div class="b-float-label" :class="{invalid: isInvalid}">
+        <input :id="'PROPERTY_'+formControl.name" type="text" :name="'PROPERTY['+formControl.name+']'" autocomplete="off" required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue" ref="input">
+        <label :for="'PROPERTY_'+formControl.name" :class="{active: isActive}">{{formControl.label}} *</label>
+      </div>
+    `,
+    methods: {
+      inputControl() {
+        //validate
+        if (!!this.controlValue) {
+          this.isInvalid = false;
+        }
+        //set value
+        store.commit('changeTextControl', {
+          controlIndex: this.formControlIndex,
+          value: this.controlValue,
+          time: this.time,
+        });
+      },
+      blurControl() {
+        if (this.controlValue !== '') {
+          this.isActive = true;
+        } else {
+          this.isActive = false;
+        }
+        //validate
+        if (this.required && !this.controlValue) {
+          this.isInvalid = true;
+        } else {
+          this.isInvalid = false;
+        }
+      },
+    },
+    mounted() {
+      console.log('textarea mounted', this.formControl.name);
+    },
+  });
+
+  //form control textarea
+  Vue.component('formControlTextarea1', {
     data() {
       return {
         controlValue: this.formControl.value,
@@ -362,7 +413,7 @@ window.onload = function () {
     },
     props: ['formControl', 'formControlIndex'],
     template: `
-      <div class="b-float-label" :class="{invalid: isInvalid}">
+      <div class="b-float-label" :class="{invalid: isInvalid}">{{controlValue}}
         <textarea :id="'PROPERTY_'+formControl.name" :name="'PROPERTY['+formControl.name+']'" autocomplete="off" required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue"></textarea>
         <label :for="'PROPERTY_'+formControl.name" :class="{active: isActive}">{{formControl.label}} *</label>
       </div>
@@ -393,10 +444,13 @@ window.onload = function () {
         }
       },
     },
+    mounted() {
+      console.log('mounted');
+    },
   });
 
   //form control select
-  Vue.component('form-control-select', {
+  Vue.component('formControlSelect', {
     data() {
       return {
         options: this.formControl.value || [
@@ -430,7 +484,7 @@ window.onload = function () {
   });
 
   //form control date
-  Vue.component('form-control-date', {
+  Vue.component('formControlDate', {
     template: `<div class="b-float-label" data-src="${window.moderationSrcPath}calendar.svg" :class="{invalid: isInvalid}">
       <date-picker :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @blur="blurInput"></date-picker>
       <label :for="'PROPERTY_'+formControl.name" :class="{ active: isActive }">{{formControl.label}}</label>
@@ -602,7 +656,7 @@ window.onload = function () {
           response,
           result;
 
-        formData.set('id', 'taskID');
+        formData.set('id', this.$store.state.taskEditingId);
         formData.set('fields', this.$store.getters.fields);
 
         setTimeout(() => {
@@ -689,9 +743,10 @@ window.onload = function () {
 
         <hidden-fields></hidden-fields>
 
-        <div v-for="(formControl, formControlIndex) in $store.state.modal.controls">
-          <form-control-textarea v-if="formControl.type==='textarea'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-textarea>
-          <form-control-date v-else-if="formControl.type==='date'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-date>
+        <div v-for="(formControl, formControlIndex) in $store.state.modal.controls" :key="formControlIndex * Math.floor(Math.random() * 100000)">
+
+          <form-control-date v-if="formControl.type==='date'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-date>
+          <form-control-textarea v-else-if="formControl.type==='textarea'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-textarea>
           <form-control-select v-else-if="formControl.type==='select'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-select>
           <div class="row" v-else-if="formControl.type==='time'">
             <div class="col-sm-4">
