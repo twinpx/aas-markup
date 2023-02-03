@@ -694,7 +694,7 @@ window.onload = function () {
                 store.commit('changeProp', { prop: 'loading', value: false });
                 store.commit('changeProp', {
                   prop: 'error',
-                  value: result.errors[0],
+                  value: result.errors[0].message,
                 });
               }
             }

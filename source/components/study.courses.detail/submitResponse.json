@@ -1,7 +1,7 @@
 {
   "status": "success",
+  "errors": [{ "message": "Error on server" }],
   "data": {
-    "errors": ["Error on server"],
     "task": {
       "id": "task12",
       "description": "Комбинированный курс повышения квалификации объемом 40 академических часов, который включает в себя 2 наиболее популярные программы",
