@@ -1,4 +1,26 @@
 window.onload = function () {
+  function parseQuery(queryString) {
+    var query = {};
+    var pairs = (
+      queryString[0] === '?' ? queryString.substr(1) : queryString
+    ).split('&');
+    for (var i = 0; i < pairs.length; i++) {
+      var pair = pairs[i].split('=');
+      query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1] || '');
+    }
+    return query;
+  }
+
+  function getQuery(queryObject) {
+    var result = [];
+    for (var k in queryObject) {
+      if (k) {
+        result.push(k + '=' + queryObject[k]);
+      }
+    }
+    return '?' + result.join('&');
+  }
+
   if (!window.Vue && !window.Vuex) return;
 
   window.moderationSrcPath = '/template/images/';
@@ -8,6 +30,7 @@ window.onload = function () {
 
   const store = new Vuex.Store({
     state: {
+      courseId: undefined,
       ...window.studyCourseCreateStore,
       loading: false,
       error: '',
@@ -55,7 +78,7 @@ window.onload = function () {
       },
       changeTextControl(
         state,
-        { stepIndex, blockIndex, lessonIndex, controlIndex, time, value }
+        { stepIndex, blockIndex, lessonIndex, controlIndex, prop, value }
       ) {
         const block = state.steps[stepIndex].blocks
           ? state.steps[stepIndex].blocks[blockIndex]
@@ -64,7 +87,7 @@ window.onload = function () {
           ? block.lessons[lessonIndex].controls[controlIndex]
           : block.controls[controlIndex];
 
-        Vue.set(control, 'value', value);
+        Vue.set(control, prop, value);
       },
       changeSelect(
         state,
@@ -115,19 +138,87 @@ window.onload = function () {
           throw err;
         }
       },
-      getStepFields(state, { step }) {
-        return JSON.stringify(step);
-      },
-      getFields(state, payload) {
-        return JSON.stringify(state.steps);
-      },
     },
     getters: {
       activeStepIndex(state) {
         return state.steps.findIndex((step) => step.active);
       },
+      firstInvalidControl(state, getters) {
+        let step = state.steps[getters.activeStepIndex];
+        let first;
+
+        if (step.blocks) {
+          step.blocks.forEach((block, blockIndex) => {
+            if (block.lessons) {
+              block.lessons.forEach((lesson, lessonIndex) => {
+                if (!first) {
+                  let a = find(lesson);
+                  if (a) {
+                    first = { ...a, blockIndex, lessonIndex };
+                  }
+                }
+              });
+            } else {
+              if (!first) {
+                let a = find(block);
+                if (a) {
+                  first = { ...find(block), blockIndex };
+                }
+              }
+            }
+          });
+        } else {
+          if (!first) {
+            first = find(step);
+          }
+        }
+
+        function find(controlsSet) {
+          return controlsSet.controls.find(
+            (formControl) => formControl.invalid === true
+          );
+        }
+
+        return first;
+      },
+      stepFields(state, getters) {
+        return JSON.stringify(state.steps[getters.activeStepIndex]);
+      },
+      fields(state) {
+        return JSON.stringify(state.steps);
+      },
     },
     actions: {
+      validateControl(
+        { state, commit, getters },
+        { formControl, time, blockIndex, lessonIndex, controlIndex }
+      ) {
+        let stepIndex = getters.activeStepIndex;
+        const block = state.steps[stepIndex].blocks
+          ? state.steps[stepIndex].blocks[blockIndex]
+          : state.steps[stepIndex];
+        const control = block.lessons
+          ? block.lessons[lessonIndex].controls[controlIndex]
+          : block.controls[controlIndex];
+
+        switch (control.type) {
+          case 'text':
+          case 'textarea':
+          case 'ornz':
+          case 'date':
+          case 'time':
+            commit('changeTextControl', {
+              stepIndex: getters.activeStepIndex,
+              blockIndex: blockIndex,
+              lessonIndex: lessonIndex,
+              controlIndex: controlIndex,
+              time: time,
+              prop: 'invalid',
+              value: formControl.required && formControl.value === '',
+            });
+            break;
+        }
+      },
       async fetchAction(context, { url, data, success, error }) {
         let formData = new FormData(),
           controller = new AbortController(),
@@ -147,11 +238,13 @@ window.onload = function () {
         }, 20000);
 
         try {
-          response = await fetch(url, {
+          response = await fetch(
+            url /*, {
             method: 'POST',
             body: formData,
             signal: controller.signal,
-          });
+          }*/
+          );
           result = await response.json();
           if (result.status === 'success') {
             success(result);
@@ -167,9 +260,56 @@ window.onload = function () {
           throw err;
         }
       },
-      submitStep({ dispatch, commit, getters, state }, { button }) {
-        commit('changeProp', { prop: 'loading', value: true });
+      submitStep({ dispatch, commit, getters, state }, { button, stepIndex }) {
         let step = state.steps[getters.activeStepIndex];
+
+        if (step.blocks) {
+          step.blocks.forEach((block, blockIndex) => {
+            if (block.lessons) {
+              block.lessons.forEach((lesson, lessonIndex) => {
+                validate(lesson, blockIndex, lessonIndex);
+              });
+            } else {
+              validate(block, blockIndex);
+            }
+          });
+        } else {
+          validate(step);
+        }
+
+        function validate(controlsSet, blockIndex, lessonIndex) {
+          controlsSet.controls.forEach((formControl, formControlIndex) => {
+            let obj = { formControl, controlIndex: formControlIndex };
+            if (blockIndex !== undefined) {
+              obj.blockIndex = blockIndex;
+            }
+            if (lessonIndex !== undefined) {
+              obj.lessonIndex = lessonIndex;
+            }
+            dispatch('validateControl', obj);
+          });
+        }
+
+        if (!!getters.firstInvalidControl) {
+          let name = `${getters.firstInvalidControl.name}${
+            getters.firstInvalidControl.blockIndex !== undefined
+              ? '[' + getters.firstInvalidControl.blockIndex + ']'
+              : ''
+          }${
+            getters.firstInvalidControl.lessonIndex !== undefined
+              ? '[' + getters.firstInvalidControl.lessonIndex + ']'
+              : ''
+          }`;
+
+          let elem = document.querySelector(`[name="${name}"]`);
+          if (elem) {
+            elem.focus();
+          }
+
+          return;
+        }
+
+        commit('changeProp', { prop: 'loading', value: true });
 
         dispatch('fetchAction', {
           url: state.submitStepURL,
@@ -180,14 +320,10 @@ window.onload = function () {
             },
             {
               name: 'fields',
-              value: commit(
-                `${
-                  button && button.type === 'save'
-                    ? 'getFields'
-                    : 'getStepFields'
-                }`,
-                { step }
-              ),
+              value:
+                button && button.type === 'save'
+                  ? getters.fields
+                  : getters.stepFields,
             },
           ],
           success(result) {
@@ -196,6 +332,17 @@ window.onload = function () {
             if (button) {
               switch (button.type) {
                 case 'continue':
+                  if (getters.activeStepIndex === 0) {
+                    store.commit('changeProp', {
+                      prop: 'courseId',
+                      value: result.data.courseId,
+                    });
+
+                    //set URL
+                    let queryObject = parseQuery(window.location.search);
+                    queryObject.courseId = result.data.courseId;
+                    history.replaceState({}, '', getQuery(queryObject));
+                  }
                   let newActiveStepIndex = getters.activeStepIndex + 1;
                   commit('setStepActive', newActiveStepIndex);
                   commit('setStepVisited', newActiveStepIndex);
@@ -204,6 +351,9 @@ window.onload = function () {
                   $('#studyCoursesCreateModal').modal('show');
                   break;
               }
+            } else if (stepIndex !== undefined) {
+              commit('setStepActive', stepIndex);
+              commit('setStepVisited', stepIndex);
             }
           },
           error(result) {
@@ -326,7 +476,7 @@ window.onload = function () {
         let stepIndex = getters.activeStepIndex;
 
         dispatch('fetchAction', {
-          url: state.deleteBlockURL,
+          url: state.deleteLessonURL,
           data: [
             {
               name: 'courseId',
@@ -369,7 +519,6 @@ window.onload = function () {
       return {
         controlValue: this.formControl.value,
         isActive: this.formControl.value === '' ? false : true,
-        isInvalid: false,
       };
     },
     props: [
@@ -392,26 +541,39 @@ window.onload = function () {
       },
     },
     template: `
-      <div class="b-float-label" :class="{invalid: isInvalid}">
+      <div class="b-float-label" :class="{invalid: formControl.invalid}">
         <input :id="id" type="text" :name="name" autocomplete="off" required="required" @blur="blurControl()" @keyup="inputControl()" v-model="controlValue" ref="input">
-        <label :for="id" :class="{active: isActive}">{{formControl.label}} *</label>
+        <label :for="id" :class="{active: isActive}">{{formControl.label}}{{ formControl.required ? ' *' : ''}}</label>
       </div>
     `,
     methods: {
-      inputControl() {
-        //validate
-        if (!!this.controlValue) {
-          this.isInvalid = false;
-        }
-        //set value
+      setValue() {
         store.commit('changeTextControl', {
           stepIndex: this.$store.getters.activeStepIndex,
           blockIndex: this.blockIndex,
           lessonIndex: this.lessonIndex,
           controlIndex: this.formControlIndex,
+          prop: 'value',
           value: this.time ? this.controlValue.slice(0, 5) : this.controlValue,
           time: this.time,
         });
+      },
+      setInvalid(val) {
+        store.commit('changeTextControl', {
+          stepIndex: this.$store.getters.activeStepIndex,
+          blockIndex: this.blockIndex,
+          lessonIndex: this.lessonIndex,
+          controlIndex: this.formControlIndex,
+          time: this.time,
+          prop: 'invalid',
+          value: val,
+        });
+      },
+      inputControl() {
+        if (!!this.controlValue) {
+          this.setInvalid(false);
+        }
+        this.setValue();
       },
       blurControl() {
         if (this.controlValue !== '') {
@@ -419,12 +581,14 @@ window.onload = function () {
         } else {
           this.isActive = false;
         }
-        //validate
-        if (this.required && !this.controlValue) {
-          this.isInvalid = true;
-        } else {
-          this.isInvalid = false;
-        }
+
+        this.$store.dispatch('validateControl', {
+          formControl: this.formControl,
+          blockIndex: this.blockIndex,
+          lessonIndex: this.lessonIndex,
+          controlIndex: this.formControlIndex,
+          time: this.time,
+        });
       },
     },
     mounted() {
@@ -442,7 +606,6 @@ window.onload = function () {
       return {
         controlValue: this.formControl.value,
         isActive: this.formControl.value === '' ? false : true,
-        isInvalid: false,
       };
     },
     props: ['blockIndex', 'lessonIndex', 'formControl', 'formControlIndex'],
@@ -459,25 +622,37 @@ window.onload = function () {
       },
     },
     template: `
-      <div class="b-float-label" :class="{invalid: isInvalid}">
+      <div class="b-float-label" :class="{invalid: formControl.invalid}">
         <textarea :id="id" :name="name" autocomplete="off" required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue"></textarea>
-        <label :for="id" :class="{active: isActive}">{{formControl.label}} *</label>
+        <label :for="id" :class="{active: isActive}">{{formControl.label}}{{ formControl.required ? ' *' : ''}}</label>
       </div>
     `,
     methods: {
-      inputControl() {
-        //validate
-        if (!!this.controlValue) {
-          this.isInvalid = false;
-        }
-        //set value
+      setValue() {
         store.commit('changeTextControl', {
           stepIndex: this.$store.getters.activeStepIndex,
           blockIndex: this.blockIndex,
           lessonIndex: this.lessonIndex,
           controlIndex: this.formControlIndex,
+          prop: 'value',
           value: this.controlValue,
         });
+      },
+      setInvalid(val) {
+        store.commit('changeTextControl', {
+          stepIndex: this.$store.getters.activeStepIndex,
+          blockIndex: this.blockIndex,
+          lessonIndex: this.lessonIndex,
+          controlIndex: this.formControlIndex,
+          prop: 'invalid',
+          value: val,
+        });
+      },
+      inputControl() {
+        if (!!this.controlValue) {
+          this.setInvalid(false);
+        }
+        this.setValue();
       },
       blurControl() {
         if (this.controlValue !== '') {
@@ -485,12 +660,13 @@ window.onload = function () {
         } else {
           this.isActive = false;
         }
-        //validate
-        if (this.required && !this.controlValue) {
-          this.isInvalid = true;
-        } else {
-          this.isInvalid = false;
-        }
+
+        this.$store.dispatch('validateControl', {
+          formControl: this.formControl,
+          blockIndex: this.blockIndex,
+          lessonIndex: this.lessonIndex,
+          controlIndex: this.formControlIndex,
+        });
       },
     },
   });
@@ -512,7 +688,7 @@ window.onload = function () {
       };
     },
     template: `<div class="b-float-label-select-vc" ref="selectTemplate">
-      <label class="active">{{formControl.label}} *</label>
+      <label class="active">{{formControl.label}}{{ formControl.required ? ' *' : ''}}</label>
       <v-select :searchable="false" :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="selectedOption"></v-select>
       <input type="hidden" :name="name" :value="selectedOption.code" ref="hiddenInput">
     </div>`,
@@ -546,10 +722,6 @@ window.onload = function () {
 
   //form control date
   Vue.component('formControlDate', {
-    template: `<div class="b-float-label" data-src="${window.moderationSrcPath}calendar.svg" :class="{invalid: isInvalid}">
-      <date-picker :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @blur="blurInput"></date-picker>
-      <label :for="id" :class="{ active: isActive }">{{formControl.label}}</label>
-    </div>`,
     data() {
       return {
         inputAttr: {
@@ -563,7 +735,6 @@ window.onload = function () {
           }`,
         },
         isActive: !!this.formControl.value,
-        isInvalid: false,
         date: this.formControl.value,
         lang: {
           // the locale of formatting and parsing function
@@ -667,27 +838,41 @@ window.onload = function () {
         }${this.lessonIndex !== undefined ? '[' + this.lessonIndex + ']' : ''}`;
       },
     },
+    template: `<div class="b-float-label" data-src="${window.moderationSrcPath}calendar.svg" :class="{invalid: formControl.invalid}">
+      <date-picker :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @blur="blurInput"></date-picker>
+      <label :for="id" :class="{ active: isActive }">{{formControl.label}}{{ formControl.required ? ' *' : ''}}</label>
+    </div>`,
     methods: {
+      setInvalid(val) {
+        store.commit('changeTextControl', {
+          stepIndex: this.$store.getters.activeStepIndex,
+          blockIndex: this.blockIndex,
+          lessonIndex: this.lessonIndex,
+          controlIndex: this.formControlIndex,
+          prop: 'invalid',
+          value: val,
+        });
+      },
       openInput() {
         this.isActive = true;
       },
       closeInput() {
         if (!this.date) {
           this.isActive = false;
-          this.isInvalid = true;
+          this.setInvalid(true);
         }
       },
       blurInput() {
         //validate
         if (!this.date) {
-          this.isInvalid = true;
+          this.setInvalid(true);
         } else {
-          this.isInvalid = false;
+          this.setInvalid(false);
         }
       },
       inputDate() {
         if (this.date) {
-          this.isInvalid = false;
+          this.setInvalid(false);
         }
         store.commit('changeDate', {
           stepIndex: this.$store.getters.activeStepIndex,
@@ -706,7 +891,6 @@ window.onload = function () {
       return {
         controlValue: this.formControl.value,
         isActive: this.formControl.value,
-        isInvalid: false,
         //hints
         users: [],
         activeUser: {},
@@ -736,11 +920,11 @@ window.onload = function () {
 
     template: `
       <div>
-        <div class="b-float-label" @mouseover="hover=true;" @mouseout="hover=false;">
+        <div class="b-float-label" :class="{invalid: formControl.invalid}" @mouseover="hover=true;" @mouseout="hover=false;">
 
           <input ref="input" :id="id" type="text" :name="name" autocomplete="off" v-model="controlValue" @input="changeInput" @focus="focusInput" @blur="blurInput($event)" @keydown.enter.prevent="enterInput" @keydown.up.prevent="upArrow()" @keydown.down.prevent="downArrow()">
 
-          <label ref="label" :for="id" :class="{active: isActive}">{{formControl.label}}</label>
+          <label ref="label" :for="id" :class="{active: isActive}">{{formControl.label}}{{ formControl.required ? ' *' : ''}}</label>
 
           <div class="b-input-clear" @click.prevent="clearInput()" v-show="isClearable"></div>
 
@@ -762,7 +946,28 @@ window.onload = function () {
     },
 
     methods: {
+      setValue() {
+        this.controlValue = this.activeUser.TEXT ? this.activeUser.TEXT : '';
+
+        store.commit('changeTextControl', {
+          stepIndex: this.$store.getters.activeStepIndex,
+          blockIndex: this.blockIndex,
+          controlIndex: this.formControlIndex,
+          prop: 'value',
+          value: this.controlValue,
+        });
+      },
+      setInvalid(val) {
+        store.commit('changeTextControl', {
+          stepIndex: this.$store.getters.activeStepIndex,
+          blockIndex: this.blockIndex,
+          controlIndex: this.formControlIndex,
+          prop: 'invalid',
+          value: val,
+        });
+      },
       changeInput() {
+        this.setInvalid(false);
         this.activeHint = [];
         this.activeUser = {};
 
@@ -835,20 +1040,29 @@ window.onload = function () {
           this.users = [];
         }, 200);
 
+        this.$store.dispatch('validateControl', {
+          formControl: this.formControl,
+          blockIndex: this.blockIndex,
+          controlIndex: this.formControlIndex,
+        });
+
         // if (this.controlValue !== this.compare) {
         //   bitrixLogs(6, `${this.formControl.label}: ${this.controlValue}`);
         // }
       },
       clickHint(e) {
+        this.setInvalid(false);
+
         let id = e.target.getAttribute('data-id');
         if (!id) {
           id = e.target.parentNode.getAttribute('data-id');
         }
         this.activeUser = this.users.find((user) => user.ID === id) || {};
-        this.controlValue = this.activeUser.TEXT ? this.activeUser.TEXT : '';
+        this.setValue();
         this.users = [];
       },
       enterInput() {
+        this.setInvalid(false);
         //check if there is an active hint
         let activeIndex = this.activeHint.indexOf(true);
         if (activeIndex >= 0) {
@@ -969,8 +1183,39 @@ window.onload = function () {
       };
     },
     props: ['block', 'blockIndex'],
+    computed: {
+      invalid() {
+        let first;
+
+        if (this.block.lessons) {
+          this.block.lessons.forEach((lesson, lessonIndex) => {
+            if (!first) {
+              let a = find(lesson);
+              if (a) {
+                first = { ...a, blockIndex: this.blockIndex, lessonIndex };
+              }
+            }
+          });
+        } else {
+          if (!first) {
+            let a = find(block);
+            if (a) {
+              first = { ...find(this.block), blockIndex: this.blockIndex };
+            }
+          }
+        }
+
+        function find(controlsSet) {
+          return controlsSet.controls.find(
+            (formControl) => formControl.invalid === true
+          );
+        }
+
+        return !!first;
+      },
+    },
     template: `
-      <div class="b-collapse-vc" :class="{slide: slide, open: open}" id="collapse2">
+      <div class="b-collapse-vc" :class="{slide: slide, open: open, invalid: invalid}" id="collapse2">
         <div class="b-collapse-vc__head" @click.stop.prevent="toggleBody()">
           <a href="" @click.prevent>{{ $store.state.steps[1].blocks[blockIndex].controls[0].value }}</a>
           <span></span>
@@ -1205,6 +1450,8 @@ window.onload = function () {
 
             <form-control-ornz v-else-if="formControl.type==='ornz'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-ornz>
 
+            <form-control-select v-else-if="formControl.type==='select'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-select>
+
             <form-control v-else :formControl="formControl" :formControlIndex="formControlIndex"></form-control>
 
           </div>
@@ -1269,9 +1516,7 @@ window.onload = function () {
     `,
     methods: {
       changeStep(stepIndex) {
-        this.$store.dispatch('submitStep', {});
-        this.$store.commit('setStepActive', stepIndex);
-        this.$store.commit('setStepVisited', stepIndex);
+        this.$store.dispatch('submitStep', { stepIndex });
       },
     },
   });

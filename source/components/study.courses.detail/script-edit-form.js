@@ -75,26 +75,7 @@ window.onload = function () {
     },
     getters: {
       fields(state) {
-        let result = '';
-        state.modal.hidden.forEach((control) => {
-          if (result) {
-            result += '&';
-          }
-          result += `${control.name}=${control.value}`;
-        });
-        state.modal.controls.forEach((control) => {
-          if (result) {
-            result += '&';
-          }
-          if (control.type === 'time') {
-            result += `${control.controls[0].name}=${control.controls[0].value}&${control.controls[1].name}=${control.controls[1].value}`;
-          } else if (control.type === 'select') {
-            result += `${control.name}=${control.selected.code}`;
-          } else {
-            result += `${control.name}=${control.value}`;
-          }
-        });
-        return result;
+        return JSON.stringify(state.modal);
       },
     },
   });

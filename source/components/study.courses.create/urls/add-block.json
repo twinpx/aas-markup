@@ -10,13 +10,17 @@
             "name": "BLOCK_TITLE",
             "label": "Название блока",
             "value": "",
-            "type": "text"
+            "type": "text",
+            "required": true,
+            "invalid": false
           },
           {
             "name": "PROGRAMM",
             "label": "Программа СРО ААС",
             "type": "ornz",
-            "value": ""
+            "value": "",
+            "required": true,
+            "invalid": false
           }
         ]
       },
@@ -29,19 +33,25 @@
                 "name": "LESSON_TITLE",
                 "label": "Название занятия",
                 "value": "",
-                "type": "textarea"
+                "type": "textarea",
+                "required": true,
+                "invalid": false
               },
               {
                 "name": "LESSON_DATE",
                 "label": "Выберите дату",
                 "value": "",
-                "type": "date"
+                "type": "date",
+                "required": true,
+                "invalid": false
               },
               {
                 "name": "TEACHER_NAME",
                 "label": "Преподаватель",
                 "value": "",
-                "type": "text"
+                "type": "text",
+                "required": true,
+                "invalid": false
               },
               {
                 "name": "LESSON_TYPE",
@@ -61,31 +71,41 @@
                   }
                 ],
                 "selected": { "label": "Дистанционное", "code": "distant" },
-                "type": "select"
+                "type": "select",
+                "required": true,
+                "invalid": false
               },
               {
                 "name": "LESSON_ADDRESS",
                 "label": "Адрес занятия",
                 "value": "",
-                "type": "text"
+                "type": "text",
+                "required": true,
+                "invalid": false
               },
               {
                 "name": "LESSON_START",
                 "label": "Время начала",
                 "value": "",
-                "type": "time"
+                "type": "time",
+                "required": true,
+                "invalid": false
               },
               {
                 "name": "LESSON_END",
                 "label": "Время окончания",
                 "value": "",
-                "type": "time"
+                "type": "time",
+                "required": true,
+                "invalid": false
               },
               {
                 "name": "LESSON_HOURS",
                 "label": "Количество часов",
                 "value": "",
-                "type": "text"
+                "type": "text",
+                "required": true,
+                "invalid": false
               }
             ]
           }

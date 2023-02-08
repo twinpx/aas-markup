@@ -11,20 +11,19 @@ window.addEventListener('load', () => {
       changeTableHtml(state, payload) {
         Vue.set(state.table, 'html', payload);
       },
-      changeControlValue(state, payload) {
-        //payload = {controlCode, controlValue}
+      changeControlValue(state, { controlCode, controlValue }) {
         const control = state.filter.controls.find(
-          (control) => control.code === payload.controlCode
+          (control) => control.code === controlCode
         );
         switch (control.type) {
           case 'text':
-            Vue.set(control, 'value', payload.controlValue);
+            Vue.set(control, 'value', controlValue);
             break;
           case 'select':
-            Vue.set(control, 'selected', payload.controlValue);
+            Vue.set(control, 'selected', controlValue);
             break;
           case 'date':
-            Vue.set(control, 'value', payload.controlValue);
+            Vue.set(control, 'value', controlValue);
             break;
         }
       },
@@ -130,7 +129,7 @@ window.addEventListener('load', () => {
       <div class="b-num-block b-num-block--counter" v-for="block in $store.state.quickFilterBlocks" @click="click(block)">
         <div class="b-num-block__data">
           <i>{{ block.title }}</i>
-          <b :class="{'b-num-block__b': block.new}">{{ block.num }}</b>
+          <b :class="{'b-num-block__b': block.new}">{{ numFormatted(block) }}</b>
         </div>
       </div>
     </div>`,
@@ -138,6 +137,9 @@ window.addEventListener('load', () => {
       return {};
     },
     methods: {
+      numFormatted(block) {
+        return block.num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1 ');
+      },
       click(block) {
         let { start, end } = this.getStartEnd(block);
         this.getPeriod(start, end);
@@ -148,48 +150,116 @@ window.addEventListener('load', () => {
           end;
 
         switch (block.code) {
+          case 'all':
+            start = null;
+            end = null;
+            break;
+
+          case 'current-year':
+            start = new Date(current.getFullYear(), 0, 1, 0, 0, 0);
+            end = new Date(current.getFullYear(), 11, 31, 23, 59, 59);
+            break;
+
           case 'current-month':
-            start = new Date(current.getFullYear(), current.getMonth(), 1);
-            end = new Date(current.getFullYear(), current.getMonth() + 1, 0);
+            start = new Date(
+              current.getFullYear(),
+              current.getMonth(),
+              1,
+              0,
+              0,
+              0
+            );
+            end = new Date(
+              current.getFullYear(),
+              current.getMonth() + 1,
+              0,
+              23,
+              59,
+              59
+            );
             break;
 
           case 'current-week':
             start = new Date(
               current.getFullYear(),
               current.getMonth(),
-              current.getDate() - current.getDay() + 1
+              current.getDate() - current.getDay() + 1,
+              0,
+              0,
+              0
             );
             end = new Date(
               current.getFullYear(),
               current.getMonth(),
-              current.getDate() + (7 - current.getDay())
+              current.getDate() + (7 - current.getDay()),
+              23,
+              59,
+              59
             );
             break;
 
           case 'today':
-            start = end = current;
+            start = new Date(
+              current.getFullYear(),
+              current.getMonth(),
+              current.getDate(),
+              0,
+              0,
+              0
+            );
+            end = new Date(
+              current.getFullYear(),
+              current.getMonth(),
+              current.getDate(),
+              23,
+              59,
+              59
+            );
             break;
 
           case 'last-month':
-            start = new Date(current.getFullYear(), current.getMonth() - 1, 1);
-            end = new Date(current.getFullYear(), current.getMonth(), 0);
+            start = new Date(
+              current.getFullYear(),
+              current.getMonth() - 1,
+              1,
+              0,
+              0,
+              0
+            );
+            end = new Date(
+              current.getFullYear(),
+              current.getMonth(),
+              0,
+              23,
+              59,
+              59
+            );
             break;
 
           case 'last-week':
             start = new Date(
               current.getFullYear(),
               current.getMonth(),
-              current.getDate() - current.getDay() + 1 - 7
+              current.getDate() - current.getDay() + 1 - 7,
+              0,
+              0,
+              0
             );
             end = new Date(
               current.getFullYear(),
               current.getMonth(),
-              current.getDate() + (7 - current.getDay()) - 7
+              current.getDate() + (7 - current.getDay()) - 7,
+              23,
+              59,
+              59
             );
             break;
         }
 
-        return { start: this.getSeconds(start), end: this.getSeconds(end) };
+        return {
+          start: start !== null ? this.getSeconds(start) : start,
+          end: end !== null ? this.getSeconds(end) : null,
+        };
       },
       getSeconds(number) {
         return Math.floor(number / 1000);
@@ -213,7 +283,10 @@ window.addEventListener('load', () => {
         //set date value
         this.$store.commit('changeControlValue', {
           controlCode: 'date',
-          controlValue: [start, end],
+          controlValue:
+            start !== null && end !== null
+              ? [String(start), String(end)]
+              : [null, null],
         });
 
         //set url, render table
@@ -555,7 +628,6 @@ window.addEventListener('load', () => {
     template: `
       <div class="b-registry-report">
         <quick-filter-blocks></quick-filter-blocks>
-        <hr>
         <inbox-filter ref="filter"></inbox-filter>
         <hr>
         <inbox-table></inbox-table>

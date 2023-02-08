@@ -8,6 +8,16 @@ window.checkPlanStore = {
   },
   quickFilterBlocks: [
     {
+      code: 'all',
+      title: 'Все',
+      num: 3459,
+    },
+    {
+      code: 'current-year',
+      title: 'Текущий год',
+      num: 2,
+    },
+    {
       code: 'current-month',
       title: 'Текущий месяц',
       num: 185,

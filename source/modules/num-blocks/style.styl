@@ -2,11 +2,10 @@
 
 .b-num-blocks
   display flex
-  margin-bottom 30px
+  flex-wrap wrap
 
   @media( max-width 600px )
     justify-content space-between
-    flex-wrap wrap
 
 .b-num-block
   background-color #F0F5FC
@@ -14,10 +13,14 @@
   border-radius 10px
   color #5F7696
   margin-right 30px
+  margin-bottom 30px
   width 138px
   display flex
   justify-content space-between
   align-items center
+
+  &:last-child
+    margin-right 0
 
   &__data
     display flex

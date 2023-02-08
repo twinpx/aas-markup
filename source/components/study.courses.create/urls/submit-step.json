@@ -1,5 +1,7 @@
 {
   "status": "success",
   "errors": [{ "message": "Error on server" }],
-  "data": {}
+  "data": {
+    "courseId": "123wer"
+  }
 }
