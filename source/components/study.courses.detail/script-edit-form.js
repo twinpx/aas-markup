@@ -1,6 +1,8 @@
 window.onload = function () {
   if (!window.Vue && !window.Vuex) return;
 
+  let velocity = window.Velocity || jQuery.Velocity;
+
   window.moderationSrcPath = '/template/images/';
 
   Vue.use(Vuex);
@@ -154,13 +156,15 @@ window.onload = function () {
     methods: {
       //transition
       enter: function (el, done) {
-        Velocity(el, 'slideDown', {
+        if (!velocity) return;
+        velocity(el, 'slideDown', {
           easing: 'ease',
           duration: 500,
         });
       },
       leave: function (el, done) {
-        Velocity(el, 'slideUp', {
+        if (!velocity) return;
+        velocity(el, 'slideUp', {
           easing: 'ease',
           duration: 500,
         });
@@ -211,6 +215,7 @@ window.onload = function () {
             if (result.status === 'success') {
               store.commit('changeModal', result.data.modal);
               store.commit('changeProp', { prop: 'loading', value: false });
+              store.commit('changeProp', { prop: 'error', value: '' });
             } else {
               if (
                 typeof result.data === 'object' &&
@@ -281,7 +286,6 @@ window.onload = function () {
       },
     },
     mounted() {
-      console.log('input mounted', this.formControl.name);
       if (this.time) {
         IMask(this.$refs.input, {
           mask: '00:00',
@@ -335,56 +339,8 @@ window.onload = function () {
     },
   });
 
-  //textarea
-  Vue.component('formControlTextarea', {
-    data() {
-      return {
-        controlValue: this.formControl.value,
-        isActive: this.formControl.value === '' ? false : true,
-        isInvalid: false,
-      };
-    },
-    props: ['formControl', 'formControlIndex', 'time'],
-    template: `
-      <div class="b-float-label" :class="{invalid: isInvalid}">
-        <input :id="'PROPERTY_'+formControl.name" type="text" :name="'PROPERTY['+formControl.name+']'" autocomplete="off" required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue" ref="input">
-        <label :for="'PROPERTY_'+formControl.name" :class="{active: isActive}">{{formControl.label}} *</label>
-      </div>
-    `,
-    methods: {
-      inputControl() {
-        //validate
-        if (!!this.controlValue) {
-          this.isInvalid = false;
-        }
-        //set value
-        store.commit('changeTextControl', {
-          controlIndex: this.formControlIndex,
-          value: this.controlValue,
-          time: this.time,
-        });
-      },
-      blurControl() {
-        if (this.controlValue !== '') {
-          this.isActive = true;
-        } else {
-          this.isActive = false;
-        }
-        //validate
-        if (this.required && !this.controlValue) {
-          this.isInvalid = true;
-        } else {
-          this.isInvalid = false;
-        }
-      },
-    },
-    mounted() {
-      console.log('textarea mounted', this.formControl.name);
-    },
-  });
-
   //form control textarea
-  Vue.component('formControlTextarea1', {
+  Vue.component('formControlTextarea', {
     data() {
       return {
         controlValue: this.formControl.value,
@@ -394,7 +350,7 @@ window.onload = function () {
     },
     props: ['formControl', 'formControlIndex'],
     template: `
-      <div class="b-float-label" :class="{invalid: isInvalid}">{{controlValue}}
+      <div class="b-float-label" :class="{invalid: isInvalid}">
         <textarea :id="'PROPERTY_'+formControl.name" :name="'PROPERTY['+formControl.name+']'" autocomplete="off" required="required" @blur="blurControl()" @input="inputControl()" v-model="controlValue"></textarea>
         <label :for="'PROPERTY_'+formControl.name" :class="{active: isActive}">{{formControl.label}} *</label>
       </div>
@@ -424,9 +380,6 @@ window.onload = function () {
           this.isInvalid = false;
         }
       },
-    },
-    mounted() {
-      console.log('mounted');
     },
   });
 
@@ -724,7 +677,7 @@ window.onload = function () {
 
         <hidden-fields></hidden-fields>
 
-        <div v-for="(formControl, formControlIndex) in $store.state.modal.controls" :key="formControlIndex * Math.floor(Math.random() * 100000)">
+        <div v-for="(formControl, formControlIndex) in $store.state.modal.controls" :key="formControlIndex + Math.floor(Math.random() * 100000)">
 
           <form-control-date v-if="formControl.type==='date'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-date>
           <form-control-textarea v-else-if="formControl.type==='textarea'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-textarea>

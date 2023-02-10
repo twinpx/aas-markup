@@ -189,6 +189,20 @@ window.onload = function () {
       },
     },
     actions: {
+      createCourse({ dispatch, commit, getters, state }, { data }) {
+        if (data.courseId) {
+          commit('changeProp', {
+            prop: 'courseId',
+            value: data.courseId,
+          });
+        }
+        if (data.block) {
+          commit('addBlock', {
+            block: data.block,
+            stepIndex: 1,
+          });
+        }
+      },
       validateControl(
         { state, commit, getters },
         { formControl, time, blockIndex, lessonIndex, controlIndex }
@@ -327,16 +341,17 @@ window.onload = function () {
             },
           ],
           success(result) {
-            store.commit('changeProp', { prop: 'loading', value: false });
+            commit('changeProp', { prop: 'loading', value: false });
             //button or nav clicked
             if (button) {
               switch (button.type) {
                 case 'continue':
                   if (getters.activeStepIndex === 0) {
-                    store.commit('changeProp', {
-                      prop: 'courseId',
-                      value: result.data.courseId,
-                    });
+                    if (result.data.courseId) {
+                      dispatch('createCourse', {
+                        data: result.data,
+                      });
+                    }
 
                     //set URL
                     let queryObject = parseQuery(window.location.search);

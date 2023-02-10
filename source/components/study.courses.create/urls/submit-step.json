@@ -2,6 +2,117 @@
   "status": "success",
   "errors": [{ "message": "Error on server" }],
   "data": {
-    "courseId": "123wer"
+    "courseId": "123wer",
+    "block": [
+      {
+        "id": "block123",
+        "controls": [
+          {
+            "name": "BLOCK_TITLE",
+            "label": "Название блока",
+            "value": "",
+            "type": "text",
+            "required": true,
+            "invalid": false
+          },
+          {
+            "name": "PROGRAMM",
+            "label": "Программа СРО ААС",
+            "type": "ornz",
+            "value": "",
+            "required": true,
+            "invalid": false
+          }
+        ]
+      },
+      {
+        "id": "block123",
+        "lessons": [
+          {
+            "id": "lesson123",
+            "controls": [
+              {
+                "name": "LESSON_TITLE",
+                "label": "Название занятия",
+                "value": "",
+                "type": "textarea",
+                "required": true,
+                "invalid": false
+              },
+              {
+                "name": "LESSON_DATE",
+                "label": "Выберите дату",
+                "value": "",
+                "type": "date",
+                "required": true,
+                "invalid": false
+              },
+              {
+                "name": "TEACHER_NAME",
+                "label": "Преподаватель",
+                "value": "",
+                "type": "text",
+                "required": true,
+                "invalid": false
+              },
+              {
+                "name": "LESSON_TYPE",
+                "label": "Тип занятия",
+                "value": [
+                  {
+                    "label": "Очное",
+                    "code": "ochno"
+                  },
+                  {
+                    "label": "Заочное",
+                    "code": "zaochno"
+                  },
+                  {
+                    "label": "Дистанционное",
+                    "code": "distant"
+                  }
+                ],
+                "selected": { "label": "Дистанционное", "code": "distant" },
+                "type": "select",
+                "required": true,
+                "invalid": false
+              },
+              {
+                "name": "LESSON_ADDRESS",
+                "label": "Адрес занятия",
+                "value": "",
+                "type": "text",
+                "required": true,
+                "invalid": false
+              },
+              {
+                "name": "LESSON_START",
+                "label": "Время начала",
+                "value": "",
+                "type": "time",
+                "required": true,
+                "invalid": false
+              },
+              {
+                "name": "LESSON_END",
+                "label": "Время окончания",
+                "value": "",
+                "type": "time",
+                "required": true,
+                "invalid": false
+              },
+              {
+                "name": "LESSON_HOURS",
+                "label": "Количество часов",
+                "value": "",
+                "type": "text",
+                "required": true,
+                "invalid": false
+              }
+            ]
+          }
+        ]
+      }
+    ]
   }
 }

@@ -1,7 +1,7 @@
 {
   "status": "success",
+  "errors": [{ "message": "Error on server" }],
   "data": {
-    "errors": ["Error on server"],
     "modal": {
       "hidden": [
         {
