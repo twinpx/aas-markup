@@ -25,6 +25,8 @@ window.onload = function () {
 
   window.moderationSrcPath = '/template/images/';
 
+  let velocity = window.Velocity || jQuery.Velocity;
+
   Vue.use(Vuex);
   Vue.use(VueScrollTo);
 
@@ -74,7 +76,9 @@ window.onload = function () {
         });
       },
       setStepVisited(state, payload) {
-        Vue.set(state.steps[payload], 'visited', true);
+        if (state.steps[payload]) {
+          Vue.set(state.steps[payload], 'visited', true);
+        }
       },
       changeTextControl(
         state,
@@ -93,9 +97,14 @@ window.onload = function () {
         state,
         { stepIndex, blockIndex, lessonIndex, controlIndex, selected }
       ) {
-        state.steps[stepIndex].blocks[blockIndex].lessons[lessonIndex].controls[
-          controlIndex
-        ].selected = selected;
+        const block = state.steps[stepIndex].blocks
+          ? state.steps[stepIndex].blocks[blockIndex]
+          : state.steps[stepIndex];
+        const control = block.lessons
+          ? block.lessons[lessonIndex].controls[controlIndex]
+          : block.controls[controlIndex];
+
+        control.selected = selected;
       },
       changeDate(
         state,
@@ -381,10 +390,10 @@ window.onload = function () {
             ) {
               store.commit('changeProp', {
                 prop: 'error',
-                value: result.errors[0],
+                value: result.errors[0].message,
               });
             }
-            throw new Error(result.errors[0]);
+            throw new Error(result.errors[0].message);
           },
         });
       },
@@ -415,7 +424,7 @@ window.onload = function () {
             });
           },
           error(result) {
-            throw new Error(result.errors[0]);
+            throw new Error(result.errors[0].message);
           },
         });
       },
@@ -445,7 +454,7 @@ window.onload = function () {
             });
           },
           error(result) {
-            throw new Error(result.errors[0]);
+            throw new Error(result.errors[0].message);
           },
         });
       },
@@ -482,7 +491,7 @@ window.onload = function () {
             });
           },
           error(result) {
-            throw new Error(result.errors[0]);
+            throw new Error(result.errors[0].message);
           },
         });
       },
@@ -520,7 +529,7 @@ window.onload = function () {
             });
           },
           error(result) {
-            throw new Error(result.errors[0]);
+            throw new Error(result.errors[0].message);
           },
         });
       },
@@ -1249,13 +1258,15 @@ window.onload = function () {
     methods: {
       //transition
       enter: function (el, done) {
-        Velocity(el, 'slideDown', {
+        if (!velocity) return;
+        velocity(el, 'slideDown', {
           easing: 'ease',
           duration: 500,
         });
       },
       leave: function (el, done) {
-        Velocity(el, 'slideUp', {
+        if (!velocity) return;
+        velocity(el, 'slideUp', {
           easing: 'ease',
           duration: 500,
         });
@@ -1314,7 +1325,7 @@ window.onload = function () {
                 store.commit('changeProp', { prop: 'loading', value: false });
                 store.commit('changeProp', {
                   prop: 'error',
-                  value: result.errors[0],
+                  value: result.errors[0].message,
                 });
               }
             }
