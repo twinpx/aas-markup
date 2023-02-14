@@ -354,9 +354,11 @@ window.onload = function () {
                     }
 
                     //set URL
-                    let queryObject = parseQuery(window.location.search);
-                    queryObject.courseId = result.data.courseId;
-                    history.replaceState({}, '', getQuery(queryObject));
+                    if (result.data.courseId) {
+                      let queryObject = parseQuery(window.location.search);
+                      queryObject.courseId = result.data.courseId;
+                      history.replaceState({}, '', getQuery(queryObject));
+                    }
                   }
                   let newActiveStepIndex = getters.activeStepIndex + 1;
                   commit('setStepActive', newActiveStepIndex);

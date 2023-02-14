@@ -213,11 +213,6 @@
             
             @media( max-width 767px )
               color $secondary-color
-        
-      &.open
-              
-        .b-header__menu-arrow
-          transform( rotate(90deg))
       
       @media( min-width 768px )
         height 24px
@@ -314,14 +309,35 @@
           
     &-arrow
       position absolute
-      top 18px
+      top 22px
       right 10px
-      width 12px
-      height 24px
-      background-repeat no-repeat
-      background-position center
-      background-size cover
+      width 16px
+      height 16px
       transition( transform .3s ease )
+      background-color $form-control-color
+      border-radius 5px
+      padding 0
+      z-index 10
+
+      &:before,
+      &:after
+        content: ''
+        position absolute
+        top 3px
+        left 8px
+        width 0
+        height 10px
+        border-right 1px solid #73879c
+        transition(transform 0.5s ease)
+
+      .b-header__menu-item.open &:before
+        transform(rotate(270deg))
+      
+      &:after
+        transform(rotate(90deg))
+      
+      .b-header__menu-item.open &:after
+        transform(rotate(450deg))
         
     &-dropdown
       padding 15px 17px

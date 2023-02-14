@@ -12,6 +12,25 @@
   .header-fixed:not(.not-authorized ) .b-header__profile &
     transform( translateX(calc(100% - 32px)))
 
+  .b-left-menu &
+    position absolute
+    top 50%
+    left 0
+    z-index 10
+
+.b-left-menu .b-left-menu__sub
+
+  a,
+  span
+
+    .nc
+      top calc(50% - 18px / 2)
+
+    &:last-child
+
+      .nc
+        top calc(50% - 28px / 2)
+
 /*notification*/
 .notification
   background: radial-gradient(farthest-corner at top, #0110C4 30%, #FF8000 70%) top right;
@@ -97,12 +116,8 @@
         right 0
 
     .b-left-menu &
-      top 0
-      left -17px
-
-      span
-        top 2px
-        right 0
+      top -8px
+      left 0
 
   &--modal
     height auto
