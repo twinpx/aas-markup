@@ -136,6 +136,7 @@
     input:not([type=radio]),
     textarea
       background-color #ffe5e5
+      color $danger-color
 
       &:focus
         outline 1px solid $danger-color
@@ -144,6 +145,12 @@
     input[type=tel]:focus:not([readonly])+label,
     label
       color $danger-color
+
+    .b-input-clear
+
+      &:before,
+      &:after
+        border-color $danger-color
 
   .btn-delete
     position absolute

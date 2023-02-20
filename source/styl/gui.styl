@@ -516,12 +516,14 @@ label
 
 .b-input-hint
   position absolute
-  top calc(100% + 1px)
+  top calc(100% + 1px + 3px)
   left 0
   width 100%
   background #fff
   box-shadow 0 5px 10px #0000000d
   border-radius 0 0 5px 5px
+  font-size $14px
+  line-height 1.2
   z-index 11
 
   &__item
@@ -533,7 +535,14 @@ label
     &:hover,
     &.active
       background-color $form-control-color
+      color #5F7696
       cursor pointer
+
+    &:first-child
+      margin-top .5rem
+
+    &:last-child
+      margin-bottom .5rem
 
   &__img
     width 64px
@@ -553,10 +562,30 @@ label
   width 16px
   height 16px
   cursor pointer
-  background url( '/local/templates/aas/images/cancel.svg' ) no-repeat center
-  background-size 16px
+  // background url( '/local/templates/aas/images/cancel.svg' ) no-repeat center
+  // background-size 16px
   margin-top -8px
   z-index 1
+
+  &:before
+    content ''
+    position absolute
+    top 8px
+    right -2px
+    border-top 1px solid #5F7696
+    width 20px
+    transform(rotate(45deg))
+		z-index 10
+
+  &:after
+    content ''
+    position absolute
+    top 8px
+    right -2px
+    border-top 1px solid #5F7696
+    width 20px
+    transform(rotate(-45deg))
+    z-index 10
 
 .modal
 

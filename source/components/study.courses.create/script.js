@@ -915,7 +915,7 @@ window.onload = function () {
   Vue.component('formControlOrnz', {
     data() {
       return {
-        controlValue: this.formControl.value,
+        controlValue: this.formControl.value.TEXT,
         isActive: this.formControl.value,
         //hints
         users: [],
@@ -980,7 +980,7 @@ window.onload = function () {
           blockIndex: this.blockIndex,
           controlIndex: this.formControlIndex,
           prop: 'value',
-          value: this.controlValue,
+          value: this.activeUser,
         });
       },
       setInvalid(val) {
@@ -997,7 +997,7 @@ window.onload = function () {
         this.activeHint = [];
         this.activeUser = {};
 
-        if (this.controlValue.length >= 5) {
+        if (this.controlValue.length >= 2) {
           (async () => {
             try {
               let response = await fetch(

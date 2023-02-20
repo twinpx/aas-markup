@@ -96,7 +96,7 @@ window.studyCourseCreateStore = {
               name: 'PROGRAMM',
               label: 'Программа СРО ААС',
               type: 'ornz',
-              value: '',
+              value: { TEXT: 'sdf', ID: 'sdfsf' },
               required: true,
               invalid: false,
             },
