@@ -129,7 +129,7 @@ window.onload = function () {
               <div class="b-scd-form-text">
                 <div class="b-scd-form-info">
                   <div class="b-scd-form-date">{{ task.date }}<br>{{ task.start }}−{{ task.end }}</div>
-                  <div class="b-scd-form-time">{{ task.hours }}</div>
+                  <div class="b-scd-form-time">{{ task.hours }} {{ getHoursString(task.hours) }}</div>
                   <div class="b-scd-form-type">{{ task.type }}</div>
                 </div>
                 <div class="b-scd-form-about">
@@ -154,6 +154,17 @@ window.onload = function () {
       </div>
     `,
     methods: {
+      getHoursString(hours) {
+        if (/(10|11|12|13|14|15|16|17|18|19)$/.test(+hours)) {
+          return 'часов';
+        } else if (/.*1$/.test(+hours)) {
+          return 'час';
+        } else if (/[2-4]$/.test(+hours)) {
+          return 'часа';
+        } else {
+          return 'часов';
+        }
+      },
       //transition
       enter: function (el, done) {
         if (!velocity) return;

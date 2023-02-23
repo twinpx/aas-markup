@@ -1470,7 +1470,7 @@ window.onload = function () {
         <h3>{{ step.title }}</h3>
         <div class="b-scc-step__error" v-if="$store.state.error">{{ $store.state.error }}</div>
         <p v-html="step.description"></p>
-
+        <hr>
         <div class="b-scc-step__controls">
           <div v-for="(formControl, formControlIndex) in step.controls">
 
