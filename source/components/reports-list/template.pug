@@ -20,81 +20,137 @@ else
 
   .ph-content
 
-    .b-reports-list__item.message
-      a.b-reports-list__title( href="/pages/report-form/" ) Пора сдавать отчет
-      .b-reports-list__data
-        span Крайний срок: 22 марта 2021 (56 дней)
-        | <!--[if lte IE 9]><a class="btn btn-secondary btn-md" data-toggle="modal" data-target="#ieAlertModal">Необходимо сдать</a><![endif]-->
-        |	<!--[if gt IE 9]><a class="btn btn-secondary btn-md" href="/profile/reports/auditor/edit.php?edit=Y">Необходимо сдать</a><![endif]-->
-        |	<!--[if !IE]>-->
-        <a class="btn btn-secondary btn-md" href="/profile/reports/auditor/edit.php?edit=Y">Сдать отчет</a>
-        | <!--<![endif]-->
+    .b-reports-list__select
+      select
+        option(value="1") Все
+        option(value="2") Основной
 
-        #ieAlertModal.modal--text.modal--alert.modal.fade(tabindex="-1" aria-labelledby="editConfirmModalLabel" aria-hidden="true")
-          .modal-dialog
-            .modal-content
-              button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
-              .modal-body( data-hint-url="/components/report-form/hint-response.json" data-info-url="/components/report-form/info-response.json" data-method="GET" )
-                h3.text-center Вы используете Internet Explorer 10
+    hr.hr--sl
 
-                hr
-
-                p С 12 января 2016 года Microsoft перестала обновлять системы безопасности и осуществлять техническую поддержку старых версий Internet Explorer. При своевременном обновлении браузера система безопасности защищает данные на компьютерах пользователей от установки вредоносного ПО и хакерских атак.
-                
-                p Корректное отображение сайта и работа его сервисов в Microsoft Internet Explorer 10 и более ранних версиях, не гарантируется.
-                
-                p Для безопасной и надежной работы рекомендуем Вам использовать один из современных бесплатных браузеров:
-
-                hr
-
-                include ../../modules/browser-choice/include
-        
+    .b-reports-list__item
+      .b-reports-list__text
+        .b-reports-list__year 2022
+        a.b-reports-list__title( href="" ) Годовой отчет аудиторской организации за 2022 Годовой отчет аудиторской организации за 2022
+        .b-reports-list__date.small
+          .label-green
+            span Сдан
+          | 12 апреля 2022
 
     hr.hr--md
 
-    .b-reports-list__item
-      a.b-reports-list__title( href="/pages/report-form/" ) Отчет 2020
-      .b-reports-list__data
-        span Крайний срок: 22 марта 2021 (56 дней)
-        a.btn.btn-secondary.btn-md( href="/pages/report-form/" ) Сдать отчет
+    .b-reports-list__item.b-reports-list__item--new
+      .b-reports-list__text
+        .b-reports-list__year
+        a.b-reports-list__title( href="" ) Годовой отчет аудиторской организации за 2022 Годовой отчет аудиторской организации за 2022
+        .b-reports-list__date Крайний срок: 30 апреля 2023 23:59 (68 дней)
+      .b-reports-list__button
+        a.btn.btn-secondary.btn-lg(href="") Сдать отчет
 
-    .b-reports-list__item
-      a.b-reports-list__title( href="/pages/report/" ) Отчет 2019 и очень длинное название отчёта за 2019 год
-      .b-reports-list__data
-        span Крайний срок: 18 марта 2020
-        a.text-success.b-reports-list__status( href="/pages/report/" ) Cдан
-        //-
-          a.btn.btn-secondary.btn-md( data-toggle="modal" data-target="#editConfirmModal" ) Редактировать
+    hr.hr--md
 
-          #editConfirmModal.modal--text.modal.fade(tabindex="-1" aria-labelledby="editConfirmModalLabel" aria-hidden="true")
-            .modal-dialog
-              .modal-content
-                button.close(type="button" data-dismiss="modal" aria-label="Close" style="background-image: url( '/template/images/cancel.svg' );")
-                .modal-body( data-hint-url="/components/report-form/hint-response.json" data-info-url="/components/report-form/info-response.json" data-method="GET" )
-                  h3.text-center Вы хотите отредактировать отчет?
+    .b-reports-list__item.b-reports-list__item--new-deadline
+      .b-reports-list__text
+        .b-reports-list__year
+        a.b-reports-list__title( href="" ) Годовой отчет аудиторской организации за 2022
+        .b-reports-list__date Крайний срок: 30 апреля 2023 23:59 (68 дней)
+      .b-reports-list__button
+        a.btn.btn-secondary.btn-lg(href="") Сдать отчет
 
-                  hr
+    hr.hr--md
 
-                  p Вы переходите в режим редактирования отчета. После внесения изменений в отчет вам необходимо сдать его, нажав на кнопку «Сдать отчет».
-                  
-                  p До тех пор, пока вы повторно не отправите отчет, он будет находиться в статусе «Необходимо сдать».
+    .b-reports-list__item.b-reports-list__item--empty
+      .b-reports-list__text
+        .b-reports-list__year 2022
+        a.b-reports-list__title( href="" ) Уточненный отчет «Форма 2-аудит» за 2021 номер 192729
+        .b-reports-list__date.small
+          .label-red
+            span Не сдан
 
-                  hr
+    hr.hr--md
 
-                  .text-center.modal-buttons
-                    a.btn.btn-lg.btn-secondary( href="/pages/report-form/" ) Отредактировать
-                    button.btn.btn-lg.btn-light( data-dismiss="modal" ) Отменить
+    .b-reports-list__item.b-reports-list__item--didnt-pass-year-period
+      .b-reports-list__text
+        .b-reports-list__year 2023
+        a.b-reports-list__title( href="" ) Годовой отчет аудиторской организации за 2022 Годовой отчет аудиторской организации за 2022
+        .b-reports-list__date.small
+          .label-red
+            span Не сдан
+      .b-reports-list__button
+        a.btn.btn-secondary.btn-md(href="") Сдать уточненный
+        .small До 31 декабря 2022
 
-    .b-reports-list__item
-      a.b-reports-list__title( href="/pages/report/" ) Отчет 2019 и очень длинное название отчёта за 2019 год
-      .b-reports-list__data
-        span Крайний срок: 18 марта 2020
-        a.text-warning.b-reports-list__status( href="/pages/report/" ) Жёлтый
+    hr.hr--md
 
-    .b-reports-list__item
-      a.b-reports-list__title( href="/pages/report/" ) Отчет 2019 и очень длинное название отчёта за 2019 год
-      .b-reports-list__data
-        span Крайний срок: 18 марта 2020
-        a.text-danger.b-reports-list__status( href="/pages/report/" ) Красный
+    .b-reports-list__item.b-reports-list__item--didnt-pass
+      .b-reports-list__text
+        .b-reports-list__year 2022
+        a.b-reports-list__title( href="" ) Годовой отчет аудиторской организации за 2022
+        .b-reports-list__date.small
+          .label-red
+            span Не сдан
+
+    hr.hr--md
+
+    .b-reports-list__item.b-reports-list__item--updated
+      .b-reports-list__text
+        .b-reports-list__year 2022
+        a.b-reports-list__title( href="" ) Годовой отчет аудиторской организации за 2022
+        .b-reports-list__date.small
+          .label-green
+            span Сдан
+          | 12 апреля 2022
+      .b-reports-list__button
+        a.btn-edit( href="" )
+            svg(xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24")
+              g
+                path(d="M9.263,1.439l-8.21,8.69a3.05,3.05,0,0,0-.67,1.43L.013,14.8a1.527,1.527,0,0,0,1.87,1.77l3.22-.55a2.871,2.871,0,0,0,1.39-.75l8.21-8.69c1.42-1.5,2.06-3.21-.15-5.3C12.353-.791,10.683-.061,9.263,1.439Z" transform="translate(4.002 3.701)")
+                path(d="M0,0A6.126,6.126,0,0,0,5.45,5.15" transform="translate(11.895 6.59)")
+                path(d="M0,0H24V24H0Z" fill="none" opacity="0")
+
+        a.btn-remove( href="" )
+            svg(xmlns="http://www.w3.org/2000/svg" width="16.251" height="20" viewBox="0 0 16.251 20")
+              path(d="M24.7,11.1H21.264v-.626A1.875,1.875,0,0,0,19.39,8.6h-2.5a1.875,1.875,0,0,0-1.874,1.874V11.1H11.576a1.562,1.562,0,0,0-1.561,1.563v1.25a.624.624,0,0,0,.624.624h15a.625.625,0,0,0,.626-.624v-1.25A1.563,1.563,0,0,0,24.7,11.1Zm-8.438-.626a.625.625,0,0,1,.624-.624h2.5a.625.625,0,0,1,.624.624V11.1h-3.75Z" transform="translate(-10.015 -8.601)")
+              path(d="M10.941,13.909a.2.2,0,0,0-.2.2l.516,10.822a1.873,1.873,0,0,0,1.873,1.786h9.492A1.873,1.873,0,0,0,24.5,24.935l.516-10.822a.2.2,0,0,0-.2-.2Zm9.44,1.561a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Zm-3.126,0a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Zm-3.126,0a.625.625,0,0,1,1.25,0V23.6a.625.625,0,1,1-1.25,0Z" transform="translate(-9.823 -6.721)")
+
+    hr.hr--md
+
+    .b-reports-list__item.b-reports-list__item--passed-year-period
+      .b-reports-list__text
+        .b-reports-list__year 2022
+        a.b-reports-list__title( href="" ) Годовой отчет аудиторской организации за 2022
+        .b-reports-list__date.small
+          .label-green
+            span Сдан
+          | 12 апреля 2022
+      .b-reports-list__button
+        a.btn.btn-secondary.btn-md(href="") Сдать уточненный
+        .small До 31 декабря 2022
+
+    hr.hr--md
+
+    .b-reports-list__item.b-reports-list__item--passed
+      .b-reports-list__text
+        .b-reports-list__year 2022
+        a.b-reports-list__title( href="" ) Годовой отчет аудиторской организации за 2022
+        .b-reports-list__date.small
+          .label-green
+            span Сдан
+          | 12 апреля 2022
+
+    hr.hr--md
+
+    .b-reports-list__item.b-reports-list__item--draft
+      .b-reports-list__text
+        .b-reports-list__year 2022
+        a.b-reports-list__title( href="" ) Годовой отчет аудиторской организации за 2022
+        .b-reports-list__date.small
+          .label-gray
+            span Черновик
+          | Крайний срок: 31 декабря 2022 23:59
+
+    hr.hr--xl
+
+    include ../../modules/pagination/include
+
 
 // end /components/reports-list/

@@ -21,66 +21,166 @@
     
 .b-reports-list
 
+  &__select
+    width 250px
+
   &__item
-    border-bottom 1px solid $line-color
-    display flex
-    justify-content space-between
+    border 1px solid #74C37A
+    border-radius 10px
+    padding 18px 25px
     align-items center
-    padding 1.25rem 1.5rem
+    font-family $roboto
 
-    &:hover
-      background-color #fcfcfc
+    &--new
+      border-color #FAFAFA
+      background-color #FAFAFA
+      display grid
+      grid-template-columns 1fr 250px
+      grid-gap 30px
 
-    &.message
-      background-color #fafafa
-      border-bottom none
-      border-radius 10px
+    &--new-deadline
+      border-color #FAFAFA
+      background-color #FAFAFA
+      display grid
+      grid-template-columns 1fr 250px
+      grid-gap 30px
 
-      .b-reports-list__title
-        font-size $24px
+      .b-reports-list__date
+        color $danger-color
 
-    @media( max-width 575px )
-      display block
+    &--empty
+      border-color #FFF4F4
+
+      .b-reports-list__text
+        color #3B3B3B55
+
+        a,
+        a:hover
+          color #3B3B3B55
+
+      .b-reports-list__date
+        color $danger-color
+
+    &--didnt-pass-year-period
+      border-color #FFF4F4
+      display grid
+      grid-template-columns 1fr 158px
+      grid-gap 30px
+
+      .b-reports-list__text
+        color #3B3B3B55
+
+        a,
+        a:hover
+          color #3B3B3B55
+
+      .b-reports-list__button
+        text-align center
+
+      .btn
+        margin-bottom 9px
+
+    &--didnt-pass
+      border-color #FFF4F4
+
+      .b-reports-list__text
+        color #3B3B3B55
+
+        a,
+        a:hover
+          color #3B3B3B55
+
+    &--updated
+      border-color #74C37A
+      display grid
+      grid-template-columns 1fr 100px
+      grid-gap 30px
+
+      .b-reports-list__button
+        display flex
+        align-items center
+        justify-content flex-end
+        justify-self end
+
+        .btn-edit
+          margin-right 1rem
+
+    &--passed-year-period
+      border-color #74C37A
+      display grid
+      grid-template-columns 1fr 158px
+      grid-gap 30px
+
+      .b-reports-list__button
+        text-align center
+
+      .btn
+        margin-bottom 9px
+
+    &--passed
+      border-color #74C37A
+
+    &--draft
+      border-color #F0F0F0
+
+      .b-reports-list__text
+        color #3B3B3B55
+
+        a,
+        a:hover
+          color #3B3B3B55
+
+  &__year
+    font-size $16px
+    font-weight $bold
+    margin-bottom 8px
+    min-height 1.5rem
 
   &__title
-    font-family $roboto
+    display block
+    font-size $20px
     font-weight $bold
-    margin-right 20px
+    line-height 1.2
+    margin-bottom 1rem
 
-  &__data
-    font-size $16px
-    font-family $roboto
-    display flex
-    justify-content flex-end
-    align-items center
+  &__date
+  
+    &:not(.small)
+      font-size $14px
 
-    span
-      margin-right 38px
-      white-space nowrap
+    [class^="label-"]
+      display inline-block
+      margin-right 20px
 
-    @media( max-width 1100px )
-      
-      &,
-      > span
+  &__button
+    justify-self center
+
+    .btn
+      display block
+      width 100%
+
+  @media(max-width 767px)
+
+    &__select
+      width auto
+
+    &__item
+
+      &--new,
+      &--new-deadline,
+      &--didnt-pass-year-period,
+      &--updated,
+      &--passed-year-period
         display block
-        text-align right
-        margin-right 0
 
-      > span
-        margin-bottom 10px
+        .b-reports-list__text
+          margin-bottom 1rem
 
-      p
-        text-align left
+      &--updated
+        
+        .b-reports-list__button
+          justify-content: center;
 
-    @media( max-width 575px )
 
-      &,
-      > span
-        text-align left
-
-      > span
-        margin-top 10px
-
-  &__status
-    min-width 158px
-    text-align center
+.ik_select_dropdown
+  width 250px !important

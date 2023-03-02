@@ -5,9 +5,9 @@ window.onload = function () {
       BX.ajax.post(
         '/local/ajax/logs.php',
         {
-          id: id,
+          id,
           el: document.querySelector('input[name = "APPEAL_ID"]').value,
-          message: message,
+          message,
           level: 1,
         },
         function (result) {}
@@ -461,7 +461,7 @@ window.onload = function () {
     <div>
       <div class="row align-items-center">
         <div class="col-lg-6 col-12">
-          <div class="b-float-label" @mouseover="hover=true;" @mouseout="hover=false;">
+          <div class="b-float-label" :class="{invalid: isInvalid}" @mouseover="hover=true;" @mouseout="hover=false;">
             <input :data-pattern="formControl.pattern" :data-required="formControl.required" ref="input" :id="id" type="text" :name="name" autocomplete="off" v-model="controlValue" @input="changeInput" @focus="focusInput" @blur="blurInput($event)" @keydown.enter.prevent="enterInput" @keydown.up.prevent="upArrow()" @keydown.down.prevent="downArrow()">
             <label ref="label" :for="id" :class="{active: isActive}">{{formControl.label}}</label>
 
@@ -585,6 +585,10 @@ window.onload = function () {
           this.users = [];
         }, 200);
 
+        setTimeout(() => {
+          this.validate();
+        }, 100);
+
         if (this.controlValue !== this.compare) {
           this.$emit('autosave');
           bitrixLogs(6, `${this.formControl.label}: ${this.controlValue}`);
@@ -598,6 +602,8 @@ window.onload = function () {
         this.activeUser = this.users.find((user) => user.ID === id) || {};
         this.controlValue = this.activeUser.ORNZ ? this.activeUser.ORNZ : '';
         this.users = [];
+
+        this.validate();
       },
       enterInput() {
         //check if there is an active hint
@@ -629,14 +635,39 @@ window.onload = function () {
       },
       validate() {
         if (
-          (this.formControl.required && this.controlValue === '') ||
-          (this.formControl.pattern &&
-            this.controlValue !== '' &&
-            !new RegExp(this.formControl.pattern, 'ig').test(this.controlValue))
+          this.formControl.pattern &&
+          this.controlValue !== '' &&
+          !new RegExp(this.formControl.pattern, 'ig').test(this.controlValue)
         ) {
           this.isInvalid = true;
         } else {
-          this.isInvalid = false;
+          if (this.formControl.required && !this.activeUser.ID) {
+            //else if there is no id, then send request
+            (async () => {
+              try {
+                let response = await fetch(
+                  `${this.$store.state.url.getUsers}?s=${this.controlValue}`,
+                  {
+                    headers: {
+                      Authentication: 'secret',
+                    },
+                  }
+                );
+                let result = await response.json();
+
+                if (typeof result === 'object' && result[0]) {
+                  this.isInvalid = false;
+                  this.activeUser = result[0];
+                } else {
+                  this.isInvalid = true;
+                }
+              } catch (err) {
+                throw err;
+              }
+            })();
+          } else {
+            this.isInvalid = false;
+          }
         }
       },
     },
