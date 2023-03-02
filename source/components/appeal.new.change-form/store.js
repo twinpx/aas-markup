@@ -29,6 +29,18 @@ window.appealNewChangeFormStore = {
       {
         multy: true,
         value: [''],
+        property: '85',
+        word: 'QUANTITY',
+        type: 'datefull',
+        required: false,
+        label: 'Дата*',
+        completeBlock: {
+          comment: 'Можно выбрать любую дату, а не только прошедшую.',
+        },
+      },
+      {
+        multy: true,
+        value: [''],
         property: '185',
         word: 'QUANTITY',
         type: 'date',

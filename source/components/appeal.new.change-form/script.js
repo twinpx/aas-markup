@@ -258,6 +258,7 @@ window.onload = function () {
       <div v-for="(formControl, controlIndex) in $store.state.controlsBlock.controls" :key="formControl.id">
         <form-control-multy v-if="formControl.multy" :formControl="formControl" :controlIndex="controlIndex" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-multy>
         <form-control-date v-else-if="formControl.type==='date'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex"  @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-date>
+        <form-control-date-full v-else-if="formControl.type==='datefull'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex"  @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-date-full>
         <form-control-textarea v-else-if="formControl.type==='textarea'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-textarea>
         <form-control-ornz v-else-if="formControl.type==='ornz'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-ornz>
         <form-control-select v-else-if="formControl.type==='select'" :formControl="formControl" fieldsetBlockIndex="0" :controlIndex="controlIndex" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-select>
@@ -1242,6 +1243,14 @@ window.onload = function () {
             </div>
           </transition-group>
         </div>
+        <div v-else-if="formControl.type==='datefull'">
+          <transition-group name="list" tag="div" >
+            <div v-for="(valueObject, idx) in formControl.value" :key="valueObject.id" class="multy-control-wrapper">
+              <form-control-date-full :formControl="formControl" :fieldsetBlockIndex="idx" :controlIndex="idx" @autosave="autosave" @timeoutAutosave="timeoutAutosave"></form-control-date-full>
+              <div v-if="formControl.value.length > 1" @click="remove(idx)" class="multy-control-wrapper__remove btn-delete"></div>
+            </div>
+          </transition-group>
+        </div>
         <div v-else-if="formControl.type==='textarea'">
           <transition-group name="list" tag="div" >
             <div v-for="(valueObject, idx) in formControl.value" :key="valueObject.id" class="multy-control-wrapper">
@@ -1361,6 +1370,206 @@ window.onload = function () {
         <div class="col-lg-6 col-12">
         <div class="b-float-label" data-src="${store.state.url.img}calendar.svg" :class="{invalid: isInvalid}" ref="floatLabel">
           <date-picker :data-required="formControl.required" :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @focus="focusInput" @blur="blurInput" :disabled-date="futureDatesDisabled"></date-picker>
+          <label :for="inputAttr.id" :class="{ active: isActive }">{{formControl.label}}</label>
+        </div>
+        </div>
+        <hr class="hr--xs d-block d-lg-none w-100" v-if="!formControl.multy || !controlIndex">
+        <div class="col-lg-6 col-12 small" v-if="!formControl.multy || !controlIndex">
+          <span class="text-muted" v-if="this.formControl.completeBlock && this.formControl.completeBlock.title">{{ this.formControl.completeBlock.title }}</span>
+          <span v-if="this.formControl.completeBlock && this.formControl.completeBlock.title">
+            <a v-if="this.formControl.completeBlock.value" class="b-complete-link" ref="link" href="" @click.prevent="clickLink">
+              {{ this.formControl.completeBlock.value }}
+              <span class="icon" style="background-image: url( '/template/images/copy.svg' );"></span>
+            </a>
+            <span v-else class="text-muted">Пусто.</span>
+          </span>
+          <div v-if="this.formControl.completeBlock && this.formControl.completeBlock.comment" class="text-muted b-complete-comment">{{ this.formControl.completeBlock.comment }}</div>
+        </div>
+      </div>
+      <hr class="hr--sl">
+    </div>`,
+    data() {
+      return {
+        isActive: this.formControl.multy
+          ? this.formControl.value[this.controlIndex].val === ''
+            ? false
+            : true
+          : this.formControl.value === ''
+          ? false
+          : true,
+        isInvalid: false,
+        date: this.formControl.multy
+          ? this.formControl.value[this.controlIndex].val
+          : this.formControl.value,
+        lang: {
+          // the locale of formatting and parsing function
+          formatLocale: {
+            // MMMM
+            months: [
+              'Январь',
+              'Февраль',
+              'Март',
+              'Апрель',
+              'Май',
+              'Июнь',
+              'Июль',
+              'Август',
+              'Сентябрь',
+              'Октябрь',
+              'Ноябрь',
+              'Декабрь',
+            ],
+            // MMM
+            monthsShort: [
+              'Янв',
+              'Фев',
+              'Мар',
+              'Апр',
+              'Май',
+              'Июн',
+              'Июл',
+              'Авг',
+              'Сен',
+              'Окт',
+              'Ноя',
+              'Дек',
+            ],
+            // dddd
+            weekdays: [
+              'Воскресенье',
+              'Понедельник',
+              'Вторник',
+              'Среда',
+              'Четверг',
+              'Пятница',
+              'Суббота',
+            ],
+            // ddd
+            weekdaysShort: ['Вск', 'Пнд', 'Втр', 'Сре', 'Чтв', 'Птн', 'Суб'],
+            // dd
+            weekdaysMin: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+            // first day of week
+            firstDayOfWeek: 1,
+            // first week contains January 1st.
+            firstWeekContainsDate: 1,
+            // format 'a', 'A'
+            meridiem(h, _, isLowercase) {
+              const word = h < 12 ? 'AM' : 'PM';
+              return isLowercase ? word.toLocaleLowerCase() : word;
+            },
+            // parse ampm
+            meridiemParse: /[ap]\.?m?\.?/i,
+            // parse ampm
+            isPM(input) {
+              return `${input}`.toLowerCase().charAt(0) === 'p';
+            },
+          },
+          // the calendar header, default formatLocale.weekdaysMin
+          days: ['Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб'],
+          // the calendar months, default formatLocale.monthsShort
+          months: [
+            'Январь',
+            'Февраль',
+            'Март',
+            'Апрель',
+            'Май',
+            'Июнь',
+            'Июль',
+            'Август',
+            'Сентябрь',
+            'Октябрь',
+            'Ноябрь',
+            'Декабрь',
+          ],
+          // the calendar title of year
+          yearFormat: 'YYYY',
+          // the calendar title of month
+          monthFormat: 'MMMM',
+          // the calendar title of month before year
+          monthBeforeYear: true,
+        },
+      };
+    },
+    props: ['formControl', 'fieldsetBlockIndex', 'controlIndex'],
+    emits: ['autosave'],
+    computed: {
+      inputAttr() {
+        return {
+          id: `${this.formControl.word}_${this.formControl.property}_${this.fieldsetBlockIndex}`,
+          name: `${this.formControl.word}[${this.formControl.property}][${this.fieldsetBlockIndex}]`,
+        };
+      },
+    },
+    watch: {
+      date(val) {
+        bitrixLogs(6, `${this.formControl.label} ${val}`);
+      },
+    },
+    methods: {
+      futureDatesDisabled(date) {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+
+        return date.getTime() > today.getTime();
+      },
+      clickLink() {
+        this.date = this.formControl.completeBlock.value;
+        this.isActive = true;
+        //autosave
+        this.autosave();
+      },
+      openInput() {
+        this.isActive = true;
+      },
+      closeInput() {
+        if (!this.date) {
+          this.isActive = false;
+          this.isInvalid = true;
+        }
+      },
+      focusInput() {
+        if (this.$refs.floatLabel.className.includes('invalid')) {
+          this.isInvalid = true;
+        }
+      },
+      blurInput() {
+        //validate
+        if (this.formControl.required && !this.date) {
+          this.isInvalid = true;
+        } else {
+          this.isInvalid = false;
+        }
+      },
+      inputDate() {
+        if (!!this.date) {
+          this.isInvalid = false;
+        }
+        //set value
+        let payload = {
+          property: this.formControl.property,
+          value: this.date,
+        };
+        if (this.formControl.multy) {
+          payload.index = this.controlIndex;
+        }
+        store.commit('changeControl', payload);
+        //autosave
+        this.autosave();
+      },
+      autosave() {
+        this.$emit('autosave');
+      },
+    },
+  });
+
+  //form control date full
+  Vue.component('formControlDateFull', {
+    template: `
+    <div>
+      <div class="row align-items-center">
+        <div class="col-lg-6 col-12">
+        <div class="b-float-label" data-src="${store.state.url.img}calendar.svg" :class="{invalid: isInvalid}" ref="floatLabel">
+          <date-picker :data-required="formControl.required" :lang="lang" :input-attr="inputAttr" valueType="format" v-model="date" value-type="X" format="DD.MM.YYYY" @open="openInput" @close="closeInput" @clear="closeInput" @input="inputDate" @focus="focusInput" @blur="blurInput"></date-picker>
           <label :for="inputAttr.id" :class="{ active: isActive }">{{formControl.label}}</label>
         </div>
         </div>

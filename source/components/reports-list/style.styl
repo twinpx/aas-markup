@@ -30,20 +30,17 @@
     padding 18px 25px
     align-items center
     font-family $roboto
+    display grid
+    grid-template-columns 1fr 250px
+    grid-gap 30px
 
     &--new
       border-color #FAFAFA
       background-color #FAFAFA
-      display grid
-      grid-template-columns 1fr 250px
-      grid-gap 30px
 
     &--new-deadline
       border-color #FAFAFA
       background-color #FAFAFA
-      display grid
-      grid-template-columns 1fr 250px
-      grid-gap 30px
 
       .b-reports-list__date
         color $danger-color
@@ -63,9 +60,6 @@
 
     &--didnt-pass-year-period
       border-color #FFF4F4
-      display grid
-      grid-template-columns 1fr 158px
-      grid-gap 30px
 
       .b-reports-list__text
         color #3B3B3B55
@@ -92,9 +86,6 @@
 
     &--updated
       border-color #74C37A
-      display grid
-      grid-template-columns 1fr 100px
-      grid-gap 30px
 
       .b-reports-list__button
         display flex
@@ -107,9 +98,6 @@
 
     &--passed-year-period
       border-color #74C37A
-      display grid
-      grid-template-columns 1fr 158px
-      grid-gap 30px
 
       .b-reports-list__button
         text-align center
@@ -165,16 +153,10 @@
       width auto
 
     &__item
+      display block
 
-      &--new,
-      &--new-deadline,
-      &--didnt-pass-year-period,
-      &--updated,
-      &--passed-year-period
-        display block
-
-        .b-reports-list__text
-          margin-bottom 1rem
+      .b-reports-list__button
+        margin-top 1rem
 
       &--updated
         
