@@ -224,6 +224,11 @@ window.onload = function () {
           ? block.lessons[lessonIndex].controls[controlIndex]
           : block.controls[controlIndex];
 
+        let value = formControl.value;
+        if (typeof formControl.value === 'object') {
+          value = formControl.value.ID || '';
+        }
+
         switch (control.type) {
           case 'text':
           case 'textarea':
@@ -237,7 +242,18 @@ window.onload = function () {
               controlIndex: controlIndex,
               time: time,
               prop: 'invalid',
-              value: formControl.required && formControl.value === '',
+              value: (formControl.required && value === '') || undefined,
+            });
+            break;
+          case 'select':
+            commit('changeTextControl', {
+              stepIndex: getters.activeStepIndex,
+              blockIndex: blockIndex,
+              lessonIndex: lessonIndex,
+              controlIndex: controlIndex,
+              time: time,
+              prop: 'invalid',
+              value: (formControl.required && value === '') || undefined,
             });
             break;
         }
@@ -261,13 +277,11 @@ window.onload = function () {
         }, 20000);
 
         try {
-          response = await fetch(
-            url /*, {
+          response = await fetch(url, {
             method: 'POST',
             body: formData,
             signal: controller.signal,
-          }*/
-          );
+          });
           result = await response.json();
           if (result.status === 'success') {
             success(result);
@@ -886,15 +900,13 @@ window.onload = function () {
         if (!this.date) {
           this.isActive = false;
           this.setInvalid(true);
+        } else {
+          this.setInvalid(false);
+          this.isActive = true;
         }
       },
       blurInput() {
-        //validate
-        if (!this.date) {
-          this.setInvalid(true);
-        } else {
-          this.setInvalid(false);
-        }
+        this.closeInput();
       },
       inputDate() {
         if (this.date) {
@@ -946,7 +958,7 @@ window.onload = function () {
 
     template: `
       <div>
-        <div class="b-float-label" :class="{invalid: formControl.invalid}" @mouseover="hover=true;" @mouseout="hover=false;">
+        <div class="b-float-label b-float-label--ornz" :class="{invalid: formControl.invalid}" @mouseover="hover=true;" @mouseout="hover=false;">
 
           <input ref="input" :id="id" type="text" :name="name" autocomplete="off" v-model="controlValue" @input="changeInput" @focus="focusInput" @blur="blurInput($event)" @keydown.enter.prevent="enterInput" @keydown.up.prevent="upArrow()" @keydown.down.prevent="downArrow()">
 
@@ -1066,6 +1078,10 @@ window.onload = function () {
           this.users = [];
         }, 200);
 
+        setTimeout(() => {
+          this.validate();
+        }, 100);
+
         this.$store.dispatch('validateControl', {
           formControl: this.formControl,
           blockIndex: this.blockIndex,
@@ -1108,17 +1124,47 @@ window.onload = function () {
         this.activeHint = [];
         this.activeUser = {};
         this.isActive = false;
+
+        setTimeout(() => {
+          this.validate();
+        }, 0);
       },
       validate() {
         if (
-          (this.formControl.required && this.controlValue === '') ||
-          (this.formControl.pattern &&
-            this.controlValue !== '' &&
-            !new RegExp(this.formControl.pattern, 'ig').test(this.controlValue))
+          this.formControl.pattern &&
+          this.controlValue !== '' &&
+          !new RegExp(this.formControl.pattern, 'ig').test(this.controlValue)
         ) {
-          this.isInvalid = true;
+          this.setInvalid(true);
         } else {
-          this.isInvalid = false;
+          if (this.formControl.required && !this.activeUser.ID) {
+            //else if there is no id, then send request
+            (async () => {
+              try {
+                let response = await fetch(
+                  `${this.$store.state.ornzControlURL}?s=${this.controlValue}`,
+                  {
+                    headers: {
+                      Authentication: 'secret',
+                    },
+                  }
+                );
+                let result = await response.json();
+
+                if (typeof result === 'object' && result[0]) {
+                  this.setInvalid(false);
+                  this.activeUser = result[0];
+                } else {
+                  this.setInvalid(true);
+                }
+                this.setValue();
+              } catch (err) {
+                throw err;
+              }
+            })();
+          } else {
+            this.setInvalid(false);
+          }
         }
       },
     },
@@ -1302,13 +1348,11 @@ window.onload = function () {
         }, 20000);
 
         try {
-          response = await fetch(
-            this.$store.state.editURL /*, {
-              method: 'POST',
-              body: formData,
-              signal: controller.signal,
-            }*/
-          );
+          response = await fetch(this.$store.state.editURL, {
+            method: 'POST',
+            body: formData,
+            signal: controller.signal,
+          });
 
           result = await response.json();
 

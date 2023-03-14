@@ -3,6 +3,7 @@ window.appealDetailData = {
     action: '',
     method: '',
     fetchCurrentStatus: '/components/appeal.detail/response.json',
+    fileUpload: '/components/appeal.detail/fileupload.json',
   },
   select: {
     name: 'STATUS',
@@ -25,14 +26,48 @@ window.appealDetailData = {
       code: '',
     },
     label: 'Статус обращения',
-    codeToShowTextarea: ['prop1', 'prop2'],
   },
   textarea: {
+    showForStatus: ['prop1', 'prop2'],
     invalid: false,
     name: 'message',
     value: '',
     label: 'Комментарий для сотрудников СРО ААС',
   },
+  files: [
+    {
+      showForStatus: ['prop3', 'prop4'],
+      type: 'file',
+      multy: false,
+      maxSize: 102400000,
+      required: false,
+      filename: '',
+      default: '<a href>Выберите файл</a> (pdf, до 100МБ)',
+      ext: ['pdf'],
+
+      invalid: false,
+      name: 'file',
+      value: '',
+      label:
+        'Устав в новой редакции или изменения к Уставу (в случае внесения изменений в Устав)',
+    },
+    {
+      showForStatus: ['prop1'],
+      type: 'file',
+      multy: false,
+      maxSize: 102400000,
+      required: false,
+      filename: '',
+      default: '<a href>Выберите файл</a> (pdf, до 100МБ)',
+      ext: ['pdf'],
+
+      invalid: false,
+      name: 'file',
+      value: '',
+      label:
+        'Устав в новой редакции или изменения к Уставу (в случае внесения изменений в Устав)',
+    },
+  ],
   button: {
     name: 'statusConfirm',
     text: 'Сохранить',

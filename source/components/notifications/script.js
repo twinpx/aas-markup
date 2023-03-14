@@ -1,3 +1,15 @@
+//
+//
+//
+//
+//
+// вся разработка по адресу \aas.2px.ru\web\local\components\twinpx\notifications\templates\.default\script.js
+//
+//
+//
+//
+//
+
 window.addEventListener('load', () => {
   let intervalId = setInterval(() => {
     if (

@@ -23,7 +23,7 @@ window.onload = function () {
       changeTask(state, payload) {
         state.blocks.forEach((block) => {
           block.tasks.forEach((task, i) => {
-            if (payload.id === task.id) {
+            if (String(payload.id) === String(task.id)) {
               Vue.set(block.tasks, i, payload);
             }
           });
