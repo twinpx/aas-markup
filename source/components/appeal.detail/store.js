@@ -36,36 +36,34 @@ window.appealDetailData = {
   },
   files: [
     {
-      showForStatus: ['prop3', 'prop4'],
+      showForStatus: ['prop4'],
       type: 'file',
       multy: false,
-      maxSize: 102400000,
+      maxSize: 1024000,
       required: false,
       filename: '',
-      default: '<a href>Выберите файл</a> (pdf, до 100МБ)',
+      default: '<a href>Выберите файл</a> (pdf, до 1МБ)',
       ext: ['pdf'],
 
       invalid: false,
       name: 'file',
       value: '',
-      label:
-        'Устав в новой редакции или изменения к Уставу (в случае внесения изменений в Устав)',
+      label: 'Устав в новой редакции',
     },
     {
       showForStatus: ['prop1'],
       type: 'file',
       multy: false,
-      maxSize: 102400000,
+      maxSize: 10240000,
       required: false,
       filename: '',
-      default: '<a href>Выберите файл</a> (pdf, до 100МБ)',
+      default: '<a href>Выберите файл</a> (pdf, до 10МБ)',
       ext: ['pdf'],
 
       invalid: false,
       name: 'file',
       value: '',
-      label:
-        'Устав в новой редакции или изменения к Уставу (в случае внесения изменений в Устав)',
+      label: 'Устав в новой редакции или изменения к Уставу',
     },
   ],
   button: {

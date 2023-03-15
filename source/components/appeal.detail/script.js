@@ -80,7 +80,7 @@ window.addEventListener('load', () => {
       };
     },
     template: `
-    <div>
+    <div style="position: relative;">
       <span class="b-float-label-file__clear" :class="{'btn--load-circle': loadCircle}" @click.prevent="clearInputFile" v-if="isClearable"></span>
       <div class="b-float-label--file" :class="{'filled': isFilled, 'progressing': isProgressing, 'deleting': loadCircle, 'invalid': !!isInvalid, 'clearable': isClearable }" ref="controlFile" >
         <span class="b-float-label-file__label">{{ formControl.label }}</span>
@@ -177,43 +177,44 @@ window.addEventListener('load', () => {
     },
     methods: {
       uploadFile(files) {
-        this.$emit('setFile', {
-          filename: '',
-          value: this.fileid,
-        });
+        // this.$emit('setFile', {
+        //   filename: '',
+        //   value: this.fileid,
+        // });
 
         this.files = files;
-        this.xhrStatus = '';
-        this.percentage = 0;
+        // this.xhrStatus = '';
+        // this.percentage = 0;
         //invalid and label change
         setTimeout(() => {
           if (this.isInvalid) {
             this.$refs.inputFile.value = '';
           } else {
-            let data = {};
-            data[this.name] = this.files[0];
-            data.FILEID = this.fileid;
-
-            this.loading = true;
-            this.sendData(data);
+            this.formControl.filename = this.files[0] ? this.files[0].name : '';
+            //   let data = {};
+            //   data[this.name] = this.files[0];
+            //   data.FILEID = this.fileid;
+            //   this.loading = true;
+            //   this.sendData(data);
           }
         }, 0);
       },
       clearInputFile() {
-        this.loadCircle = true;
-        this.percentage = 0;
-        this.loading = false;
+        // this.loadCircle = true;
+        // this.percentage = 0;
+        // this.loading = false;
         this.files = [];
         this.$refs.inputFile.value = '';
-        this.sendData({
-          [this.name]: 'DELETE',
-          FILEID: this.fileid,
-        });
-        //set value
-        this.$emit('setFile', {
-          filename: '',
-          value: '',
-        });
+        this.formControl.filename = this.files[0] ? this.files[0].name : '';
+        // this.sendData({
+        //   [this.name]: 'DELETE',
+        //   FILEID: this.fileid,
+        // });
+        // //set value
+        // this.$emit('setFile', {
+        //   filename: '',
+        //   value: '',
+        // });
       },
       cancelEvent(e) {
         e.preventDefault();
