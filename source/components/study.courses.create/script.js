@@ -1207,7 +1207,7 @@ window.onload = function () {
         <div class="b-scc-step__block">
           <div class="b-scc-step__block-delete">
             <transition name="fade">
-              <a class="btn-delete" :class="{'btn--load-circle': lesson.deleteLoading}" href="" v-if="block.lessons.length>1" @click.prevent="deleteLesson()"></a>
+              <a class="btn-delete" :class="{'btn--load-circle': lesson.deleteLoading}" href="" v-if="block.lessons.length>0" @click.prevent="deleteLesson()"></a>
             </transition>
           </div>
           <div class="b-scc-step__block-title">Занятие {{ lessonIndex + 1 }}</div>
@@ -1445,7 +1445,7 @@ window.onload = function () {
         <div class="b-scc-step__block">
           <div class="b-scc-step__block-delete">
             <transition name="fade">
-              <a class="btn-delete" :class="{'btn--load-circle': block.deleteLoading}" href="" v-if="step.blocks.length>1" @click.prevent="deleteBlock(block.id)"></a>
+              <a class="btn-delete" :class="{'btn--load-circle': block.deleteLoading}" href="" v-if="step.blocks.length>0" @click.prevent="deleteBlock(block.id)"></a>
             </transition>
           </div>
           <div class="b-scc-step__block-title">Блок {{ blockIndex + 1 }}</div>
