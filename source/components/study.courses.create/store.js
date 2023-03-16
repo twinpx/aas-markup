@@ -42,6 +42,10 @@ window.studyCourseCreateStore = {
           label: 'Форма проведения',
           value: [
             {
+              label: 'Выбрать',
+              code: '',
+            },
+            {
               label: 'Очная аудиторная',
               code: 'ochno',
             },

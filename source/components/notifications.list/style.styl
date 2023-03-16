@@ -1,138 +1,146 @@
 @import '../../styl/component-include.styl'
 
-.b-notifications-list
+.b-notifications-list.ph-block.ph-block--animated .ph-content {
+  position: static;
+  width: auto;
+  opacity: 1
+}
 
-  &.ph-block
-    
-    &.ph-block--animated
-      
-      .ph-content
-        position static
-        width auto
-        opacity 1
-        
-      .ph
-        position absolute
-        top 0
-        left 0
-        width 100%
-        opacity 0
-        z-index -1
+.b-notifications-list.ph-block.ph-block--animated .ph {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  opacity: 0;
+  z-index: -1
+}
 
-.b-notifications-list
+.b-notifications-list .ph-content.content--load-circle {
+  position: relative
+}
 
-  .font-weight-bold
-    transition( all .5s ease )
+.b-notifications-list .ph-content.content--load-circle:before {
+  content: '';
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(255, 255, 255, 0.533)
+}
 
-    &,
-    &:hover,
-    &:focus,
-    &:active
-      color $link-color
-      text-decoration none
-      
-    &:hover
-      opacity .7
+.b-notifications-list .ph-content.content--load-circle:after {
+  content: "";
+  position: absolute;
+  height: 70px;
+  width: 70px;
+  top: calc(50% - 35px);
+  right: calc(50% - 35px);
+  animation: circle 1.3s infinite linear;
+  border: 4px solid #074c86;
+  border-radius: 50%;
+  border-right-color: transparent
+}
 
-  .ph-content.content--load-circle
-    position relative
+.b-notifications-list table.table {
+  font-family: Roboto, sans-serif
+}
 
-    &:before
-      content ''
-      display block
-      position absolute
-      top 0
-      left 0
-      width 100%
-      height 100%
-      background-color #ffffff88
+.b-notifications-list table.table th,
+.b-notifications-list table.table td {
+  font-size: .88rem;
+  text-align: center;
+  vertical-align: middle;
+  border-top: none;
+  border-bottom: 1px solid #f2f2f2;
+  cursor: pointer
+}
 
-    &:after
-      content ""
-      position absolute
-      height 70px
-      width 70px
-      top calc(50% - 35px)
-      right calc(50% - 35px)
-      animation circle 1.3s infinite linear 
-      border 4px solid $primary-color
-      border-radius 50%
-      border-right-color transparent
+.b-notifications-list table.table th.asc,
+.b-notifications-list table.table td.asc,
+.b-notifications-list table.table th.desc,
+.b-notifications-list table.table td.desc {
+  background-color: rgba(242, 228, 216, 0.4)
+}
 
-  table.table
-    font-family $roboto
+@media (max-width:1399px) {
 
-    th,
-    td
-      font-size $14px
-      text-align center
-      vertical-align middle
-      border-top none
-      border-bottom 1px solid $line-color
-      cursor pointer
+  .b-notifications-list table.table th:nth-child(6),
+  .b-notifications-list table.table td:nth-child(6) {
+    display: none
+  }
+}
 
-      &.asc,
-      &.desc
-        background-color #f2e4d866
+@media (max-width:1199px) {
 
-      @media( max-width 1399px )
+  .b-notifications-list table.table th:nth-child(5),
+  .b-notifications-list table.table td:nth-child(5) {
+    display: none
+  }
+}
 
-        &:nth-child(6)
-          display none
+@media (max-width:991px) {
 
-      @media( max-width 1199px )
+  .b-notifications-list table.table th:nth-child(4),
+  .b-notifications-list table.table td:nth-child(4) {
+    display: none
+  }
+}
 
-        &:nth-child(5)
-          display none
+@media (max-width:575px) {
 
-      @media( max-width 991px )
+  .b-notifications-list table.table th:nth-child(2),
+  .b-notifications-list table.table td:nth-child(2) {
+    display: none
+  }
+}
 
-        &:nth-child(4)
-          display none
+.b-notifications-list table.table th {
+  padding-right: 35px;
+  padding-left: 35px;
+  cursor: default
+}
 
-      @media( max-width 575px )
+.b-notifications-list table.table th:first-child {
+  text-align: left;
+  padding-left: 1.5rem
+}
 
-        &:nth-child(2)
-          display none
+.b-notifications-list table.table td {
+  width: 150px
+}
 
-    th
-      padding-right 35px
-      padding-left 35px
-      cursor default
+.b-notifications-list table.table td:first-child {
+  text-align: left;
+  width: auto;
+  max-width: 150px
+}
 
-      &:first-child
-        text-align left
-        padding-left 1.5rem
+.b-notifications-list table.table td:first-child div {
+  text-overflow: ellipsis;
+  overflow: hidden;
+  white-space: nowrap
+}
 
-    td
-      width 150px
+.b-notifications-list table.table td:last-child {
+  padding-left: 0;
+  padding-right: 0
+}
 
-      &:first-child
-        text-align left
-        width auto
-        max-width 150px
+.b-notifications-list table.table tbody tr {
+  cursor: pointer;
+  transition: background-color .5s ease;
+  -webkit-transition: background-color .5s ease
+}
 
-        div
-          text-overflow ellipsis
-          overflow hidden
-          white-space nowrap
-        
-      &:last-child
-        padding-left 0
-        padding-right 0
+.b-notifications-list table.table tbody tr:hover {
+  background-color: #fcfcfc
+}
 
-    tbody
+.b-notifications-list table.table tbody tr.b-notifications-list--tainted
+  background-color #FDFCF4
+  color #636A0E
 
-      tr
-        cursor pointer
-        transition( background-color .5s ease )
-      
-        &:hover
-          background-color #fcfcfc
-
-        &.b-notifications-list--tainted
-          background-color #FDFCF4
-          color #636A0E
-
-          td:first-child
-            font-weight $bold
+  td:first-child
+    font-weight $bold

@@ -401,7 +401,7 @@ window.addEventListener('load', () => {
     },
     template: `
       <div>
-        <form :action="this.form.action" :method="this.form.method">
+        <form :action="this.form.action" :method="this.form.method" enctype="multipart/form-data">
           <div class="form-control-wrapper">
             <v-select :searchable="false" :options="select.options" :value="select.options[0]" class="form-control-select" @input="onSelect()" v-model="select.selectedOption"></v-select>
             <label>{{select.label}}</label>

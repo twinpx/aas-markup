@@ -225,7 +225,9 @@ window.onload = function () {
           : block.controls[controlIndex];
 
         let value = formControl.value;
-        if (typeof formControl.value === 'object') {
+        if (formControl.selected) {
+          value = formControl.selected.code;
+        } else if (typeof formControl.value === 'object') {
           value = formControl.value.ID || '';
         }
 
@@ -235,16 +237,6 @@ window.onload = function () {
           case 'ornz':
           case 'date':
           case 'time':
-            commit('changeTextControl', {
-              stepIndex: getters.activeStepIndex,
-              blockIndex: blockIndex,
-              lessonIndex: lessonIndex,
-              controlIndex: controlIndex,
-              time: time,
-              prop: 'invalid',
-              value: (formControl.required && value === '') || undefined,
-            });
-            break;
           case 'select':
             commit('changeTextControl', {
               stepIndex: getters.activeStepIndex,
@@ -277,11 +269,13 @@ window.onload = function () {
         }, 20000);
 
         try {
-          response = await fetch(url, {
+          response = await fetch(
+            url /*, {
             method: 'POST',
             body: formData,
             signal: controller.signal,
-          });
+          }*/
+          );
           result = await response.json();
           if (result.status === 'success') {
             success(result);
@@ -727,7 +721,7 @@ window.onload = function () {
         },
       };
     },
-    template: `<div class="b-float-label-select-vc" ref="selectTemplate">
+    template: `<div class="b-float-label-select-vc" ref="selectTemplate" :class="{invalid: formControl.invalid}">
       <label class="active">{{formControl.label}}{{ formControl.required ? ' *' : ''}}</label>
       <v-select :searchable="false" :options="options" :value="options[0]" class="form-control-select" @input="onSelect()" v-model="selectedOption"></v-select>
       <input type="hidden" :name="name" :value="selectedOption.code" ref="hiddenInput">
@@ -746,6 +740,16 @@ window.onload = function () {
       },
     },
     methods: {
+      setInvalid(val) {
+        store.commit('changeTextControl', {
+          stepIndex: this.$store.getters.activeStepIndex,
+          blockIndex: this.blockIndex,
+          lessonIndex: this.lessonIndex,
+          controlIndex: this.formControlIndex,
+          prop: 'invalid',
+          value: val,
+        });
+      },
       onSelect() {
         //set select
         store.commit('changeSelect', {
@@ -756,6 +760,10 @@ window.onload = function () {
           selected: this.selectedOption,
         });
         this.$refs.hiddenInput.value = this.selectedOption.code;
+
+        if (!!this.selectedOption.code) {
+          this.setInvalid(false);
+        }
       },
     },
   });
@@ -1348,11 +1356,13 @@ window.onload = function () {
         }, 20000);
 
         try {
-          response = await fetch(this.$store.state.editURL, {
+          response = await fetch(
+            this.$store.state.editURL /*, {
             method: 'POST',
             body: formData,
             signal: controller.signal,
-          });
+          }*/
+          );
 
           result = await response.json();
 
