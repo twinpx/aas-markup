@@ -92,6 +92,7 @@ window.addEventListener('load', () => {
         activeLink.offsetLeft + parseInt(trans.substr(pos + 1) || 0, 10) + 'px';
       decorLine.style.width = activeLink.offsetWidth + 'px';
     }, 500);
+
     /*
     menuLinks.forEach(function (menuLink) {
       menuLink.addEventListener('click', function (e) {

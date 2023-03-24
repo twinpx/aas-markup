@@ -24,15 +24,18 @@
   &__select
     width 250px
 
+  &__item-content
+    display grid
+    grid-template-columns 1fr 250px
+    grid-gap 30px
+    margin-top 1rem
+
   &__item
     border 1px solid #74C37A
     border-radius 10px
     padding 18px 25px
     align-items center
     font-family $roboto
-    display grid
-    grid-template-columns 1fr 250px
-    grid-gap 30px
 
     &--new
       border-color #FAFAFA
@@ -64,12 +67,11 @@
       .b-reports-list__text
         color #3B3B3B55
 
-        a,
-        a:hover
+      a.b-reports-list__title
+      
+        &,
+        &:hover
           color #3B3B3B55
-
-      .b-reports-list__button
-        text-align center
 
       .btn
         margin-bottom 9px
@@ -87,20 +89,29 @@
     &--updated
       border-color #74C37A
 
-      .b-reports-list__button
-        display flex
-        align-items center
-        justify-content flex-end
-        justify-self end
+    .b-reports-list__button.b-reports-list__button--right
+      display flex
+      align-items center
+      justify-content flex-end
+      justify-self end
+
+      a
+        margin-right 1rem
+
+        &:last-child
+          margin-right 0
 
     &--passed-year-period
       border-color #74C37A
 
-      .b-reports-list__button
-        text-align center
+    .b-reports-list__button.b-reports-list__button--center
+      display flex
+      flex-direction column
+      justify-content center
+      align-items center
 
-      .btn
-        margin-bottom 9px
+    .btn-md
+      margin-bottom 9px
 
     &--passed
       border-color #74C37A
@@ -115,29 +126,20 @@
         a:hover
           color #3B3B3B55
 
-      .b-reports-list__button
-        display flex
-        align-items center
-        justify-content flex-end
-        justify-self end
-
-        .btn-edit
-          margin-right 1rem
-
   &__year
     font-size $16px
     font-weight $bold
-    margin-bottom 8px
-    min-height 1.5rem
+    min-height 1rem
 
   &__title
-    display block
+    display flex
+    align-items center
     font-size $20px
     font-weight $bold
     line-height 1.2
-    margin-bottom 1rem
 
   &__date
+    margin-top .8rem
   
     &:not(.small)
       font-size $14px

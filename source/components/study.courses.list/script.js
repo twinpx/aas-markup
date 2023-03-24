@@ -66,7 +66,7 @@
         decorLine.style.width = menuLinks[0].offsetWidth + 'px';
       }, 500);
 
-      menuLinks.forEach(function (menuLink) {
+      /*menuLinks.forEach(function (menuLink) {
         menuLink.addEventListener('click', function (e) {
           e.preventDefault();
 
@@ -104,7 +104,7 @@
       var tab = parseQuery(window.location.search).tab;
       setTimeout(function () {
         nav.querySelector(`[data-tab=${tab}]`).click();
-      }, 500);
+      }, 500);*/
     });
 
     //table

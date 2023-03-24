@@ -7,16 +7,24 @@ window.addEventListener('load', () => {
   const param = document
     .querySelector('.b-reports-list__select')
     .getAttribute('data-param');
-  $(select).ikSelect({
-    onShow() {
-      value = select.value;
-    },
-    onHide() {
-      if (value === select.value) return;
-      queryObject[param] = value;
-      location.replace(getQuery(queryObject));
-    },
-  });
+
+  if (select && param) {
+    $(select).ikSelect({
+      onShow() {
+        value = select.value;
+      },
+      onHide() {
+        if (value === select.value) return;
+
+        if (select.value === '') {
+          location.replace('');
+        } else {
+          queryObject[param] = select.value;
+          location.replace(getQuery(queryObject));
+        }
+      },
+    });
+  }
 
   function getQuery(queryObject) {
     var result = [];
