@@ -17,7 +17,8 @@ window.addEventListener('load', () => {
         if (value === select.value) return;
 
         if (select.value === '') {
-          location.replace('');
+          delete queryObject[param];
+          location.replace(location.pathname + getQuery(queryObject));
         } else {
           queryObject[param] = select.value;
           location.replace(getQuery(queryObject));
@@ -33,7 +34,7 @@ window.addEventListener('load', () => {
         result.push(k + '=' + queryObject[k]);
       }
     }
-    return '?' + result.join('&');
+    return result.length > 0 ? '?' + result.join('&') : '';
   }
 
   function parseQuery(queryString) {

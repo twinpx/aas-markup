@@ -14,7 +14,7 @@ if (elem) {
 }
 
 //select
-$('select').ikSelect({
+$('select:not(.select--link)').ikSelect({
   equalWidths: true,
   ddCustomClass: 'ik-custom-class',
 });

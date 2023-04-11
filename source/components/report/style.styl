@@ -34,6 +34,27 @@
     top -42px
     right 0
 
+    @media(max-width 575px)
+      position static
+      top auto
+      right auto
+
+  &-buttons
+
+    .btn
+      min-width 200px
+      margin-right 10px
+      margin-bottom 10px
+
+      &:last-child
+        margin-right 0
+
+      @media(max-width 575px)
+
+        &
+          margin-right 0
+          width 100%
+
 @media print
 
   .b-body-shutter,

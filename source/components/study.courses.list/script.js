@@ -5,8 +5,9 @@
     //tabs
     document.querySelectorAll('.b-study-courses-list').forEach(function (elem) {
       var nav = elem.querySelector('.b-study-courses-list__tabs');
-      var menuLinks = nav.querySelectorAll('a');
-      var tabsItems = elem.querySelectorAll('.b-study-courses-list__item');
+      //var menuLinks = nav.querySelectorAll('a');
+      var activeLink = nav.querySelector('a.active');
+      //var tabsItems = elem.querySelectorAll('.b-study-courses-list__item');
 
       //swiper menu
       if (window.matchMedia('(max-width: 600px)').matches) {
@@ -60,10 +61,10 @@
       var pos = trans.indexOf('(');
       setTimeout(function () {
         decorLine.style.left =
-          menuLinks[0].offsetLeft +
+          activeLink.offsetLeft +
           parseInt(trans.substr(pos + 1) || 0, 10) +
           'px';
-        decorLine.style.width = menuLinks[0].offsetWidth + 'px';
+        decorLine.style.width = activeLink.offsetWidth + 'px';
       }, 500);
 
       /*menuLinks.forEach(function (menuLink) {
