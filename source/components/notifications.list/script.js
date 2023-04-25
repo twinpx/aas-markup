@@ -133,7 +133,7 @@ window.addEventListener('load', () => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="notification in $store.getters.currentPageNotifications" :class="{'b-notifications-list--tainted': isTainted(notification.UF_DATE_CREATION)}" @click.prevent="window.location=window.notificationsDetailURL + '?ID=' + notification.ID" data-target="_self">
+          <tr v-for="notification in $store.getters.currentPageNotifications" :class="{'b-notifications-list--tainted': isTainted(notification.UF_DATE_CREATION)} && unread(notification)" @click.prevent="window.location=window.notificationsDetailURL + '?ID=' + notification.ID" data-target="_self">
             <td> 
               <div :class="{'font-weight-bold': unread(notification)}">{{ notification.UF_HEADER || '&nbsp;' }}</div>
             </td>
