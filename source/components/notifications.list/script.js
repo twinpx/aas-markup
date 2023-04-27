@@ -133,7 +133,7 @@ window.addEventListener('load', () => {
           </tr>
         </thead>
         <tbody>
-          <tr v-for="notification in $store.getters.currentPageNotifications" :class="{'b-notifications-list--tainted': isTainted(notification.UF_DATE_CREATION)} && unread(notification)" @click.prevent="window.location=window.notificationsDetailURL + '?ID=' + notification.ID" data-target="_self">
+          <tr v-for="notification in $store.getters.currentPageNotifications" :class="{'b-notifications-list--tainted': isTainted(notification)}" @click.prevent="window.location=window.notificationsDetailURL + '?ID=' + notification.ID" data-target="_self">
             <td> 
               <div :class="{'font-weight-bold': unread(notification)}">{{ notification.UF_HEADER || '&nbsp;' }}</div>
             </td>
@@ -144,10 +144,13 @@ window.addEventListener('load', () => {
       </table>
     `,
     methods: {
-      isTainted(date) {
-        let InAYearTimestamp = date + 365 * 24 * 60 * 60;
+      isTainted(notification) {
+        let InAYearTimestamp =
+          notification.UF_DATE_CREATION + 365 * 24 * 60 * 60;
         let currentTimestamp = parseInt(new Date().getTime() / 1000, 10);
-        return InAYearTimestamp - currentTimestamp < 0;
+        return (
+          InAYearTimestamp - currentTimestamp < 0 && this.unread(notification)
+        );
       },
       unread(notification) {
         return !Number(notification.UF_READ_STATUS);
