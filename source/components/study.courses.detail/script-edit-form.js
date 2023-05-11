@@ -137,7 +137,7 @@ window.onload = function () {
                   <div class="b-scd-form-lecturer">{{ task.teacher }}</div>
                 </div>
               </div>
-              <div class="b-scd-form-icon">
+              <div class="b-scd-form-icon" v-if="$store.state.editable">
                 <button class="btn-edit" @click.prevent="clickEdit(task.id)">
                   <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24">
                     <g>
@@ -731,7 +731,7 @@ window.onload = function () {
     el: '#editStudyCourseBlocks',
     store,
     template: `
-      <div>
+      <div :class="{'b-scd--editable': $store.state.editable}">
         <edit-study-course-modal></edit-study-course-modal>
         <collapse-block v-for="block in $store.state.blocks" :block="block"></collapse-block>
       </div>

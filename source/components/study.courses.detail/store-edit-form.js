@@ -1,6 +1,7 @@
 window.studyCourseStore = {
   editURL: '/components/study.courses.detail/editResponse.json',
   submitURL: '/components/study.courses.detail/submitResponse.json',
+  editable: false,
   blocks: [
     {
       id: 'qw123',
