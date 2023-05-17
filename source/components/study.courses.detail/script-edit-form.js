@@ -135,6 +135,7 @@ window.onload = function () {
                 <div class="b-scd-form-about">
                   <div class="b-scd-form-description">{{ task.description }}</div>
                   <div class="b-scd-form-lecturer">{{ task.teacher }}</div>
+                  <div class="b-scd-form-biography" v-if="task.biography">{{ task.biography }}</div>
                 </div>
               </div>
               <div class="b-scd-form-icon" v-if="$store.state.editable">
@@ -691,8 +692,11 @@ window.onload = function () {
         <div v-for="(formControl, formControlIndex) in $store.state.modal.controls" :key="formControlIndex + Math.floor(Math.random() * 100000)">
 
           <form-control-date v-if="formControl.type==='date'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-date>
+
           <form-control-textarea v-else-if="formControl.type==='textarea'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-textarea>
+
           <form-control-select v-else-if="formControl.type==='select'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-select>
+
           <div class="row" v-else-if="formControl.type==='time'">
             <div class="col-sm-4">
               <form-control :formControl="formControl.controls[0]" :formControlIndex="formControlIndex" time="start"></form-control>
@@ -701,7 +705,11 @@ window.onload = function () {
               <form-control :formControl="formControl.controls[1]" :formControlIndex="formControlIndex" time="end"></form-control>
             </div>
           </div>
+
           <form-control-number v-else-if="formControl.type==='number'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-number>
+
+          <form-control-textarea v-else-if="formControl.type==='textarea'" :formControl="formControl" :formControlIndex="formControlIndex"></form-control-textarea>
+
           <form-control v-else :formControl="formControl" :formControlIndex="formControlIndex"></form-control>
         </div>
 

@@ -54,6 +54,14 @@
                 "invalid": false
               },
               {
+                "name": "TASK_TEACHER_BIOGRAPHY",
+                "label": "Биография и регалии преподавателя",
+                "value": "",
+                "type": "textarea",
+                "required": false,
+                "invalid": false
+              },
+              {
                 "name": "LESSON_TYPE",
                 "label": "Тип занятия",
                 "value": [

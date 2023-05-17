@@ -1216,19 +1216,20 @@ window.onload = function () {
               <form-control-textarea :blockIndex="blockIndex" :lessonIndex="lessonIndex" :formControl="lesson.controls[0]" formControlIndex="0"></form-control-textarea>
               <form-control-date :blockIndex="blockIndex" :lessonIndex="lessonIndex" :formControl="lesson.controls[1]" formControlIndex="1"></form-control-date>
               <form-control :blockIndex="blockIndex" :lessonIndex="lessonIndex" :formControl="lesson.controls[2]" formControlIndex="2"></form-control>
+              <form-control-textarea :blockIndex="blockIndex" :lessonIndex="lessonIndex" :formControl="lesson.controls[3]" formControlIndex="3"></form-control-textarea>
             </div>
             <div class="col-lg-6">
-              <form-control-select :blockIndex="blockIndex" :lessonIndex="lessonIndex" :formControl="lesson.controls[3]" formControlIndex="3"></form-control-select>
-              <form-control :blockIndex="blockIndex" :lessonIndex="lessonIndex" :formControl="lesson.controls[4]" formControlIndex="4"></form-control>
+              <form-control-select :blockIndex="blockIndex" :lessonIndex="lessonIndex" :formControl="lesson.controls[4]" formControlIndex="4"></form-control-select>
+              <form-control :blockIndex="blockIndex" :lessonIndex="lessonIndex" :formControl="lesson.controls[5]" formControlIndex="5"></form-control>
               <div class="row">
-                <div class="col-lg-4">
-                  <form-control :formControl="lesson.controls[5]" :blockIndex="blockIndex" :lessonIndex="lessonIndex" formControlIndex="5" time="true"></form-control>
-                </div>
                 <div class="col-lg-4">
                   <form-control :formControl="lesson.controls[6]" :blockIndex="blockIndex" :lessonIndex="lessonIndex" formControlIndex="6" time="true"></form-control>
                 </div>
                 <div class="col-lg-4">
-                  <form-control :formControl="lesson.controls[7]" :blockIndex="blockIndex" :lessonIndex="lessonIndex" formControlIndex="7"></form-control>
+                  <form-control :formControl="lesson.controls[7]" :blockIndex="blockIndex" :lessonIndex="lessonIndex" formControlIndex="7" time="true"></form-control>
+                </div>
+                <div class="col-lg-4">
+                  <form-control :formControl="lesson.controls[8]" :blockIndex="blockIndex" :lessonIndex="lessonIndex" formControlIndex="8"></form-control>
                 </div>
               </div>
             </div>
